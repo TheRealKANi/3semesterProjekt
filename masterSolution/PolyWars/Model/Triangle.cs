@@ -6,24 +6,15 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace PolyWars.Model
-{
-    class Triangle : Shape
-    {
-        public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size)
-        {
-            base.CenterPoint = centerPoint;
-            base.Angle = angle;
-            base.BorderColor = borderColor;
-            base.FillColor = fillColor;
-            base.Size = size;
-            base.Points = getVertices();
-
-
-
+namespace PolyWars.Model{
+    class Triangle : Shape {
+        public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size) : 
+            base(centerPoint, angle, borderColor, fillColor, size) {
+            Points = getTrianglePoints();
         }
-        private PointCollection getVertices()
-        {
+
+        // TODO Refactor Code to external class
+        private PointCollection getTrianglePoints(){
             double x1 = this.CenterPoint.X + Math.Cos(Math.PI / 2 + Angle / 180 * Math.PI) * this.Size.Width / 2;
             double y1 = this.CenterPoint.Y - Math.Sin(Math.PI / 2 + Angle / 180 * Math.PI) * this.Size.Height / 2;
             Point point1 = new Point(x1, y1);

@@ -60,17 +60,18 @@
     <Compile Include="Logic\Renderer.cs" />
     <Compile Include="Logic\ResourceLoader.cs" />
     <Compile Include="Model\Shape.cs" />
+    <Compile Include="Model\ShapeSize.cs" />
     <Compile Include="Model\Triangle.cs" />
-    <Compile Include="ViewModels\Settings_ViewModel.cs" />
-    <Compile Include="View\GameArena.xaml.cs">
+    <Compile Include="UI\Settings\Settings_ViewModel.cs" />
+    <Compile Include="UI\GameArena\GameArena.xaml.cs">
       <DependentUpon>GameArena.xaml</DependentUpon>
     </Compile>
-    <Compile Include="View\MainMenu.xaml.cs">
+    <Compile Include="UI\MainMenu\MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="ViewModels\GameArena_ViewModel.cs" />
-    <Compile Include="ViewModels\MainMenu_ViewModel.cs" />
-    <Compile Include="View\Settings.xaml.cs">
+    <Compile Include="UI\GameArena\GameArena_ViewModel.cs" />
+    <Compile Include="UI\MainMenu\MainMenu_ViewModel.cs" />
+    <Compile Include="UI\Settings\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
     <Page Include="MainWindow.xaml">
@@ -85,15 +86,15 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="View\GameArena.xaml">
+    <Page Include="UI\GameArena\GameArena.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\MainMenu.xaml">
+    <Page Include="UI\MainMenu\MainMenu.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
-    <Page Include="View\Settings.xaml">
+    <Page Include="UI\Settings\Settings.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

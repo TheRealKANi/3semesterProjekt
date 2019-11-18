@@ -6,5 +6,9 @@ using System.Threading.Tasks;
 
 namespace PolyWars.FrameCalculator {
     class MovePlayer {
+
+        moveTriangle() { 
+            
+        }
     }
 }
