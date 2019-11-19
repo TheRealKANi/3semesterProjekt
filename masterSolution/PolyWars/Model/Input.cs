@@ -7,9 +7,6 @@ using System.Windows.Input;
 
 namespace PolyWars.Logic
 {
-    //TODO should this be here?
-
-
     //Binds controls to user defined keys 
     class Input
     {

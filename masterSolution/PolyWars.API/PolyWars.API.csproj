@@ -45,7 +45,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IShape.cs" />
+    <Compile Include="IShapeSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="ITriangle.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

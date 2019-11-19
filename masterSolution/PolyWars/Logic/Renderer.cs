@@ -7,8 +7,10 @@ using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Threading;
+using PolyWars.FrameCalculator;
 
 namespace PolyWars.Logic {
     class Renderer : Observable {
@@ -72,7 +74,11 @@ namespace PolyWars.Logic {
                             double rotationPerTick = triangle.RPM * DeltaTime( tickTime );
                             double xPerTick = triangle.HorizontialSpeed * DeltaTime( tickTime );
                             double yPerTick = triangle.VerticalSpeed * DeltaTime( tickTime );
-                            triangle.Move( xPerTick, yPerTick, rotationPerTick );
+                            Point newCenterPoint = new Point( xPerTick, yPerTick );
+                            triangle.CenterPoint = newCenterPoint;
+                            triangle.RPM = rotationPerTick;
+                            MoveShapes.move( triangle );
+                            //triangle.Move( xPerTick, yPerTick, rotationPerTick );
                         }
                     }
 

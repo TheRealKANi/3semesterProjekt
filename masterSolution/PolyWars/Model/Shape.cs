@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyWars.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,7 +9,7 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace PolyWars.Model {
-    abstract class Shape {
+    abstract class Shape : IShape {
         public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, PointCollection points) {
             CenterPoint = centerPoint;
             Angle = angle;
@@ -32,7 +33,7 @@ namespace PolyWars.Model {
         public int Angle { get; set; }
         public Color BorderColor { get; set; }
         public Color FillColor { get; set; }
-        public ShapeSize Size { get; set; }
+        public IShapeSize Size { get; set; }
         public PointCollection Points { get; set; }
 
         public Polygon getShapeAsPolygon() {

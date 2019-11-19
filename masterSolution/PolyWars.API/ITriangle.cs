@@ -9,7 +9,7 @@ using System.Windows.Media;
 namespace PolyWars.API {
     public interface ITriangle : IShape {
         PointCollection getTrianglePoints();
-        int RPM { get; set; }
+        double RPM { get; set; }
         int VerticalSpeed { get; set; }
         int HorizontialSpeed { get; set; }
     }

@@ -9,9 +9,9 @@ using System.Windows.Shapes;
 using PolyWars.API;
 
 namespace PolyWars.FrameCalculator {
-    class MoveShapes {
+    public static class MoveShapes {
 
-        void Move( IShape shape ) {
+        public static void move( IShape shape ) {
             RotateTransform rt = new RotateTransform {
                 CenterX = shape.CenterPoint.X,
                 CenterY = shape.CenterPoint.Y,
