@@ -10,8 +10,10 @@ using System.Windows.Controls;
 
 namespace PolyWars.UI.GameArena {
     class GameArena_ViewModel {
+
         private GameController gameController;
         public GameArena_ViewModel() {
+
             gameController = new GameController();
             ArenaCanvas = gameController.prepareGame();
             gameController.playGame(ArenaCanvas, onCanvasChanged);

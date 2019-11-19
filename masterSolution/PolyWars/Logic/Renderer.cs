@@ -34,7 +34,7 @@ namespace PolyWars.Logic {
             this.shapes = shapes;
             stopTickerThread = false;
 
-            Canvas = canvas;
+            //Canvas = canvas;
             moveObjectsTasks = new Task[4];
 
             foreach( var triangle in shapes ) {
