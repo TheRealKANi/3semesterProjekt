@@ -69,9 +69,9 @@ namespace PolyWars.Logic {
                     void MoveObjects( int start, int range ) {
                         for( int i = start; i < range; i++ ) {
                             Triangle triangle = triangles[i];
-                            double rotationPerTick = triangle.Rpm * DeltaTime( tickTime );
-                            double xPerTick = triangle.XSpeed * DeltaTime( tickTime );
-                            double yPerTick = triangle.YSpeed * DeltaTime( tickTime );
+                            double rotationPerTick = triangle.RPM * DeltaTime( tickTime );
+                            double xPerTick = triangle.HorizontialSpeed * DeltaTime( tickTime );
+                            double yPerTick = triangle.VerticalSpeed * DeltaTime( tickTime );
                             triangle.Move( xPerTick, yPerTick, rotationPerTick );
                         }
                     }

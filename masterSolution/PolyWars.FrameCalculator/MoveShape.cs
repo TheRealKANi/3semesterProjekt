@@ -5,8 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PolyWars.FrameCalculator {
-    class MovePlayer {
-        class Triangle { }
+    class MoveShape {
+
         void MoveTriangle(Triangle triangle) { 
         }
     }
