@@ -18,14 +18,14 @@ namespace PolyWars.Logic
     {
         private InputController inputController;
         private bool isLoaded;
-        private ObservableCollection<IShape> triangles;
+        private ObservableCollection<Triangle> triangles;
         private Renderer renderer;
 
         public GameController( ) {
             
             inputController = new InputController();
             isLoaded = false;
-            triangles = new ObservableCollection<IShape>();
+            triangles = new ObservableCollection<Triangle>();
 
         }
 
@@ -33,16 +33,17 @@ namespace PolyWars.Logic
             Canvas canvas = new Canvas {
                 Background = new SolidColorBrush( Colors.Aquamarine )
             };
+
             // TODO Implement a cleaner method to input players
             Triangle t = new Triangle( new Point( 100, 100 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ) );
             triangles.Add( t );
             return canvas;
         }
 
-        public void playGame( Canvas arenaCanvas, PropertyChangedEventHandler eventHandler ) {
+        public void playGame( Canvas arenaCanvas, EventHandler<PropertyChangedEventArgs> eventHandler ) {
             Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
             renderer = new Renderer( arenaCanvas, dispatcher, triangles );
-            renderer.PropertyChanged += eventHandler;
+            renderer.CanvasChangedEventHandler += eventHandler;
             renderer.Start();
         }
 

@@ -20,7 +20,7 @@ namespace PolyWars.Logic {
         private Dispatcher dispatcher;
         private bool stopTickerThread;
         private Task[] moveObjectsTasks;
-        private ObservableCollection<IShape> shapes;
+        private ObservableCollection<Triangle> shapes;
         public EventHandler<PropertyChangedEventArgs> CanvasChangedEventHandler;
 
 
@@ -28,7 +28,7 @@ namespace PolyWars.Logic {
 
         public int Fps { get; set; }
 
-        public Renderer( Canvas canvas, Dispatcher dispatcher, ObservableCollection<IShape> shapes ) {
+        public Renderer( Canvas canvas, Dispatcher dispatcher, ObservableCollection<Triangle> shapes ) {
             Canvas = canvas;
             this.dispatcher = dispatcher;
             this.shapes = shapes;
@@ -53,12 +53,11 @@ namespace PolyWars.Logic {
         }
 
         private void Ticker() {
-            try {
+            //try {
                 DateTime Started = DateTime.Now;
                 DateTime lastTick = DateTime.Now;
                 DateTime fpsTimer = DateTime.Now;
                 int frames = 0;
-                Canvas c;
 
 
                 double DeltaTime( double tickTime ) {
@@ -71,7 +70,7 @@ namespace PolyWars.Logic {
 
                     void MoveObjects( int start, int range ) {
                         for( int i = start; i < range; i++ ) {
-                            Triangle triangle = (Triangle) shapes[i];
+                            Triangle triangle = shapes[i];
                             double rotationPerTick = triangle.RPM * DeltaTime( tickTime );
                             double xPerTick = triangle.HorizontialSpeed * DeltaTime( tickTime );
                             double yPerTick = triangle.VerticalSpeed * DeltaTime( tickTime );
@@ -83,22 +82,26 @@ namespace PolyWars.Logic {
                         }
                     }
 
-                    int divisible4 = shapes.Count - shapes.Count % 4;
-                    int[] ranges = new int[4];
-                    ranges[0] = divisible4 / 4;
-                    ranges[1] = divisible4 / 4 + ranges[0];
-                    ranges[2] = divisible4 / 4 + ranges[1];
-                    ranges[3] = divisible4 / 4 + ranges[2];
+                    if( shapes.Count > 3 ) {
+                        int divisible4 = shapes.Count - shapes.Count % 4;
+                        int[] ranges = new int[4];
+                        ranges[0] = divisible4 / 4;
+                        ranges[1] = divisible4 / 4 + ranges[0];
+                        ranges[2] = divisible4 / 4 + ranges[1];
+                        ranges[3] = divisible4 / 4 + ranges[2];
 
-                    for( int i = 0; i < shapes.Count % 4; i++ ) {
-                        ranges[i] += 1;
+                        for( int i = 0; i < shapes.Count % 4; i++ ) {
+                            ranges[i] += 1;
+                        }
+                        moveObjectsTasks[0] = Task.Run( () => MoveObjects( 0, ranges[0] ) );
+                        moveObjectsTasks[1] = Task.Run( () => MoveObjects( ranges[0], ranges[1] ) );
+                        moveObjectsTasks[2] = Task.Run( () => MoveObjects( ranges[1], ranges[2] ) );
+                        moveObjectsTasks[3] = Task.Run( () => MoveObjects( ranges[2], ranges[3] ) );
+
+                        Task.WaitAll( moveObjectsTasks );
+                    } else {
+                        MoveObjects( 0, 1 );
                     }
-                    moveObjectsTasks[0] = Task.Run( () => MoveObjects( 0, ranges[0] ) );
-                    moveObjectsTasks[1] = Task.Run( () => MoveObjects( ranges[0], ranges[1] ) );
-                    moveObjectsTasks[2] = Task.Run( () => MoveObjects( ranges[1], ranges[2] ) );
-                    moveObjectsTasks[3] = Task.Run( () => MoveObjects( ranges[2], ranges[3] ) );
-
-                    Task.WaitAll( moveObjectsTasks );
 
 
                     int s;
@@ -122,10 +125,10 @@ namespace PolyWars.Logic {
                         frames++;
                     }
                 }
-            } catch( Exception ) {
+            //} catch( Exception ) {
 
-                stopTickerThread = true;
-            }
+            //    stopTickerThread = true;
+            //}
         }
     }
 }
