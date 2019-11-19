@@ -58,7 +58,8 @@
     <Compile Include="Logic\ArenaController.cs" />
     <Compile Include="Logic\Audio.cs" />
     <Compile Include="Logic\GameController.cs" />
-    <Compile Include="Logic\Input.cs" />
+    <Compile Include="Model\Input.cs" />
+    <Compile Include="Logic\InputController.cs" />
     <Compile Include="Logic\Renderer.cs" />
     <Compile Include="Logic\ResourceLoader.cs" />
     <Compile Include="Model\Arena.cs" />
