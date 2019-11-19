@@ -8,13 +8,13 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace PolyWars.API {
-    interface Shape {
+    public interface IShape {
         Polygon getShapeAsPolygon();
         Point CenterPoint { get; set; }
         int Angle { get; set; }
         Color BorderColor { get; set; }
         Color FillColor { get; set; }
-        ShapeSize Size { get; set; }
+        IShapeSize Size { get; set; }
         PointCollection Points { get; set; }
     }
 }
