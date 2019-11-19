@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Windows.Shapes;
 
 namespace PolyWars.Model {
     abstract class Shape {
@@ -24,6 +25,7 @@ namespace PolyWars.Model {
             this.FillColor = fillColor;
             this.Size = size;
             this.Points = new PointCollection();
+
         }
 
         public Point CenterPoint { get; set; }
@@ -32,6 +34,12 @@ namespace PolyWars.Model {
         public Color FillColor { get; set; }
         public ShapeSize Size { get; set; }
         public PointCollection Points { get; set; }
+
+        public Polygon getShapeAsPolygon() {
+            Polygon poly = new Polygon();
+            poly.Points = this.Points;
+            return poly;
+        }
 
     }
 }

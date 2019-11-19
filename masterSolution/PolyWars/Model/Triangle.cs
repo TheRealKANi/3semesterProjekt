@@ -30,5 +30,9 @@ namespace PolyWars.Model{
             return new PointCollection() { point1, point2, point3 };
         }
 
+        public int RPM { get; set; }
+        public int VerticalSpeed { get; set; }
+        public int HorizontialSpeed { get; set; }
+
     }
 }

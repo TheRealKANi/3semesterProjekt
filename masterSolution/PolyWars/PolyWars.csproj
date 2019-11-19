@@ -63,6 +63,7 @@
     <Compile Include="Logic\Renderer.cs" />
     <Compile Include="Logic\ResourceLoader.cs" />
     <Compile Include="Model\Arena.cs" />
+    <Compile Include="Model\Observable.cs" />
     <Compile Include="Model\RelayCommand.cs" />
     <Compile Include="Model\Shape.cs" />
     <Compile Include="Model\ShapeSize.cs" />
