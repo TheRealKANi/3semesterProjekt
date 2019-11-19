@@ -38,12 +38,17 @@ namespace PolyWars.Model {
         public PointCollection Points { get; set; }
 
         public Polygon getShapeAsPolygon(Dispatcher dispatcher) {
-            return dispatcher.Invoke( () => {
+            Polygon polygon = dispatcher.Invoke( () => {
                 Polygon poly = new Polygon {
                     Points = this.Points
                 };
+
+                poly.Stroke = Brushes.Red;
+                poly.StrokeThickness = 5;
                 return poly;
             } );
+            
+            return polygon;
         }
 
     }
