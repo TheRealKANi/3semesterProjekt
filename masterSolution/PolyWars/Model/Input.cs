@@ -16,6 +16,12 @@ namespace PolyWars.Logic
         private Dictionary<Key, Action> keyBindings = new Dictionary<Key, Action>();
         public Input()
         {
+            
+        }
+
+        public bool initInput()
+        {
+            bool result = false;
             keyBindings[Key.W] = new Action(MoveUp);
             keyBindings[Key.A] = new Action(MoveLeft);
             keyBindings[Key.S] = new Action(MoveDown);
@@ -24,6 +30,13 @@ namespace PolyWars.Logic
             keyBindings[Key.Left] = new Action(MoveLeft);
             keyBindings[Key.Down] = new Action(MoveDown);
             keyBindings[Key.Right] = new Action(MoveRight);
+
+            // TODO  Make verification logic
+            if(keyBindings.Count > 0)
+            {
+                result = true;
+            }
+            return result;
         }
 
         private void MoveUp()
@@ -46,8 +59,6 @@ namespace PolyWars.Logic
             throw new NotImplementedException();
         }
 
-
-
         public void onKeyPressed(object sender, KeyEventArgs e)
         {
             try
@@ -59,11 +70,7 @@ namespace PolyWars.Logic
 
                 throw;
             }
-
         }
-
     }
-
-
 }
 
