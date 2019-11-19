@@ -13,12 +13,14 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PolyWars.View {
+namespace PolyWars.UI.GameArena
+{
     /// <summary>
     /// Interaction logic for GameArena.xaml
     /// </summary>
-    public partial class GameArena : Page {
-        public GameArena() {
+    public partial class GameArenaPage : Page
+    {
+        public GameArenaPage() {
             InitializeComponent();
         }
     }

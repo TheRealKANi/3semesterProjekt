@@ -24,6 +24,7 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
+    <NoWarn>CS0649; CS0067; CS8321; CS0168</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <PlatformTarget>AnyCPU</PlatformTarget>
@@ -69,14 +70,14 @@
     <Compile Include="Model\ShapeSize.cs" />
     <Compile Include="Model\Triangle.cs" />
     <Compile Include="NavigationController.cs" />
-    <Compile Include="UI\Settings\Settings_ViewModel.cs" />
-    <Compile Include="UI\GameArena\GameArena.xaml.cs">
-      <DependentUpon>GameArena.xaml</DependentUpon>
+    <Compile Include="UI\GameArena\GameArenaPage.xaml.cs">
+      <DependentUpon>GameArenaPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="UI\GameArena\GameArena_ViewModel.cs" />
+    <Compile Include="UI\Settings\Settings_ViewModel.cs" />
     <Compile Include="UI\MainMenu\MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\GameArena\GameArena_ViewModel.cs" />
     <Compile Include="UI\MainMenu\MainMenu_ViewModel.cs" />
     <Compile Include="UI\Settings\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
@@ -97,7 +98,7 @@
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
-    <Page Include="UI\GameArena\GameArena.xaml">
+    <Page Include="UI\GameArena\GameArenaPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

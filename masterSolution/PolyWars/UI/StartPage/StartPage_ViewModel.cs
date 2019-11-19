@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
@@ -19,7 +20,7 @@ namespace PolyWars.UI.StartPage
         {
             get {
                 if(startGame_Command == null) {
-                    startGame_Command = new RelayCommand((o) => { return true; }, (o) => { GameController.PlayGame(() => { MessageBox.Show("The Button Works!"); }); });
+                    startGame_Command = new RelayCommand((o) => { return true; }, (o) => { NavigationController.Instance.Navigate(NavigationController.Instance.ArenaPage); });
                 }
                 return startGame_Command;
             }
@@ -44,6 +45,8 @@ namespace PolyWars.UI.StartPage
                 return login_Command;
             }
         }
+
+        public GameController GameController { get; set; }
 
         public event PropertyChangedEventHandler PropertyChanged;
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "") {

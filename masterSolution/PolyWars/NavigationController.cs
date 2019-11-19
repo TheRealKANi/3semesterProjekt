@@ -1,4 +1,5 @@
 ﻿using PolyWars.UI.StartPage;
+using PolyWars.UI.GameArena;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -45,6 +46,18 @@ namespace PolyWars
                     startPage = new StartPage();
                 }
                 return startPage;
+            }
+        }
+        private GameArenaPage arenaPage;
+        public GameArenaPage ArenaPage { 
+            get {
+                if(arenaPage == null) {
+                    arenaPage = new GameArenaPage();
+                }
+                return arenaPage;
+            }
+            set {
+                arenaPage = value;
             }
         }
         public void Navigate(Page p) {
