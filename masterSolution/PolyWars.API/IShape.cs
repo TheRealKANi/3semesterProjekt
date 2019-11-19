@@ -6,10 +6,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PolyWars.API {
     public interface IShape {
-        Polygon getShapeAsPolygon();
+        Polygon getShapeAsPolygon( Dispatcher dispatcher );
         Point CenterPoint { get; set; }
         int Angle { get; set; }
         Color BorderColor { get; set; }

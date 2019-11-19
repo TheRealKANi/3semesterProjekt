@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace PolyWars.Model {
     abstract class Shape : IShape {
@@ -36,10 +37,13 @@ namespace PolyWars.Model {
         public IShapeSize Size { get; set; }
         public PointCollection Points { get; set; }
 
-        public Polygon getShapeAsPolygon() {
-            Polygon poly = new Polygon();
-            poly.Points = this.Points;
-            return poly;
+        public Polygon getShapeAsPolygon(Dispatcher dispatcher) {
+            return dispatcher.Invoke( () => {
+                Polygon poly = new Polygon {
+                    Points = this.Points
+                };
+                return poly;
+            } );
         }
 
     }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyWars.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,6 +12,8 @@ namespace PolyWars.Model{
         public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size) : 
             base(centerPoint, angle, borderColor, fillColor, size) {
             Points = getTrianglePoints();
+            VerticalSpeed = 0;
+            HorizontialSpeed = 0;
         }
 
         // TODO Refactor Code to external class

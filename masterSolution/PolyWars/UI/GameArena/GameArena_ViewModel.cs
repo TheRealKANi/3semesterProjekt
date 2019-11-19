@@ -8,20 +8,21 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace PolyWars.UI.GameArena
-{
-    class GameArena_ViewModel
-    {
+namespace PolyWars.UI.GameArena {
+    class GameArena_ViewModel {
         private GameController gameController;
         public GameArena_ViewModel() {
             gameController = new GameController();
             ArenaCanvas = gameController.prepareGame();
-            gameController.playGame();
+            gameController.playGame(ArenaCanvas, onCanvasChanged);
+        }
+
+        public void onCanvasChanged( object Sender, PropertyChangedEventArgs args ) {
+            NotifyPropertyChanged(args.PropertyName);
         }
 
         private Canvas arenaCanvas;
-        public Canvas ArenaCanvas
-        {
+        public Canvas ArenaCanvas {
             get {
                 return arenaCanvas;
             }
