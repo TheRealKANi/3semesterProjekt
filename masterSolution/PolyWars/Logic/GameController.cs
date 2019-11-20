@@ -23,9 +23,10 @@ namespace PolyWars.Logic
 
         public GameController( ) {
             
-            inputController = new InputController();
             isLoaded = false;
             triangles = new ObservableCollection<Triangle>();
+            inputController = new InputController();
+            inputController.initInput();
 
         }
 
@@ -45,7 +46,7 @@ namespace PolyWars.Logic
             Triangle t6 = new Triangle( new Point( 200, 200 ), 270, Colors.Black, Colors.Silver, new ShapeSize( 50, 50 ) );
             Triangle t7 = new Triangle( new Point( 250, 200 ), 320, Colors.Black, Colors.Gold, new ShapeSize( 50, 50 ) );
             Triangle t8 = new Triangle( new Point( 100, 300 ), 360, Colors.Black, Colors.Gold, new ShapeSize( 50, 50 ) );
-            triangles.Add( t);
+            triangles.Add( t );
             triangles.Add( t1 );
             triangles.Add( t2 );
             triangles.Add( t3 );
@@ -61,6 +62,7 @@ namespace PolyWars.Logic
             Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
             renderer = new Renderer( arenaCanvas, dispatcher, triangles );
             renderer.CanvasChangedEventHandler += eventHandler;
+            // TODO Add input and the player to Rendere here
             renderer.Start();
         }
 
