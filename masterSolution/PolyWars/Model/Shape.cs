@@ -43,8 +43,9 @@ namespace PolyWars.Model {
                     Points = this.Points
                 };
 
-                poly.Stroke = Brushes.Red;
-                poly.StrokeThickness = 5;
+                poly.Stroke = new SolidColorBrush( this.BorderColor );
+                poly.Fill = new SolidColorBrush( this.FillColor );
+                poly.StrokeThickness = 2;
                 return poly;
             } );
             
