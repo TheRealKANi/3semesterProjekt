@@ -8,10 +8,10 @@ namespace PolyWars.Logic {
             input = new Input();
         }
 
-        public string getInput() {
+        public int getInput() {
             // TODO Grab input from user and apply to
             // triangle
-            return null;
+            return input.getInput();
         }
     }
 }
