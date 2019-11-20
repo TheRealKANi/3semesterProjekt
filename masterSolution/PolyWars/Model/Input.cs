@@ -5,20 +5,16 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace PolyWars.Logic
-{
+namespace PolyWars.Logic {
     //Binds controls to user defined keys 
-    class Input
-    {
+    class Input {
         private Dictionary<Key, Action<KeyStates>> keyBindings = new Dictionary<Key, Action<KeyStates>>();
-        public Input()
-        {
+        public Input() {
             Movement = 0;
             initInput();
         }
 
-        public bool initInput()
-        {
+        public bool initInput() {
             bool result = false;
             keyBindings[Key.W] = new Action<KeyStates>(MoveUp);
             keyBindings[Key.A] = new Action<KeyStates>(MoveLeft);
@@ -30,29 +26,29 @@ namespace PolyWars.Logic
             keyBindings[Key.Right] = new Action<KeyStates>(MoveRight);
 
             // TODO  Make verification logic
-            if(keyBindings.Count > 0)
-            {
+            if(keyBindings.Count > 0) {
                 result = true;
             }
             return result;
         }
+
         public int Movement { get; set; }
         private void MoveUp(KeyStates state)
         {
-            Movement = state == KeyStates.Down ? Movement | 2 : Movement & 13;
+            Movement = state == KeyStates.Toggled ? Movement | 2 : Movement & 13;
         }
         private void MoveDown(KeyStates state)
         {
-            Movement = state == KeyStates.Down ? Movement | 8 : Movement & 7;
+            Movement = state == KeyStates.Toggled ? Movement | 8 : Movement & 7;
         }
 
         private void MoveRight(KeyStates state)
         {
-            Movement = state == KeyStates.Down ? Movement | 1 : Movement & 14;
+            Movement = state == KeyStates.Toggled ? Movement | 1 : Movement & 14;
         }
         private void MoveLeft(KeyStates state)
         {
-            Movement = state == KeyStates.Down ? Movement | 4 : Movement & 11;
+            Movement = state == KeyStates.Toggled ? Movement | 4 : Movement & 11;
         }
 
         public void onKeyStateChanged(object sender, KeyEventArgs e)
@@ -65,6 +61,10 @@ namespace PolyWars.Logic
             {
                 // ignore unbound keypresses
             }
+        }
+
+        public int getInput() {
+            return Movement;
         }
     }
 }
