@@ -12,20 +12,12 @@ using PolyWars.API;
 namespace PolyWars.FrameCalculator {
     public static class MoveShapes {
 
-        public static void move( IShape shape, Dispatcher dispatcher ) {
-            RotateTransform rt = new RotateTransform {
-                CenterX = shape.CenterPoint.X,
-                CenterY = shape.CenterPoint.Y,
-                Angle = shape.Angle
-            };
+        public static Polygon move( IShape shape, Dispatcher dispatcher ) {
+            RotateTransform rt = new RotateTransform( shape.Angle );
+            rt.CenterX = shape.CenterPoint.X;
+            rt.CenterY = shape.CenterPoint.Y;
             Polygon p = shape.getShapeAsPolygon( dispatcher );
-            
-            dispatcher.Invoke( () => {
-                p.RenderTransform = rt;
-                p.Stroke = Brushes.Blue;
-                p.StrokeThickness = 10;
-            } );
-            
+            return p;
         }
     }
 }
