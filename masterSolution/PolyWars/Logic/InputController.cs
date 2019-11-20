@@ -7,5 +7,11 @@ namespace PolyWars.Logic {
         public void initInput() {
             input = new Input();
         }
+
+        public string getInput() {
+            // TODO Grab input from user and apply to
+            // triangle
+            return null;
+        }
     }
 }
