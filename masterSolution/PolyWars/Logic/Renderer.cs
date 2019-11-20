@@ -53,7 +53,8 @@ namespace PolyWars.Logic {
         }
 
         private void Ticker() {
-            //try {
+            // TODO Remove/Refactor try catch block
+            try {
                 DateTime Started = DateTime.Now;
                 DateTime lastTick = DateTime.Now;
                 DateTime fpsTimer = DateTime.Now;
@@ -100,7 +101,7 @@ namespace PolyWars.Logic {
 
                         Task.WaitAll( moveObjectsTasks );
                     } else {
-                        MoveObjects( 0, 1 );
+                        MoveObjects( 0, shapes.Count-1 );
                     }
 
 
@@ -125,10 +126,10 @@ namespace PolyWars.Logic {
                         frames++;
                     }
                 }
-            //} catch( Exception ) {
+        } catch(Exception ) {
 
-            //    stopTickerThread = true;
-            //}
-        }
+                stopTickerThread = true;
+            }
+}
     }
 }
