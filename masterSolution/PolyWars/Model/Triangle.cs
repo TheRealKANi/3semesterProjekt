@@ -12,7 +12,7 @@ namespace PolyWars.Model{
         public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size) : 
             base(centerPoint, angle, borderColor, fillColor, size) {
             Points = getTrianglePoints();
-            VerticalSpeed = 0;
+            VerticalSpeed = 10 * ;
             HorizontialSpeed = 0;
         }
 

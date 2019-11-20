@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyWars.Logic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -18,8 +19,21 @@ namespace PolyWars {
     /// Interaction logic for MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window {
+        Input input;
         public MainWindow() {
             InitializeComponent();
+            input = new Input();
+            
+        }
+
+
+        //TODO Needs proper implementation
+        private void Window_KeyUp(object sender, KeyEventArgs e) {
+            input.onKeyStateChanged(sender, e);
+        }
+
+        private void Window_KeyDown(object sender, KeyEventArgs e) {
+            input.onKeyStateChanged(sender, e);
         }
     }
 }

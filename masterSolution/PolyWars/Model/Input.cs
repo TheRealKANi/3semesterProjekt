@@ -10,23 +10,24 @@ namespace PolyWars.Logic
     //Binds controls to user defined keys 
     class Input
     {
-        private Dictionary<Key, Action> keyBindings = new Dictionary<Key, Action>();
+        private Dictionary<Key, Action<KeyStates>> keyBindings = new Dictionary<Key, Action<KeyStates>>();
         public Input()
         {
-            
+            Movement = 0;
+            initInput();
         }
 
         public bool initInput()
         {
             bool result = false;
-            keyBindings[Key.W] = new Action(MoveUp);
-            keyBindings[Key.A] = new Action(MoveLeft);
-            keyBindings[Key.S] = new Action(MoveDown);
-            keyBindings[Key.D] = new Action(MoveRight);
-            keyBindings[Key.Up] = new Action(MoveUp);
-            keyBindings[Key.Left] = new Action(MoveLeft);
-            keyBindings[Key.Down] = new Action(MoveDown);
-            keyBindings[Key.Right] = new Action(MoveRight);
+            keyBindings[Key.W] = new Action<KeyStates>(MoveUp);
+            keyBindings[Key.A] = new Action<KeyStates>(MoveLeft);
+            keyBindings[Key.S] = new Action<KeyStates>(MoveDown);
+            keyBindings[Key.D] = new Action<KeyStates>(MoveRight);
+            keyBindings[Key.Up] = new Action<KeyStates>(MoveUp);
+            keyBindings[Key.Left] = new Action<KeyStates>(MoveLeft);
+            keyBindings[Key.Down] = new Action<KeyStates>(MoveDown);
+            keyBindings[Key.Right] = new Action<KeyStates>(MoveRight);
 
             // TODO  Make verification logic
             if(keyBindings.Count > 0)
@@ -35,37 +36,34 @@ namespace PolyWars.Logic
             }
             return result;
         }
-
-        private void MoveUp()
+        public int Movement { get; set; }
+        private void MoveUp(KeyStates state)
         {
-            throw new NotImplementedException();
+            Movement = state == KeyStates.Down ? Movement | 2 : Movement & 13;
+        }
+        private void MoveDown(KeyStates state)
+        {
+            Movement = state == KeyStates.Down ? Movement | 8 : Movement & 7;
         }
 
-        private void MoveRight()
+        private void MoveRight(KeyStates state)
         {
-            throw new NotImplementedException();
+            Movement = state == KeyStates.Down ? Movement | 1 : Movement & 14;
+        }
+        private void MoveLeft(KeyStates state)
+        {
+            Movement = state == KeyStates.Down ? Movement | 4 : Movement & 11;
         }
 
-        private void MoveDown()
-        {
-            throw new NotImplementedException();
-        }
-
-        private void MoveLeft()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void onKeyPressed(object sender, KeyEventArgs e)
+        public void onKeyStateChanged(object sender, KeyEventArgs e)
         {
             try
             {
-                keyBindings[e.Key].Invoke();
+                keyBindings[e.Key].Invoke(e.KeyStates); 
             }
-            catch (Exception)
+            catch (KeyNotFoundException)
             {
-
-                throw;
+                // ignore unbound keypresses
             }
         }
     }

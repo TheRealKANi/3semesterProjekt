@@ -5,6 +5,8 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:Views="clr-namespace:PolyWars.View"
         xmlns:nav="clr-namespace:PolyWars"
+        KeyUp="Window_KeyUp"
+        KeyDown="Window_KeyDown"
         
         xmlns:local="clr-namespace:PolyWars"
         mc:Ignorable="d"
