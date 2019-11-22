@@ -8,17 +8,24 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace PolyWars.Model {
+
     class Triangle : Shape {
+
+        public double RPM { get; set; }
+        public int VerticalSpeed { get; set; }
+        public int HorizontialSpeed { get; set; }
+
         /// <summary>
         /// Contains the collection of instructions that are executed at the time of Object creation.
         /// </summary>
-        public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size) : 
-            base(centerPoint, angle, borderColor, fillColor, size) {
+        public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double maxVelocity) : 
+            base(centerPoint, angle, borderColor, fillColor, size, maxVelocity) {
             Points = getTrianglePoints();
-            VerticalSpeed = 10;
+            VerticalSpeed = 0;
             HorizontialSpeed = 0;
             RPM = 10;
         }
+
 
         // TODO Refactor Code to external class
         /// <summary>
@@ -39,9 +46,5 @@ namespace PolyWars.Model {
 
             return new PointCollection() { point1, point2, point3 };
         }
-
-        public double RPM { get; set; }
-        public int VerticalSpeed { get; set; }
-        public int HorizontialSpeed { get; set; }
     }
 }
