@@ -10,25 +10,8 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace PolyWars.Model {
+
     abstract class Shape : IShape {
-        public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, PointCollection points) {
-            CenterPoint = centerPoint;
-            Angle = angle;
-            BorderColor = borderColor;
-            FillColor = fillColor;
-            Size = size;
-            Points = points;
-        }
-
-        public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size){
-            this.CenterPoint = centerPoint;
-            this.Angle = angle;
-            this.BorderColor = borderColor;
-            this.FillColor = fillColor;
-            this.Size = size;
-            this.Points = new PointCollection();
-
-        }
 
         public Point CenterPoint { get; set; }
         public int Angle { get; set; }
@@ -36,6 +19,29 @@ namespace PolyWars.Model {
         public Color FillColor { get; set; }
         public IShapeSize Size { get; set; }
         public PointCollection Points { get; set; }
+        public Double Velocity { get; set; }
+        public Double MaxVelocity { get; private set; }
+
+
+        public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, PointCollection points, double velocity, double maxVelocity ) : 
+                this( centerPoint, angle, borderColor, fillColor, size ) {
+            CenterPoint = centerPoint;
+            Angle = angle;
+            BorderColor = borderColor;
+            FillColor = fillColor;
+            Size = size;
+            Points = points;
+            MaxVelocity = velocity;
+            Velocity = maxVelocity;
+        }
+
+
+        public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size) {
+            this.Points = new PointCollection();
+            this.MaxVelocity = 0;
+            this.Velocity = 0;
+        }
+
 
         public Polygon getShapeAsPolygon(Dispatcher dispatcher) {
             Polygon polygon = dispatcher.Invoke( () => {
@@ -48,9 +54,7 @@ namespace PolyWars.Model {
                 poly.StrokeThickness = 2;
                 return poly;
             } );
-            
             return polygon;
         }
-
     }
 }
