@@ -45,25 +45,9 @@ namespace PolyWars.Logic
             };
 
             // TODO Implement a cleaner method to input players
-            Triangle t = new Triangle( new Point( 100, 100 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ) );
-            //Triangle t1 = new Triangle( new Point( 150, 100 ), 45, Colors.Black, Colors.White, new ShapeSize( 50, 50 ) );
-            //Triangle t2 = new Triangle( new Point( 200, 100 ), 90, Colors.Black, Colors.MediumOrchid, new ShapeSize( 50, 50 ) );
-            //Triangle t3 = new Triangle( new Point( 250, 100 ), 135, Colors.Black, Colors.Pink, new ShapeSize( 50, 50 ) );
-
-            //Triangle t4 = new Triangle( new Point( 100, 200 ), 180, Colors.Black, Colors.Red, new ShapeSize( 50, 50 ) );
-            //Triangle t5 = new Triangle( new Point( 150, 200 ), 225, Colors.Black, Colors.Blue, new ShapeSize( 50, 50 ) );
-            //Triangle t6 = new Triangle( new Point( 200, 200 ), 270, Colors.Black, Colors.Silver, new ShapeSize( 50, 50 ) );
-            //Triangle t7 = new Triangle( new Point( 250, 200 ), 320, Colors.Black, Colors.Gold, new ShapeSize( 50, 50 ) );
-            //Triangle t8 = new Triangle( new Point( 100, 300 ), 360, Colors.Black, Colors.Gold, new ShapeSize( 50, 50 ) );
+            Triangle t = new Triangle( new Point( 100, 100 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 5 );
             triangles.Add( t );
-            //triangles.Add( t1 );
-            //triangles.Add( t2 );
-            //triangles.Add( t3 );
-            //triangles.Add( t4 );
-            //triangles.Add( t5 );
-            //triangles.Add( t6 );
-            //triangles.Add( t7 );
-            //triangles.Add( t8 );
+
             return canvas;
         }
 
@@ -81,7 +65,8 @@ namespace PolyWars.Logic
             Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
             renderer = new Renderer( arenaCanvas, dispatcher, triangles );
             renderer.CanvasChangedEventHandler += eventHandler;
-            // TODO Add input and the player to Rendere here
+            // TODO Add inputMovement to Playerand run Renderer here
+            inputController.applyInput( triangles[0] );
             renderer.Start();
         }
 
