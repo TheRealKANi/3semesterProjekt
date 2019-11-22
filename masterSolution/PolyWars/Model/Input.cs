@@ -58,6 +58,7 @@ namespace PolyWars.Logic {
         {
             Movement = state == KeyStates.Toggled ? Movement | 1 : Movement & 14;
         }
+
         private void MoveLeft(KeyStates state)
         {
             Movement = state == KeyStates.Toggled ? Movement | 4 : Movement & 11;
