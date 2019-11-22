@@ -7,8 +7,11 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace PolyWars.Model{
+namespace PolyWars.Model {
     class Triangle : Shape {
+        /// <summary>
+        /// Contains the collection of instructions that are executed at the time of Object creation.
+        /// </summary>
         public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size) : 
             base(centerPoint, angle, borderColor, fillColor, size) {
             Points = getTrianglePoints();
@@ -18,7 +21,10 @@ namespace PolyWars.Model{
         }
 
         // TODO Refactor Code to external class
-        private PointCollection getTrianglePoints(){
+        /// <summary>
+        /// This is the position for the triangles attachment points.
+        /// </summary>
+        private PointCollection getTrianglePoints() {
             double x1 = this.CenterPoint.X + Math.Cos(Math.PI / 2 + Angle / 180 * Math.PI) * this.Size.Width / 2;
             double y1 = this.CenterPoint.Y - Math.Sin(Math.PI / 2 + Angle / 180 * Math.PI) * this.Size.Height / 2;
             Point point1 = new Point(x1, y1);
@@ -37,6 +43,5 @@ namespace PolyWars.Model{
         public double RPM { get; set; }
         public int VerticalSpeed { get; set; }
         public int HorizontialSpeed { get; set; }
-
     }
 }

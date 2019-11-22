@@ -9,13 +9,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
 
-namespace PolyWars
-{
-    class NavigationController : INotifyPropertyChanged
-    {
+namespace PolyWars {
+    /// <summary>
+    /// This class is to navigate the user in the program.
+    /// </summary>
+    class NavigationController : INotifyPropertyChanged {
         private static NavigationController instance;
-        public static NavigationController Instance
-        {
+        public static NavigationController Instance {
             get {
                 if(instance == null) {
                     instance = new NavigationController();
@@ -23,11 +23,10 @@ namespace PolyWars
                 }
                 return instance;
             }
-
         }
+
         private Frame frame;
-        public Frame Frame
-        {
+        public Frame Frame {
             get {
                 if(frame == null) {
                     Frame = new Frame();
@@ -39,6 +38,7 @@ namespace PolyWars
                 NotifyPropertyChanged();
             }
         }
+
         private StartPage startPage;
         public StartPage StartPage { 
             get {
@@ -48,6 +48,7 @@ namespace PolyWars
                 return startPage;
             }
         }
+
         private GameArenaPage arenaPage;
         public GameArenaPage ArenaPage { 
             get {
@@ -60,6 +61,7 @@ namespace PolyWars
                 arenaPage = value;
             }
         }
+
         public void Navigate(Page p) {
             Frame.NavigationService.Navigate(p);
         }
