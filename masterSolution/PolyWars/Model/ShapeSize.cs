@@ -5,10 +5,12 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PolyWars.Model
-{
+namespace PolyWars.Model {
     class ShapeSize : IShapeSize {
-        public ShapeSize(int width, int height){
+        /// <summary>
+        /// You set how big the shape is.
+        /// </summary>
+        public ShapeSize(int width, int height) {
             Width = width;
             Height = height;
         }

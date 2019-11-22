@@ -40,13 +40,13 @@ namespace PolyWars.Model {
 
 
         public Polygon getShapeAsPolygon(Dispatcher dispatcher) {
-            Polygon polygon = dispatcher.Invoke( () => {
+            Polygon polygon = dispatcher.Invoke(() => {
                 Polygon poly = new Polygon {
                     Points = this.Points
                 };
 
-                poly.Stroke = new SolidColorBrush( this.BorderColor );
-                poly.Fill = new SolidColorBrush( this.FillColor );
+                poly.Stroke = new SolidColorBrush(this.BorderColor);
+                poly.Fill = new SolidColorBrush(this.FillColor);
                 poly.StrokeThickness = 2;
                 return poly;
             } );

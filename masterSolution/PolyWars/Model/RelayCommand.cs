@@ -5,12 +5,12 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace PolyWars.Model
-{
-    class RelayCommand : ICommand
-    {
+namespace PolyWars.Model {
+    /// <summary>
+    /// Commands are used to separate the semantics and the object that invokes a command from the logic that executes the command.
+    /// </summary>
+    class RelayCommand : ICommand {
         public event EventHandler CanExecuteChanged;
-
         Func<object, bool> canExecute;
         Action<object> execute;
 
