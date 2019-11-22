@@ -23,24 +23,20 @@ namespace PolyWars.Model {
         public Double MaxVelocity { get; private set; }
 
 
-        public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, PointCollection points, double velocity, double maxVelocity ) : 
-                this( centerPoint, angle, borderColor, fillColor, size ) {
+        public Shape( Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, PointCollection points, double velocity, double maxVelocity ) {
             CenterPoint = centerPoint;
             Angle = angle;
             BorderColor = borderColor;
             FillColor = fillColor;
             Size = size;
             Points = points;
-            MaxVelocity = velocity;
-            Velocity = maxVelocity;
+            Velocity = velocity;
+            MaxVelocity = maxVelocity;
         }
 
 
-        public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size) {
-            this.Points = new PointCollection();
-            this.MaxVelocity = 0;
-            this.Velocity = 0;
-        }
+        public Shape( Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double maxVelocity = 0, double velocity = 0 )
+             : this( centerPoint, angle, borderColor, fillColor, size, new PointCollection(), velocity, maxVelocity ) { }
 
 
         public Polygon getShapeAsPolygon(Dispatcher dispatcher) {
