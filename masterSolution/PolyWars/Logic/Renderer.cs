@@ -14,6 +14,10 @@ using PolyWars.FrameCalculator;
 using PolyWars.API;
 
 namespace PolyWars.Logic {
+
+    /// <summary>
+    /// Renderer class inherits from Model class Observable
+    /// </summary>
     class Renderer : Observable {
 
         Thread thread;
@@ -28,6 +32,18 @@ namespace PolyWars.Logic {
 
         public int Fps { get; set; }
 
+        /// <summary>
+        /// Public constructor for class renderer 
+        /// </summary>
+        /// <param name="canvas">
+        /// Takes a Canvas as parameter
+        /// </param>
+        /// <param name="dispatcher">
+        /// Renderer gets a dispatcher 
+        /// </param>
+        /// <param name="shapes">
+        /// Takes an ObservableCollection as parameter for dynamic data collection when items is added and removed
+        /// </param>
         public Renderer( Canvas canvas, Dispatcher dispatcher, ObservableCollection<Triangle> shapes ) {
             Canvas = canvas;
             this.dispatcher = dispatcher;
@@ -41,17 +57,29 @@ namespace PolyWars.Logic {
                 Canvas.Children.Add( triangle.getShapeAsPolygon( dispatcher ) );
             }
 
+            //A new thread is created 
             thread = new Thread( Ticker );
         }
 
+        /// <summary>
+        /// Starts the thread Ticker
+        /// </summary>
         public void Start() {
             stopTickerThread = false;
             thread.Start();
         }
+
+        /// <summary>
+        /// Stops the thread Ticker
+        /// </summary>
         public void Stop() {
             stopTickerThread = true;
         }
 
+        /// <summary>
+        /// The ticker method is used to give the game a balance between its pace and frames per secod 
+        /// This is possible by using DeltaTime
+        /// </summary>
         private void Ticker() {
             // TODO Remove/Refactor try catch block
             try {

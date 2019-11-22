@@ -21,6 +21,9 @@ namespace PolyWars.Logic
         private ObservableCollection<Triangle> triangles;
         private Renderer renderer;
 
+        /// <summary>
+        /// GameController constructor defines all parameter that this class needs to handle
+        /// </summary>
         public GameController( ) {
             
             isLoaded = false;
@@ -30,6 +33,12 @@ namespace PolyWars.Logic
 
         }
 
+        /// <summary>
+        /// This method prepares the canvas with a color and adds triangle to it with given values
+        /// </summary>
+        /// <returns>
+        /// Returns canvas with background color and triangle
+        /// </returns>
         public Canvas prepareGame() {
             Canvas canvas = new Canvas {
                 Background = new SolidColorBrush( Colors.Aquamarine )
@@ -58,6 +67,16 @@ namespace PolyWars.Logic
             return canvas;
         }
 
+        /// <summary>
+        /// When PlayGame executes, it associates with a thread by using a dispatcher
+        /// and renders a canvas
+        /// </summary>
+        /// <param name="arenaCanvas">
+        /// Specified canvas that shapes are rendered on to
+        /// </param>
+        /// <param name="eventHandler">
+        /// ????
+        /// </param>
         public void playGame( Canvas arenaCanvas, EventHandler<PropertyChangedEventArgs> eventHandler ) {
             Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
             renderer = new Renderer( arenaCanvas, dispatcher, triangles );
@@ -65,6 +84,13 @@ namespace PolyWars.Logic
             // TODO Add input and the player to Rendere here
             renderer.Start();
         }
+
+        /// <summary>
+        /// This method is run to check if the game runs 
+        /// </summary>
+        /// <returns>
+        /// Loads the game if not already running
+        /// </returns>
 
         public bool isPrepared() {
             return isLoaded;

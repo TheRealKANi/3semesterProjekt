@@ -10,6 +10,10 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 
 namespace PolyWars.UI.GameArena {
+
+    /// <summary>
+    /// This class renders the Arena when the game is started 
+    /// </summary>
     class GameArena_ViewModel {
         private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         private GameController gameController;
@@ -20,6 +24,9 @@ namespace PolyWars.UI.GameArena {
             gameController.playGame(ArenaCanvas, onCanvasChanged);
         }
 
+        /// <summary>
+        /// When the game is started the Arena is associated with a thread
+        /// </summary>
         public void onCanvasChanged( object Sender, PropertyChangedEventArgs args ) {
             //NotifyPropertyChanged(args.PropertyName);
             if( args.PropertyName.Equals( "ArenaCanvas" ) ) {

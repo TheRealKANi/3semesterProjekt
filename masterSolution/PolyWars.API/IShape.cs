@@ -9,6 +9,10 @@ using System.Windows.Shapes;
 using System.Windows.Threading;
 
 namespace PolyWars.API {
+
+    /// <summary>
+    /// Interface class for Shape that contains all the main methods 
+    /// </summary>
     public interface IShape {
         Polygon getShapeAsPolygon( Dispatcher dispatcher );
         Point CenterPoint { get; set; }
