@@ -22,6 +22,19 @@ namespace PolyWars.UI.GameArena
     {
         public GameArenaPage() {
             InitializeComponent();
+
+            Loaded += OnLoaded;
+        }
+
+        private void OnLoaded(object sender, RoutedEventArgs e) {
+            Keyboard.Focus(this);
+            // KeyDown += (Resources["vm"] as GameArena_ViewModel).GameController.InputController.Input.onKeyStateChanged;
+            // KeyUp += (Resources["vm"] as GameArena_ViewModel).GameController.InputController.Input.onKeyStateChanged;
+            KeyDown += test;
+        }
+
+        private void test(object sender, KeyEventArgs e) {
+            throw new NotImplementedException();
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyWars.Model;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +12,8 @@ namespace PolyWars.Logic {
     /// Binds controls to user defined keys 
     /// </summary>
     class Input {
-        private Dictionary<Key, Action<KeyStates>> keyBindings = new Dictionary<Key, Action<KeyStates>>();
+        private Dictionary<Key, Action> keyBindings = new Dictionary<Key, Action>();
+
         public Input() {
             Movement = 0;
             initInput();
@@ -24,14 +26,16 @@ namespace PolyWars.Logic {
         /// </returns>
         public bool initInput() {
             bool result = false;
-            keyBindings[Key.W] = new Action<KeyStates>(MoveUp);
-            keyBindings[Key.A] = new Action<KeyStates>(MoveLeft);
-            keyBindings[Key.S] = new Action<KeyStates>(MoveDown);
-            keyBindings[Key.D] = new Action<KeyStates>(MoveRight);
-            keyBindings[Key.Up] = new Action<KeyStates>(MoveUp);
-            keyBindings[Key.Left] = new Action<KeyStates>(MoveLeft);
-            keyBindings[Key.Down] = new Action<KeyStates>(MoveDown);
-            keyBindings[Key.Right] = new Action<KeyStates>(MoveRight);
+            keyBindings[Key.W] = new Action(MoveUp);
+            keyBindings[Key.A] = new Action(MoveLeft);
+            keyBindings[Key.S] = new Action(MoveDown);
+            keyBindings[Key.D] = new Action(MoveRight);
+            keyBindings[Key.Up] = new Action(MoveUp);
+            keyBindings[Key.Left] = new Action(MoveLeft);
+            keyBindings[Key.Down] = new Action(MoveDown);
+            keyBindings[Key.Right] = new Action(MoveRight);
+
+            EventController.KeyboardEvents.KeyPressedEventHandler += onKeyStateChanged;
 
             // TODO  Make verification logic
             if(keyBindings.Count > 0) {
@@ -45,23 +49,23 @@ namespace PolyWars.Logic {
         /// Changes state when a Key is pressed 
         /// </summary>
         public int Movement { get; set; }
-        private void MoveUp(KeyStates state)
+        private void MoveUp()
         {
-            Movement = state == KeyStates.Toggled ? Movement | 2 : Movement & 13;
+            Movement ^= 0b0010;
         }
-        private void MoveDown(KeyStates state)
+        private void MoveDown()
         {
-            Movement = state == KeyStates.Toggled ? Movement | 8 : Movement & 7;
-        }
-
-        private void MoveRight(KeyStates state)
-        {
-            Movement = state == KeyStates.Toggled ? Movement | 1 : Movement & 14;
+            Movement ^= 0b1000;
         }
 
-        private void MoveLeft(KeyStates state)
+        private void MoveRight()
         {
-            Movement = state == KeyStates.Toggled ? Movement | 4 : Movement & 11;
+            Movement ^= 0b0001;
+        }
+
+        private void MoveLeft()
+        {
+            Movement ^= 0b0100;
         }
 
         /// <summary>
@@ -69,13 +73,13 @@ namespace PolyWars.Logic {
         /// </summary>
         public void onKeyStateChanged(object sender, KeyEventArgs e)
         {
-            try
-            {
-                keyBindings[e.Key].Invoke(e.KeyStates); 
-            }
-            catch (KeyNotFoundException)
-            {
-                // ignore unbound keypresses
+            if((e.KeyStates & KeyStates.Down) > 0 && !e.IsRepeat || e.KeyStates == KeyStates.None)  {
+                try {
+                    keyBindings[e.Key].Invoke();
+                    EventController.KeyboardEvents.InputChangedEventHandler?.Invoke(this, new InputChangedEventArgs(Movement));
+                } catch(KeyNotFoundException) {
+                    // ignore unbound keypresses
+                } 
             }
         }
 

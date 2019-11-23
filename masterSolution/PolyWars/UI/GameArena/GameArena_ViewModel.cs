@@ -16,12 +16,11 @@ namespace PolyWars.UI.GameArena {
     /// </summary>
     class GameArena_ViewModel {
         private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
-        private GameController gameController;
+        public GameController GameController { get; private set; }
         public GameArena_ViewModel() {
-
-            gameController = new GameController();
-            ArenaCanvas = gameController.prepareGame();
-            gameController.playGame(ArenaCanvas, onCanvasChanged);
+            GameController = new GameController();
+            ArenaCanvas = GameController.prepareGame();
+            GameController.playGame(ArenaCanvas, onCanvasChanged);
         }
 
         /// <summary>
@@ -51,13 +50,5 @@ namespace PolyWars.UI.GameArena {
         private void NotifyPropertyChanged([CallerMemberName] String propertyName = "") {
             PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-
-        //public void OnCanvasChanged( object sender, PropertyChangedEventArgs e ) {
-        //    if( e.PropertyName.Equals( "ArenaCanvas" ) ) {
-        //        if( sender is Renderer r ) {
-        //            dispatcher.Invoke( () => ArenaCanvas = r.Canvas );
-        //        }
-        //    }
-        //}
     }
 }

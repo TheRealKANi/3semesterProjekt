@@ -16,10 +16,12 @@ namespace PolyWars.Logic
 {
     class GameController
     {
-        private InputController inputController;
+        
         private bool isLoaded;
         private ObservableCollection<Triangle> triangles;
         private Renderer renderer;
+
+        public InputController InputController { get; private set; }
 
         /// <summary>
         /// GameController constructor defines all parameter that this class needs to handle
@@ -28,7 +30,7 @@ namespace PolyWars.Logic
             
             isLoaded = false;
             triangles = new ObservableCollection<Triangle>();
-            inputController = new InputController();
+            InputController = new InputController();
 
         }
 
@@ -45,7 +47,7 @@ namespace PolyWars.Logic
 
             // TODO Implement a cleaner method to input players
             Triangle t = new Triangle( new Point( 100, 100 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 5 );
-            inputController.initInput( t );
+            InputController.initInput( t );
             triangles.Add( t );
 
             return canvas;
