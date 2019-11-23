@@ -6,8 +6,6 @@
         xmlns:Views="clr-namespace:PolyWars.View"
         xmlns:nav="clr-namespace:PolyWars"
         xmlns:local="clr-namespace:PolyWars"
-        KeyDown="Window_KeyPress"
-        KeyUp="Window_KeyPress"
         mc:Ignorable="d"
         Title="PolyWars Ultimate Bloody MMO battle royal Gory War Simulator 9001!" Height="450" Width="800">
     <Window.Resources>

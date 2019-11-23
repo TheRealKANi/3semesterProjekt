@@ -23,8 +23,8 @@ namespace PolyWars {
             InitializeComponent();
         }
 
-        private void Window_KeyPress(object sender, KeyEventArgs e) {
-            Logic.EventController.KeyboardEvents.KeyPressedEventHandler?.Invoke(this, e);
-        }
+        //private void Window_KeyPress(object sender, KeyEventArgs e) {
+        //    Logic.EventController.KeyboardEvents.KeyPressedEventHandler?.Invoke(this, e);
+        //}
     }
 }

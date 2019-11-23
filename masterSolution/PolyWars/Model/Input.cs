@@ -1,4 +1,5 @@
-﻿using PolyWars.Model;
+﻿/*
+using PolyWars.Model;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -97,9 +98,10 @@ namespace PolyWars.Logic {
         /// When input is received a movement is visible for user
         /// </summary>
         /// <returns></returns>
-        public ButtonDown getInput() {
+        public int getInput() {
             return Movement;
         }
     }
 }
 
+*/

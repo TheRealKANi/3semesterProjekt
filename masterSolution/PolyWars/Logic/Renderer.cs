@@ -103,6 +103,7 @@ namespace PolyWars.Logic
                 DateTime tickStart = DateTime.Now;
                 double tickTime = (tickStart - lastTick).Ticks;
 
+                InputController.Instance.queryInput();
                 ThreadController.MainThreadDispatcher.Invoke(() =>
                 {
                     foreach (IShape shape in shapes)

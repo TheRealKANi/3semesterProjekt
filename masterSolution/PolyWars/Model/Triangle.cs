@@ -16,6 +16,7 @@ namespace PolyWars.Model {
         public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS) : 
             base(centerPoint, angle, borderColor, fillColor, size, velocity, maxVelocity, rps, maxRPS) {
             Polygon.Points = generateTrianglePoints();
+            Angle += 180;
         }
 
         // TODO Refactor Code to external class
@@ -23,16 +24,16 @@ namespace PolyWars.Model {
         /// This is the position for the triangles attachment points.
         /// </summary>
         private PointCollection generateTrianglePoints() {
-            double x1 = this.CenterPoint.X + Math.Cos(Math.PI / 2 + Angle / 180 * Math.PI) * this.Size.Width / 2;
-            double y1 = this.CenterPoint.Y - Math.Sin(Math.PI / 2 + Angle / 180 * Math.PI) * this.Size.Height / 2;
+            double x1 = this.CenterPoint.X + Math.Cos(3d / 2 * Math.PI + Angle / 180 * Math.PI) * this.Size.Width / 2;
+            double y1 = this.CenterPoint.Y - Math.Sin(3d / 2 * Math.PI + Angle / 180 * Math.PI) * this.Size.Height / 2;
             Point point1 = new Point(x1, y1);
 
-            double x2 = this.CenterPoint.X + Math.Cos(Math.PI + (Angle + 30) * Math.PI / 180) * this.Size.Width / 2;
-            double y2 = this.CenterPoint.Y - Math.Sin(Math.PI + (Angle + 30) * Math.PI / 180) * this.Size.Height / 2;
+            double x2 = this.CenterPoint.X + Math.Cos((Angle + 30) * Math.PI / 180) * this.Size.Width / 2;
+            double y2 = this.CenterPoint.Y - Math.Sin((Angle + 30) * Math.PI / 180) * this.Size.Height / 2;
             Point point2 = new Point(x2, y2);
 
-            double x3 = this.CenterPoint.X + Math.Cos(3 * Math.PI / 2d + (Angle + 60) * Math.PI / 180) * this.Size.Width / 2;
-            double y3 = this.CenterPoint.Y - Math.Sin(3 * Math.PI / 2d + (Angle + 60) * Math.PI / 180) * this.Size.Height / 2;
+            double x3 = this.CenterPoint.X + Math.Cos(Math.PI / 2 + (Angle + 60) * Math.PI / 180) * this.Size.Width / 2;
+            double y3 = this.CenterPoint.Y - Math.Sin(Math.PI / 2 + (Angle + 60) * Math.PI / 180) * this.Size.Height / 2;
             Point point3 = new Point(x3, y3);
 
             return new PointCollection() { point1, point2, point3 };

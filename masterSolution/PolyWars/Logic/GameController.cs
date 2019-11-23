@@ -16,7 +16,6 @@ namespace PolyWars.Logic
 {
     class GameController
     {
-        
         private bool isLoaded;
         private List<IShape> triangles;
         private Renderer renderer;
@@ -30,7 +29,6 @@ namespace PolyWars.Logic
             
             isLoaded = false;
             triangles = new List<IShape>();
-            InputController = new InputController();
 
         }
 
@@ -46,8 +44,8 @@ namespace PolyWars.Logic
             };
 
             // TODO Implement a cleaner method to input players
-            Triangle t = new Triangle( new Point( 100, 100 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 5 );
-            InputController.initInput( t );
+            Triangle t = new Triangle( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 0.25);
+            InputController.Instance.initInput( t );
             triangles.Add( t );
 
             return canvas;
