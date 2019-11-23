@@ -15,14 +15,15 @@ namespace PolyWars.API {
     /// </summary>
     public interface IShape {
 
-        Polygon getShapeAsPolygon( Dispatcher dispatcher );
         Point CenterPoint { get; set; }
-        int Angle { get; set; }
+        double Angle { get; set; }
         Color BorderColor { get; set; }
         Color FillColor { get; set; }
         IShapeSize Size { get; set; }
-        PointCollection Points { get; set; }
+        Polygon Polygon { get; set; }
         double Velocity { get; set; }
         double MaxVelocity { get; }
+        double RPS { get; set; }
+        double MaxRPS { get; set; }
     }
 }

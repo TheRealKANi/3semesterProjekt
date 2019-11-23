@@ -60,6 +60,7 @@
     <Compile Include="Logic\Audio.cs" />
     <Compile Include="Logic\EventController.cs" />
     <Compile Include="Logic\GameController.cs" />
+    <Compile Include="Logic\ThreadController.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Logic\InputController.cs" />
     <Compile Include="Logic\Renderer.cs" />
@@ -84,10 +85,6 @@
     <Compile Include="UI\Settings\Settings.xaml.cs">
       <DependentUpon>Settings.xaml</DependentUpon>
     </Compile>
-    <Compile Include="UI\StartPage\StartPage.xaml.cs">
-      <DependentUpon>StartPage.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="UI\StartPage\StartPage_ViewModel.cs" />
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -109,10 +106,6 @@
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="UI\Settings\Settings.xaml">
-      <SubType>Designer</SubType>
-      <Generator>MSBuild:Compile</Generator>
-    </Page>
-    <Page Include="UI\StartPage\StartPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

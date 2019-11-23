@@ -1,4 +1,5 @@
 ﻿using PolyWars.API;
+using PolyWars.Logic;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,48 +10,44 @@ using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
 
-namespace PolyWars.Model {
+namespace PolyWars.Model
+{
 
-    abstract class Shape : IShape {
+    abstract class Shape : IShape
+    {
 
         public Point CenterPoint { get; set; }
-        public int Angle { get; set; }
+        public double Angle { get; set; }
         public Color BorderColor { get; set; }
         public Color FillColor { get; set; }
         public IShapeSize Size { get; set; }
-        public PointCollection Points { get; set; }
-        public Double Velocity { get; set; }
-        public Double MaxVelocity { get; private set; }
+        public Polygon Polygon { get; set; }
+        public double Velocity { get; set; }
+        public double MaxVelocity { get; private set; }
+        public double RPS { get; set; } // rotations per second
+        public double MaxRPS { get; set; }
 
 
-        public Shape( Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, PointCollection points, double velocity, double maxVelocity ) {
+        public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS) {
             CenterPoint = centerPoint;
             Angle = angle;
             BorderColor = borderColor;
             FillColor = fillColor;
             Size = size;
-            Points = points;
             Velocity = velocity;
             MaxVelocity = maxVelocity;
+            RPS = rps;
+            MaxRPS = maxRPS;
+            generatePolygon();
         }
-
-
-        public Shape( Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double maxVelocity = 0, double velocity = 0 )
-             : this( centerPoint, angle, borderColor, fillColor, size, new PointCollection(), velocity, maxVelocity ) { }
-
-
-        public Polygon getShapeAsPolygon(Dispatcher dispatcher) {
-            Polygon polygon = dispatcher.Invoke(() => {
-                Polygon poly = new Polygon {
-                    Points = this.Points
+        private void generatePolygon() {
+            ThreadController.MainThreadDispatcher.Invoke(() => {
+                Polygon = new Polygon() {
+                    Stroke = new SolidColorBrush(this.BorderColor),
+                    Fill = new SolidColorBrush(this.FillColor),
+                    StrokeThickness = 2
                 };
-
-                poly.Stroke = new SolidColorBrush(this.BorderColor);
-                poly.Fill = new SolidColorBrush(this.FillColor);
-                poly.StrokeThickness = 2;
-                return poly;
-            } );
-            return polygon;
+            });
         }
     }
 }

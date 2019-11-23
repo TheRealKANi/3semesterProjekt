@@ -1,4 +1,5 @@
 ﻿using PolyWars.Logic;
+using PolyWars.Model;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -14,7 +15,7 @@ namespace PolyWars.UI.GameArena {
     /// <summary>
     /// This class renders the Arena when the game is started 
     /// </summary>
-    class GameArena_ViewModel {
+    class GameArena_ViewModel : Observable {
         private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         public GameController GameController { get; private set; }
         public GameArena_ViewModel() {
@@ -44,11 +45,6 @@ namespace PolyWars.UI.GameArena {
                 arenaCanvas = value;
                 NotifyPropertyChanged();
             }
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "") {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

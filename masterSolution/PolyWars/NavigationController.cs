@@ -1,6 +1,4 @@
-﻿using PolyWars.UI.StartPage;
-using PolyWars.UI.GameArena;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
@@ -8,18 +6,21 @@ using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Controls;
+using PolyWars.UI.MainMenu;
+using PolyWars.UI.GameArena;
+using PolyWars.Model;
 
 namespace PolyWars {
     /// <summary>
     /// This class is to navigate the user in the program.
     /// </summary>
-    class NavigationController : INotifyPropertyChanged {
+    class NavigationController : Observable {
         private static NavigationController instance;
         public static NavigationController Instance {
             get {
                 if(instance == null) {
                     instance = new NavigationController();
-                    instance.Navigate(instance.StartPage);
+                    instance.Navigate(instance.MainMenu);
                 }
                 return instance;
             }
@@ -39,13 +40,13 @@ namespace PolyWars {
             }
         }
 
-        private StartPage startPage;
-        public StartPage StartPage { 
+        private MainMenu mainMenu;
+        public MainMenu MainMenu { 
             get {
-                if(startPage == null) {
-                    startPage = new StartPage();
+                if(mainMenu == null) {
+                    mainMenu = new MainMenu();
                 }
-                return startPage;
+                return mainMenu;
             }
         }
 
@@ -64,11 +65,6 @@ namespace PolyWars {
 
         public void Navigate(Page p) {
             Frame.NavigationService.Navigate(p);
-        }
-
-        public event PropertyChangedEventHandler PropertyChanged;
-        private void NotifyPropertyChanged([CallerMemberName] String propertyName = "") {
-            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

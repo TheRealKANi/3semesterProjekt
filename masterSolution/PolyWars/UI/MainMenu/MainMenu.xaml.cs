@@ -13,7 +13,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 
-namespace PolyWars.View {
+namespace PolyWars.UI.MainMenu {
     /// <summary>
     /// Interaction logic for MainMenu.xaml
     /// </summary>

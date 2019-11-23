@@ -10,28 +10,19 @@ using System.Windows.Media;
 namespace PolyWars.Model {
 
     class Triangle : Shape {
-
-        public double RPM { get; set; }
-        public int VerticalSpeed { get; set; }
-        public int HorizontialSpeed { get; set; }
-
         /// <summary>
         /// Contains the collection of instructions that are executed at the time of Object creation.
         /// </summary>
-        public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double maxVelocity) : 
-            base(centerPoint, angle, borderColor, fillColor, size, maxVelocity) {
-            Points = getTrianglePoints();
-            VerticalSpeed = 0;
-            HorizontialSpeed = 0;
-            RPM = 10;
+        public Triangle(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS) : 
+            base(centerPoint, angle, borderColor, fillColor, size, velocity, maxVelocity, rps, maxRPS) {
+            Polygon.Points = generateTrianglePoints();
         }
-
 
         // TODO Refactor Code to external class
         /// <summary>
         /// This is the position for the triangles attachment points.
         /// </summary>
-        private PointCollection getTrianglePoints() {
+        private PointCollection generateTrianglePoints() {
             double x1 = this.CenterPoint.X + Math.Cos(Math.PI / 2 + Angle / 180 * Math.PI) * this.Size.Width / 2;
             double y1 = this.CenterPoint.Y - Math.Sin(Math.PI / 2 + Angle / 180 * Math.PI) * this.Size.Height / 2;
             Point point1 = new Point(x1, y1);
