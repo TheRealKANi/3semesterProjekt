@@ -32,6 +32,7 @@ namespace PolyWars.UI.GameArena {
             if( args.PropertyName.Equals( "ArenaCanvas" ) ) {
                 if( Sender is Renderer r ) {
                     dispatcher.Invoke( () => NotifyPropertyChanged("ArenaCanvas"));
+                    //ThreadController.MainThreadDispatcher.Invoke(() => ArenaCanvas = r.Canvas) ;
                 }
             }
         }

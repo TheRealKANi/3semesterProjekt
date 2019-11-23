@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyWars.Logic;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,9 +10,9 @@ namespace PolyWars.Model
     class InputChangedEventArgs : EventArgs
     {
 
-        public int Movement { get; private set; }
+        public ButtonDown Movement { get; private set; }
 
-        public InputChangedEventArgs(int movement) {
+        public InputChangedEventArgs(ButtonDown movement) {
             this.Movement = movement;
         }
     }

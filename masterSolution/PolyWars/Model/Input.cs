@@ -1,18 +1,27 @@
 ﻿using PolyWars.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PolyWars.Logic {
+    enum ButtonDown
+    {
+        UP = 1,
+        RIGHT = 2,
+        DOWN = 4,
+        LEFT = 8
+    }
 
     /// <summary>
     /// Binds controls to user defined keys 
     /// </summary>
     class Input {
         private Dictionary<Key, Action> keyBindings = new Dictionary<Key, Action>();
+        public ButtonDown Movement { get; set; }
 
         public Input() {
             Movement = 0;
@@ -48,24 +57,23 @@ namespace PolyWars.Logic {
         /// <summary>
         /// Changes state when a Key is pressed 
         /// </summary>
-        public int Movement { get; set; }
-        private void MoveUp()
+        async private void MoveUp()
         {
-            Movement ^= 0b0010;
+            await Task.Run(() => { Movement ^= ButtonDown.UP; });
         }
         private void MoveDown()
         {
-            Movement ^= 0b1000;
+            Movement ^= ButtonDown.DOWN;
         }
 
         private void MoveRight()
         {
-            Movement ^= 0b0001;
+            Movement ^= ButtonDown.RIGHT;
         }
 
         private void MoveLeft()
         {
-            Movement ^= 0b0100;
+            Movement ^= ButtonDown.LEFT;
         }
 
         /// <summary>
@@ -73,6 +81,8 @@ namespace PolyWars.Logic {
         /// </summary>
         public void onKeyStateChanged(object sender, KeyEventArgs e)
         {
+            if (e.KeyStates == KeyStates.None)
+                Debug.WriteLine("Key Up");
             if((e.KeyStates & KeyStates.Down) > 0 && !e.IsRepeat || e.KeyStates == KeyStates.None)  {
                 try {
                     keyBindings[e.Key].Invoke();
@@ -87,7 +97,7 @@ namespace PolyWars.Logic {
         /// When input is received a movement is visible for user
         /// </summary>
         /// <returns></returns>
-        public int getInput() {
+        public ButtonDown getInput() {
             return Movement;
         }
     }

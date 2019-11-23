@@ -18,7 +18,7 @@ namespace PolyWars.Logic
     {
         
         private bool isLoaded;
-        private List<Triangle> triangles;
+        private List<IShape> triangles;
         private Renderer renderer;
 
         public InputController InputController { get; private set; }
@@ -29,7 +29,7 @@ namespace PolyWars.Logic
         public GameController( ) {
             
             isLoaded = false;
-            triangles = new List<Triangle>();
+            triangles = new List<IShape>();
             InputController = new InputController();
 
         }
