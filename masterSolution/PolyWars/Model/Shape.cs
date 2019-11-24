@@ -1,20 +1,12 @@
 ﻿using PolyWars.API;
 using PolyWars.Logic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
-using System.Windows.Threading;
 
-namespace PolyWars.Model
-{
+namespace PolyWars.Model {
 
-    abstract class Shape : IShape
-    {
+    abstract class Shape : IShape {
 
         public Point CenterPoint { get; set; }
         public double Angle { get; set; }
@@ -28,7 +20,7 @@ namespace PolyWars.Model
         public double MaxRPS { get; set; }
 
 
-        public Shape(Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS) {
+        public Shape( Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS ) {
             CenterPoint = centerPoint;
             Angle = angle;
             BorderColor = borderColor;
@@ -41,13 +33,13 @@ namespace PolyWars.Model
             generatePolygon();
         }
         private void generatePolygon() {
-            ThreadController.MainThreadDispatcher.Invoke(() => {
+            ThreadController.MainThreadDispatcher.Invoke( () => {
                 Polygon = new Polygon() {
-                    Stroke = new SolidColorBrush(this.BorderColor),
-                    Fill = new SolidColorBrush(this.FillColor),
+                    Stroke = new SolidColorBrush( this.BorderColor ),
+                    Fill = new SolidColorBrush( this.FillColor ),
                     StrokeThickness = 2
                 };
-            });
+            } );
         }
     }
 }

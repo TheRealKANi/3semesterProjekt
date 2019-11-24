@@ -1,12 +1,6 @@
 ﻿using PolyWars.Logic;
 using PolyWars.Model;
-using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Controls;
 using System.Windows.Threading;
 
@@ -21,7 +15,7 @@ namespace PolyWars.UI.GameArena {
         public GameArena_ViewModel() {
             GameController = new GameController();
             ArenaCanvas = GameController.prepareGame();
-            GameController.playGame(ArenaCanvas, onCanvasChanged);
+            GameController.playGame( ArenaCanvas, onCanvasChanged );
         }
 
         /// <summary>
@@ -31,7 +25,7 @@ namespace PolyWars.UI.GameArena {
             //NotifyPropertyChanged(args.PropertyName);
             if( args.PropertyName.Equals( "ArenaCanvas" ) ) {
                 if( Sender is Renderer r ) {
-                    dispatcher.Invoke( () => NotifyPropertyChanged("ArenaCanvas"));
+                    dispatcher.Invoke( () => NotifyPropertyChanged( "ArenaCanvas" ) );
                     //ThreadController.MainThreadDispatcher.Invoke(() => ArenaCanvas = r.Canvas) ;
                 }
             }

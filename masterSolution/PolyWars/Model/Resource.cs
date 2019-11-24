@@ -1,9 +1,5 @@
 ﻿using PolyWars.Model;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
@@ -11,9 +7,10 @@ using System.Windows.Shapes;
 namespace PolyWars.Logic {
 
     class Resource : Model.Shape {
-        public Resource( Point centerPoint, Int32 angle, Color borderColor, Color fillColor, ShapeSize size, Double velocity, Double maxVelocity, Double rps, Double maxRPS ) : 
-            base( centerPoint, angle, borderColor, fillColor, size, velocity, maxVelocity, rps, maxRPS ) {
-                Polygon.Points = generateResourcePoints();
+
+        public Resource( Point centerPoint, Int32 angle, ShapeSize size, Double velocity, Double maxVelocity, Double rps, Double maxRPS ) :
+                base( centerPoint, angle, Colors.Black, Colors.ForestGreen, size, velocity, maxVelocity, rps, maxRPS ) {
+            Polygon.Points = generateResourcePoints();
         }
 
         public PointCollection generateResourcePoints() {

@@ -1,35 +1,28 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows.Controls;
-using PolyWars.UI.MainMenu;
+﻿using PolyWars.Model;
 using PolyWars.UI.GameArena;
-using PolyWars.Model;
+using PolyWars.UI.MainMenu;
+using System.Windows.Controls;
 
 namespace PolyWars {
     /// <summary>
     /// This class is to navigate the user in the program.
     /// </summary>
     class NavigationController : Observable {
-        private static NavigationController instance;
+        private static NavigationController INSTANCE;
         public static NavigationController Instance {
             get {
-                if(instance == null) {
-                    instance = new NavigationController();
-                    instance.Navigate(instance.MainMenu);
+                if( INSTANCE == null ) {
+                    INSTANCE = new NavigationController();
+                    INSTANCE.navigate( INSTANCE.MainMenu );
                 }
-                return instance;
+                return INSTANCE;
             }
         }
 
         private Frame frame;
         public Frame Frame {
             get {
-                if(frame == null) {
+                if( frame == null ) {
                     Frame = new Frame();
                 }
                 return frame;
@@ -41,9 +34,9 @@ namespace PolyWars {
         }
 
         private MainMenu mainMenu;
-        public MainMenu MainMenu { 
+        public MainMenu MainMenu {
             get {
-                if(mainMenu == null) {
+                if( mainMenu == null ) {
                     mainMenu = new MainMenu();
                 }
                 return mainMenu;
@@ -51,9 +44,9 @@ namespace PolyWars {
         }
 
         private GameArenaPage arenaPage;
-        public GameArenaPage ArenaPage { 
+        public GameArenaPage ArenaPage {
             get {
-                if(arenaPage == null) {
+                if( arenaPage == null ) {
                     arenaPage = new GameArenaPage();
                 }
                 return arenaPage;
@@ -63,8 +56,8 @@ namespace PolyWars {
             }
         }
 
-        public void Navigate(Page p) {
-            Frame.NavigationService.Navigate(p);
+        public void navigate( Page p ) {
+            Frame.NavigationService.Navigate( p );
         }
     }
 }

@@ -2,20 +2,14 @@ using PolyWars.API;
 using PolyWars.Model;
 using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Threading;
 
-namespace PolyWars.Logic
-{
-    class GameController
-    {
+namespace PolyWars.Logic {
+    class GameController {
         private bool isLoaded;
         private List<IShape> triangles;
         private Renderer renderer;
@@ -25,8 +19,8 @@ namespace PolyWars.Logic
         /// <summary>
         /// GameController constructor defines all parameter that this class needs to handle
         /// </summary>
-        public GameController( ) {
-            
+        public GameController() {
+
             isLoaded = false;
             triangles = new List<IShape>();
 
@@ -44,13 +38,13 @@ namespace PolyWars.Logic
             };
 
             // TODO Implement a cleaner method to input players
-            Triangle t = new Triangle( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 0.25);
+            Triangle t = new Triangle( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 0.25 );
             InputController.Instance.initInput( t );
-            
+
             Random r = new Random();
             List<Resource> resources = new List<Resource>();
-            for( int i = 0; i < 1000; i++ ) {
-                resources.Add( new Resource( new Point( r.Next( 10, 1270 ), r.Next( 10, 710 ) ), r.Next( 0, 360 ), Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 ) );
+            for( int i = 0; i < 200; i++ ) {
+                resources.Add( new Resource( new Point( r.Next( 10, 1270 ), r.Next( 10, 710 ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 0, 0, 0, 0 ) );
             }
             triangles.AddRange( resources );
 

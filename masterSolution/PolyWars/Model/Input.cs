@@ -1,107 +1,47 @@
-﻿/*
-using PolyWars.Model;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Text;
+﻿using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PolyWars.Logic {
-    enum ButtonDown
-    {
-        UP = 1,
-        RIGHT = 2,
-        DOWN = 4,
-        LEFT = 8
+
+    enum ButtonDown {
+        RIGHT = 1,
+        UP = 2,
+        LEFT = 4,
+        DOWN = 8
     }
 
-    /// <summary>
-    /// Binds controls to user defined keys 
-    /// </summary>
     class Input {
-        private Dictionary<Key, Action> keyBindings = new Dictionary<Key, Action>();
-        public ButtonDown Movement { get; set; }
+        Dictionary<Key, ButtonDown> keyBindings = new Dictionary<Key, ButtonDown>();
+
+        public ButtonDown PressedKeys { get; set; }
 
         public Input() {
-            Movement = 0;
-            initInput();
+            PressedKeys = new ButtonDown();
+
+            keyBindings[Key.W] = ButtonDown.UP;
+            keyBindings[Key.A] = ButtonDown.LEFT;
+            keyBindings[Key.S] = ButtonDown.DOWN;
+            keyBindings[Key.D] = ButtonDown.RIGHT;
+            keyBindings[Key.Up] = ButtonDown.UP;
+            keyBindings[Key.Left] = ButtonDown.LEFT;
+            keyBindings[Key.Down] = ButtonDown.DOWN;
+            keyBindings[Key.Right] = ButtonDown.RIGHT;
         }
-        /// <summary>
-        /// Binds key on actions in this case WASD and Arrow keys are defined to move four directions
-        /// </summary>
-        /// <returns>
-        /// Returns the actions?
-        /// </returns>
-        public bool initInput() {
-            bool result = false;
-            keyBindings[Key.W] = new Action(MoveUp);
-            keyBindings[Key.A] = new Action(MoveLeft);
-            keyBindings[Key.S] = new Action(MoveDown);
-            keyBindings[Key.D] = new Action(MoveRight);
-            keyBindings[Key.Up] = new Action(MoveUp);
-            keyBindings[Key.Left] = new Action(MoveLeft);
-            keyBindings[Key.Down] = new Action(MoveDown);
-            keyBindings[Key.Right] = new Action(MoveRight);
 
-            EventController.KeyboardEvents.KeyPressedEventHandler += onKeyStateChanged;
+        public ButtonDown checkInput() {
+            try {
+                ThreadController.MainThreadDispatcher.Invoke( () => {
+                    PressedKeys &= 0;
+                    foreach( KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings ) {
+                        PressedKeys |= Keyboard.IsKeyDown( keyBinding.Key ) ? keyBinding.Value : 0;
+                    }
+                } );
+                return PressedKeys;
+            } catch( TaskCanceledException ) {
 
-            // TODO  Make verification logic
-            if(keyBindings.Count > 0) {
-                result = true;
             }
-            return result;
-        }
-
-
-        /// <summary>
-        /// Changes state when a Key is pressed 
-        /// </summary>
-        async private void MoveUp()
-        {
-            await Task.Run(() => { Movement ^= ButtonDown.UP; });
-        }
-        private void MoveDown()
-        {
-            Movement ^= ButtonDown.DOWN;
-        }
-
-        private void MoveRight()
-        {
-            Movement ^= ButtonDown.RIGHT;
-        }
-
-        private void MoveLeft()
-        {
-            Movement ^= ButtonDown.LEFT;
-        }
-
-        /// <summary>
-        /// This method checks that only valid keys are pressed, which are those that is binded, all unbinded keypresses is ignored
-        /// </summary>
-        public void onKeyStateChanged(object sender, KeyEventArgs e)
-        {
-            if (e.KeyStates == KeyStates.None)
-                Debug.WriteLine("Key Up");
-            if((e.KeyStates & KeyStates.Down) > 0 && !e.IsRepeat || e.KeyStates == KeyStates.None)  {
-                try {
-                    keyBindings[e.Key].Invoke();
-                    EventController.KeyboardEvents.InputChangedEventHandler?.Invoke(this, new InputChangedEventArgs(Movement));
-                } catch(KeyNotFoundException) {
-                    // ignore unbound keypresses
-                } 
-            }
-        }
-
-        /// <summary>
-        /// When input is received a movement is visible for user
-        /// </summary>
-        /// <returns></returns>
-        public int getInput() {
-            return Movement;
+            return PressedKeys;
         }
     }
 }
-
-*/
