@@ -61,6 +61,7 @@
     <Compile Include="Logic\EventController.cs" />
     <Compile Include="Logic\GameController.cs" />
     <Compile Include="Logic\Input1.cs" />
+    <Compile Include="Model\Resource.cs" />
     <Compile Include="Logic\ThreadController.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Logic\InputController.cs" />

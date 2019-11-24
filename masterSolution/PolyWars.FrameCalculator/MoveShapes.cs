@@ -5,6 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Media;
 using System.Windows.Shapes;
 using System.Windows.Threading;
@@ -25,13 +26,26 @@ namespace PolyWars.FrameCalculator {
             shape.CenterPoint = cp;
 
             PointCollection pc = shape.Polygon.Points;
-            for (int i = 0; i < pc.Count; i++){
+            for( int i = 0; i < pc.Count; i++ ) {
                 Point p = pc[i];
-                p.Offset(offsetX, offsetY);
+                p.Offset( offsetX, offsetY );
                 pc[i] = p;
             }
+        }
 
-            
+        public static void collisionDetection( Canvas canvas, IShape player ) {
+            // Start iteration from second child in canvas, player is the first child.
+
+            foreach( Polygon canvasChild in canvas.Children ) {
+                // If child is not the player and is not hidden on the canvas
+                if( !canvasChild.Points.Equals( player.Polygon.Points ) ) {
+                    if( !canvasChild.IsVisible.Equals( Visibility.Hidden ) ) {
+                        if( canvasChild.RenderedGeometry.Bounds.IntersectsWith( player.Polygon.RenderedGeometry.Bounds ) ) {
+                            canvasChild.Visibility = Visibility.Hidden;
+                        }
+                    } 
+                }
+            }
         }
     }
 }
