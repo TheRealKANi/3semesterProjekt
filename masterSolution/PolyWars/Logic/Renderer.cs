@@ -12,6 +12,7 @@ using System.Windows.Controls;
 using System.Windows.Threading;
 using PolyWars.FrameCalculator;
 using PolyWars.API;
+using System.Diagnostics;
 
 namespace PolyWars.Logic
 {
@@ -108,7 +109,11 @@ namespace PolyWars.Logic
                 {
                     foreach (IShape shape in shapes)
                     {
-                        MoveShapes.move(shape, DeltaTime(tickTime));
+                        if( shape.GetType().Name.Equals( "Triangle" ) ) {
+                            MoveShapes.move( shape, DeltaTime( tickTime ) );
+
+                            //Debug.WriteLine( "Shape Type: '" + shape.GetType().Name.ToString() + "'" );
+                        }
                     }
                     MoveShapes.collisionDetection( Canvas, shapes.ElementAt( 0 ) );
                 } );
