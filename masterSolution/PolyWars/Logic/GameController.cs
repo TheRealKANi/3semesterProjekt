@@ -1,4 +1,4 @@
-﻿using PolyWars.API;
+using PolyWars.API;
 using PolyWars.Model;
 using System;
 using System.Collections.Generic;
@@ -46,30 +46,15 @@ namespace PolyWars.Logic
             // TODO Implement a cleaner method to input players
             Triangle t = new Triangle( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 0.25);
             InputController.Instance.initInput( t );
-            //Random r = new Random();
-            //for( int i = 0; i < 10; i++ ) {
-            //    Resource res = new Resource( new Point( r.Next( 10, 350 ), r.Next( 10, 350 ) ), 0, Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 );
-            //    triangles.Add( res );
-            //}
+            
+            Random r = new Random();
+            List<Resource> resources = new List<Resource>();
+            for( int i = 0; i < 1000; i++ ) {
+                resources.Add( new Resource( new Point( r.Next( 10, 1270 ), r.Next( 10, 710 ) ), r.Next( 0, 360 ), Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 ) );
+            }
+            triangles.AddRange( resources );
+
             triangles.Add( t );
-
-            Resource res1 = new Resource( new Point( 200, 75 ), 0, Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 );
-            triangles.Add( res1 );
-
-            Resource res2 = new Resource( new Point( 50, 50 ), 0, Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 );
-            triangles.Add( res2 );
-
-            Resource res3 = new Resource( new Point( 100, 100 ), 0, Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 );
-            triangles.Add( res3 );
-
-            Resource res4 = new Resource( new Point( 150, 150 ), 0, Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 );
-            triangles.Add( res4 );
-
-            Resource res5 = new Resource( new Point( 100, 25 ), 0, Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 );
-            triangles.Add( res5 );
-
-            Resource res6 = new Resource( new Point( 25, 100 ), 0, Colors.LawnGreen, Colors.DarkOliveGreen, new ShapeSize( 15, 15 ), 0, 0, 0, 0 );
-            triangles.Add( res6 );
 
             return canvas;
         }
