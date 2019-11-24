@@ -110,7 +110,8 @@ namespace PolyWars.Logic
                     {
                         MoveShapes.move(shape, DeltaTime(tickTime));
                     }
-                });
+                    MoveShapes.collisionDetection( Canvas, shapes.ElementAt( 0 ) );
+                } );
 
                 int s;
                 while ((DateTime.Now.Ticks - lastTick.Ticks) <= (10_000_000d / 60))
