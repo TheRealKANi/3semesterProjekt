@@ -90,17 +90,21 @@ namespace PolyWars.Logic {
                 double tickTime = ( tickStart - lastTick ).Ticks;
 
                 InputController.Instance.queryInput();
-                ThreadController.MainThreadDispatcher.Invoke( () => {
-                    foreach( IShape shape in shapes ) {
-                        if( shape.GetType().Name.Equals( "Triangle" ) ) {
-                            MoveShapes.move( shape, DeltaTime( tickTime ) );
-                            MoveShapes.collisionDetection( Canvas, shapes.ElementAt( shapes.Count() - 1 ) );
-                            //Debug.WriteLine( "Shape Type: '" + shape.GetType().Name.ToString() + "'" );
-                        } else {
 
+                try {
+                    ThreadController.MainThreadDispatcher.Invoke( () => {
+                        foreach( IShape shape in shapes ) {
+                            if( shape.GetType().Name.Equals( "Triangle" ) ) {
+                                MoveShapes.move( shape, DeltaTime( tickTime ) );
+                                MoveShapes.collisionDetection( Canvas, shapes.ElementAt( shapes.Count() - 1 ) );
+                                //Debug.WriteLine( "Shape Type: '" + shape.GetType().Name.ToString() + "'" );
+                            }
                         }
-                    }
-                } );
+                    } );
+                } catch( TaskCanceledException ) {
+                    // TODO Should we do something here
+                }
+                
 
                 int s;
                 while( ( DateTime.Now.Ticks - lastTick.Ticks ) <= ( 10_000_000d / 60 ) ) {
