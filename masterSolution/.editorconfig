@@ -245,3 +245,6 @@ dotnet_naming_style.uppercase.required_prefix =
 dotnet_naming_style.uppercase.required_suffix = 
 dotnet_naming_style.uppercase.word_separator = _
 dotnet_naming_style.uppercase.capitalization = all_upper
+
+# IDE1006: Naming Styles
+dotnet_diagnostic.IDE1006.severity = silent
