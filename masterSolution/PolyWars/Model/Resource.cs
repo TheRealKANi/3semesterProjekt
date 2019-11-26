@@ -8,7 +8,8 @@ using System.Windows.Shapes;
 namespace PolyWars.Logic {
 
     class Resource : Model.Shape, IResource{
-
+        private static int idCounter;
+        public int ID { get; private set; }
         public double ResourceValue { get; set; }
         
         public Resource ( Point centerPoint, int angle, ShapeSize size, double resourceValue ) : 
@@ -17,6 +18,7 @@ namespace PolyWars.Logic {
                 base( centerPoint, angle, Colors.Black, Colors.ForestGreen, size, velocity, maxVelocity, rps, maxRPS ) {
             Polygon.Points = generateResourcePoints();
             ResourceValue = resourceValue;
+            ID = idCounter++;
         }
 
         public PointCollection generateResourcePoints() {
@@ -27,6 +29,17 @@ namespace PolyWars.Logic {
             Point botRight = new Point( CenterPoint.X + halfWidth, CenterPoint.Y + halfWidth );
             Point topRight = new Point( CenterPoint.X + halfWidth, CenterPoint.Y - halfHight );
             return new PointCollection() { topLeft, botLeft, botRight, topRight };
+        }
+
+        public override bool Equals( object obj ) {
+            if( obj is Resource resource ) {
+                return ID == resource.ID;
+            } else {
+                return false;
+            }
+        }
+        public override int GetHashCode() {
+            return base.GetHashCode();
         }
     }
 }
