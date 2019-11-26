@@ -86,7 +86,7 @@ namespace PolyWars.Logic {
             //int resourceCount = Resources.Count;
 
             for( int i = 0; i < amount; i++ ) {
-                Resources.Add( new Resource( new Point( r.Next( margin, width ), r.Next( margin, height ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 5 ) ); //TODO make builder pattern
+                Resources.Add( new Resource( new Point( r.Next( margin, width ), r.Next( margin, height - (margin * 2) ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 5 ) ); //TODO make builder pattern
             }
 
             //Shapes.AddRange( Resources.GetRange( resourceCount, Resources.Count ) );
