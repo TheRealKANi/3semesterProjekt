@@ -8,7 +8,6 @@ namespace PolyWars.API {
     /// Interface class for Shape that contains all the main methods 
     /// </summary>
     public interface IShape : IMoveable {
-
         Point CenterPoint { get; set; }
         double Angle { get; set; }
         Color BorderColor { get; set; }

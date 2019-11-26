@@ -1,11 +1,6 @@
-﻿using PolyWars.API;
-using PolyWars.Logic;
-using PolyWars.Logic.Utility;
+﻿using PolyWars.Logic;
 using System;
-using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
-using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -44,7 +39,6 @@ namespace PolyWars.Model {
             double DeltaTime( double tickTime2 ) {
                 return 1d + ( ( 600_000_000 - tickTime2 ) / 600_000_000 );
             }
-            
 
             while( !stopTickerThread ) {
                 tickStart = DateTime.Now;
@@ -52,7 +46,7 @@ namespace PolyWars.Model {
                 InputController.Instance.applyInput();
 
                 TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( tickTime ) ) );
-                waitForNextFrame( tickLast );            
+                waitForNextFrame( tickLast );
                 try {
                     CanvasChangedEventHandler?.Invoke( this, new PropertyChangedEventArgs( "ArenaCanvas" ) );
                     tickLast = DateTime.Now;
@@ -61,7 +55,6 @@ namespace PolyWars.Model {
                 }
             }
         }
-
         private void waitForNextFrame( DateTime lastTick ) {
             int msDelay = 2;
             while( ( DateTime.Now.Ticks - lastTick.Ticks ) <= ( 10_000_000d / 60 ) ) {
