@@ -60,6 +60,8 @@
     <Compile Include="Logic\Audio.cs" />
     <Compile Include="Logic\EventController.cs" />
     <Compile Include="Logic\GameController.cs" />
+    <Compile Include="Logic\Utility\CollisionDetection.cs" />
+    <Compile Include="Logic\Utility\ShapeCalculations.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Model\Player.cs" />
     <Compile Include="Model\Resource.cs" />
@@ -142,10 +144,6 @@
     <ProjectReference Include="..\PolyWars.API\PolyWars.API.csproj">
       <Project>{FA82403D-7983-4D13-8518-57C16F92D849}</Project>
       <Name>PolyWars.API</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\PolyWars.FrameCalculator\PolyWars.FrameCalculator.csproj">
-      <Project>{e0baa3cd-fdfb-4dfd-bdd4-c5bcd408a189}</Project>
-      <Name>PolyWars.FrameCalculator</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

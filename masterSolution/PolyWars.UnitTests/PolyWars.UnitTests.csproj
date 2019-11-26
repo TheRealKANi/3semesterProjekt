@@ -59,10 +59,6 @@
       <Project>{fa82403d-7983-4d13-8518-57c16f92d849}</Project>
       <Name>PolyWars.API</Name>
     </ProjectReference>
-    <ProjectReference Include="..\PolyWars.FrameCalculator\PolyWars.FrameCalculator.csproj">
-      <Project>{e0baa3cd-fdfb-4dfd-bdd4-c5bcd408a189}</Project>
-      <Name>PolyWars.FrameCalculator</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PolyWars\PolyWars.csproj">
       <Project>{5368cfb8-64d8-455a-b3ff-b55eaedcc248}</Project>
       <Name>PolyWars</Name>

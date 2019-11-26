@@ -4,8 +4,6 @@ VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars", "PolyWars\PolyWars.csproj", "{5368CFB8-64D8-455A-B3FF-B55EAEDCC248}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.FrameCalculator", "PolyWars.FrameCalculator\PolyWars.FrameCalculator.csproj", "{E0BAA3CD-FDFB-4DFD-BDD4-C5BCD408A189}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.API", "PolyWars.API\PolyWars.API.csproj", "{FA82403D-7983-4D13-8518-57C16F92D849}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.UnitTests", "PolyWars.UnitTests\PolyWars.UnitTests.csproj", "{703D79EC-CA06-4530-BC4A-33DC91BCDC9C}"
@@ -20,10 +18,6 @@ Global
 		{5368CFB8-64D8-455A-B3FF-B55EAEDCC248}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{5368CFB8-64D8-455A-B3FF-B55EAEDCC248}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{5368CFB8-64D8-455A-B3FF-B55EAEDCC248}.Release|Any CPU.Build.0 = Release|Any CPU
-		{E0BAA3CD-FDFB-4DFD-BDD4-C5BCD408A189}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{E0BAA3CD-FDFB-4DFD-BDD4-C5BCD408A189}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{E0BAA3CD-FDFB-4DFD-BDD4-C5BCD408A189}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{E0BAA3CD-FDFB-4DFD-BDD4-C5BCD408A189}.Release|Any CPU.Build.0 = Release|Any CPU
 		{FA82403D-7983-4D13-8518-57C16F92D849}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{FA82403D-7983-4D13-8518-57C16F92D849}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FA82403D-7983-4D13-8518-57C16F92D849}.Release|Any CPU.ActiveCfg = Release|Any CPU

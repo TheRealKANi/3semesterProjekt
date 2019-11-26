@@ -1,9 +1,7 @@
 using PolyWars.API;
-using PolyWars.FrameCalculator;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Controls;
@@ -96,8 +94,8 @@ namespace PolyWars.Logic {
                     ThreadController.MainThreadDispatcher.Invoke( () => {
                         foreach( IShape shape in shapes ) {
                             if( shape.GetType().Name.Equals( "Triangle" ) ) {
-                                MoveShapes.move( shape, DeltaTime( tickTime ) );
-                                MoveShapes.collisionDetection(GameController.Resources, InputController.Player );
+                                Utility.ShapeCalculations.moveShape( shape, DeltaTime( tickTime ) );
+                                Utility.CollisionDetection.resourceCollisionDetection( GameController.Resources, InputController.Player );
                                 //Debug.WriteLine( "Shape Type: '" + shape.GetType().Name.ToString() + "'" );
                             }
                         }
@@ -105,7 +103,7 @@ namespace PolyWars.Logic {
                 } catch( TaskCanceledException ) {
                     // TODO Should we do something here
                 }
-                
+
 
                 int s;
                 while( ( DateTime.Now.Ticks - lastTick.Ticks ) <= ( 10_000_000d / 60 ) ) {
