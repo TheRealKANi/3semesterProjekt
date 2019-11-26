@@ -13,7 +13,7 @@ namespace PolyWars.Logic {
         private bool isLoaded;
         private List<IShape> triangles;
         private Renderer renderer;
-
+        public static List<IResource> Resources { get; set; }
         public InputController InputController { get; private set; }
 
         /// <summary>
@@ -38,15 +38,15 @@ namespace PolyWars.Logic {
             };
 
             // TODO Implement a cleaner method to input players
-            Triangle t = new Triangle( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 0.25 );
+            Player t = new Player( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 0.25 );
             InputController.Instance.initInput( t );
 
             Random r = new Random();
-            List<Resource> resources = new List<Resource>();
+            Resources = new List<IResource>();
             for( int i = 0; i < 200; i++ ) {
-                resources.Add( new Resource( new Point( r.Next( 10, 1270 ), r.Next( 10, 710 ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 0, 0, 0, 0 ) );
+                Resources.Add( new Resource( new Point( r.Next( 10, 1270 ), r.Next( 10, 710 ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 0, 0, 0, 0, 5) );
             }
-            triangles.AddRange( resources );
+            triangles.AddRange( Resources );
 
             triangles.Add( t );
 

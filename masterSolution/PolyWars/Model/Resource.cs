@@ -1,4 +1,5 @@
-﻿using PolyWars.Model;
+﻿using PolyWars.API;
+using PolyWars.Model;
 using System;
 using System.Windows;
 using System.Windows.Media;
@@ -6,9 +7,9 @@ using System.Windows.Shapes;
 
 namespace PolyWars.Logic {
 
-    class Resource : Model.Shape {
+    class Resource : Model.Shape, IResource{
 
-        private double ResourceValue { get; set; }
+        public double ResourceValue { get; set; }
 
         public Resource( Point centerPoint, Int32 angle, ShapeSize size, Double velocity, Double maxVelocity, Double rps, Double maxRPS, double resourceValue ) :
                 base( centerPoint, angle, Colors.Black, Colors.ForestGreen, size, velocity, maxVelocity, rps, maxRPS ) {

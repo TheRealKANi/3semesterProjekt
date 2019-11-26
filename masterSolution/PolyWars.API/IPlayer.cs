@@ -1,11 +1,11 @@
 ﻿using PolyWars.API;
 
-namespace PolyWars.Model {
+namespace PolyWars.API {
 
     /// <summary>
     /// Creates a basic player with an Shape
     /// </summary>
-    interface IPlayer : IShape {
-
+    public interface IPlayer : IShape {
+        double CurrencyWallet { get; set; }
     }
 }

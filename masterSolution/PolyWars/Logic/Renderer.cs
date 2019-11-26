@@ -96,7 +96,7 @@ namespace PolyWars.Logic {
                         foreach( IShape shape in shapes ) {
                             if( shape.GetType().Name.Equals( "Triangle" ) ) {
                                 MoveShapes.move( shape, DeltaTime( tickTime ) );
-                                MoveShapes.collisionDetection( Canvas, shapes.ElementAt( shapes.Count() - 1 ) );
+                                MoveShapes.collisionDetection(GameController.Resources, InputController.Player );
                                 //Debug.WriteLine( "Shape Type: '" + shape.GetType().Name.ToString() + "'" );
                             }
                         }

@@ -24,9 +24,9 @@ namespace PolyWars.Logic {
         /// Initializes input
         /// </summary>
 
-        public Triangle Player { get; private set; }
+        public static Player Player { get; private set; }
 
-        public void initInput( Triangle player ) {
+        public void initInput( Player player ) {
             Input = new Input();
             Player = player;
             //EventController.KeyboardEvents.InputChangedEventHandler += applyInput;

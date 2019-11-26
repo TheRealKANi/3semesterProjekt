@@ -45,6 +45,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="IPlayer.cs" />
+    <Compile Include="IResource.cs" />
     <Compile Include="IShape.cs" />
     <Compile Include="IShapeSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

@@ -1,5 +1,6 @@
 ﻿using PolyWars.API;
 using System;
+using System.Collections.Generic;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media;
@@ -27,18 +28,15 @@ namespace PolyWars.FrameCalculator {
             }
         }
 
-        public static void collisionDetection( Canvas canvas, IShape player ) {
+        public static void collisionDetection(List<IResource> resources, IPlayer player ) {
             // Start iteration from second child in canvas, player is the first child.
+            foreach( IResource resource in resources.GetRange(0, resources.Count - 1 )) {
 
-            foreach( Polygon canvasChild in canvas.Children ) {
-                // If child is not the player and is not hidden on the canvas
-                if( !canvasChild.Points.Equals( player.Polygon.Points ) ) {
-                    if( !canvasChild.IsVisible.Equals( Visibility.Hidden ) ) {
-                        if( canvasChild.RenderedGeometry.Bounds.IntersectsWith( player.Polygon.RenderedGeometry.Bounds ) ) {
-                            canvasChild.Visibility = Visibility.Hidden;
-                        }
-                    }
+                if( resource.Polygon.RenderedGeometry.Bounds.IntersectsWith( player.Polygon.RenderedGeometry.Bounds ) && !resource.Polygon.Visibility.Equals(Visibility.Hidden)) {
+                    player.CurrencyWallet += resource.ResourceValue;
+                    resource.Polygon.Visibility = Visibility.Hidden;
                 }
+                
             }
         }
     }
