@@ -5,7 +5,8 @@ namespace PolyWars.API {
     /// <summary>
     /// Creates a basic player with an Shape
     /// </summary>
-    public interface IPlayer : IShape {
+    public interface IPlayer {
         double CurrencyWallet { get; set; }
+        IShape Shape { get; set; }
     }
 }
