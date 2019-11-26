@@ -1,4 +1,4 @@
-﻿using PolyWars.API;
+using PolyWars.API;
 using PolyWars.FrameCalculator;
 using System;
 using System.Collections.Generic;
@@ -52,6 +52,7 @@ namespace PolyWars.Logic {
 
             //A new thread is created 
             thread = new Thread( Ticker );
+            thread.IsBackground = true;
         }
 
         /// <summary>
