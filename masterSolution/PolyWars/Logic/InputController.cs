@@ -1,4 +1,5 @@
-﻿using PolyWars.Model;
+﻿using PolyWars.API;
+using PolyWars.Model;
 
 namespace PolyWars.Logic {
 
@@ -35,25 +36,14 @@ namespace PolyWars.Logic {
 
         public void queryInput() {
             ButtonDown input = Input.checkInput();
-            Player.RPS =
-                ( ( ( int ) ( input & ButtonDown.LEFT ) >> 2 ) * Player.MaxRPS ) -
-                ( ( int ) ( input & ButtonDown.RIGHT ) * Player.MaxRPS );
+            IShape shape = Player.Shape;
+            shape.RPS =
+                ( ( ( int ) ( input & ButtonDown.LEFT ) >> 2 ) * shape.MaxRPS ) -
+                ( ( int ) ( input & ButtonDown.RIGHT ) * shape.MaxRPS );
 
-            Player.Velocity =
-                ( ( ( int ) ( input & ButtonDown.UP ) >> 1 ) * Player.MaxVelocity ) -
-                ( ( ( int ) ( input & ButtonDown.DOWN ) >> 3 ) * Player.MaxVelocity );
-        }
-
-
-        public void applyInput( object sender, InputChangedEventArgs args ) {
-            if( sender is Input input ) {
-                Player.RPS =
-                    ( ( int ) ( args.Movement & ButtonDown.LEFT ) * Player.MaxRPS ) -
-                    ( ( int ) ( args.Movement & ButtonDown.RIGHT ) * Player.MaxRPS );
-                Player.Velocity =
-                    ( ( int ) ( args.Movement & ButtonDown.UP ) * Player.MaxVelocity ) -
-                    ( ( int ) ( args.Movement & ButtonDown.DOWN ) * Player.MaxVelocity );
-            }
+            shape.Velocity =
+                ( ( ( int ) ( input & ButtonDown.UP ) >> 1 ) * shape.MaxVelocity ) -
+                ( ( ( int ) ( input & ButtonDown.DOWN ) >> 3 ) * shape.MaxVelocity );
         }
     }
 }

@@ -43,12 +43,16 @@ namespace PolyWars.Logic {
 
             Random r = new Random();
             Resources = new List<IResource>();
+            Window w = Application.Current.MainWindow;
+            int margin = 50;
+            int width = ( int ) w.Width - margin;
+            int height = ( int ) w.Height - margin;
             for( int i = 0; i < 200; i++ ) {
-                Resources.Add( new Resource( new Point( r.Next( 10, 1270 ), r.Next( 10, 710 ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 0, 0, 0, 0, 5) );
+                Resources.Add( new Resource( new Point( r.Next( margin, width), r.Next( margin,  height) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 0, 0, 0, 0, 5) );
             }
             triangles.AddRange( Resources );
 
-            triangles.Add( t );
+            triangles.Add( t.Shape );
 
             return canvas;
         }

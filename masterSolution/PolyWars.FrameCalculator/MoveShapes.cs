@@ -11,7 +11,6 @@ namespace PolyWars.FrameCalculator {
 
         public static void move( IShape shape, double timeFactor ) {
             shape.Angle += shape.RPS * 6 * timeFactor;
-            shape.Polygon.RenderTransform = new RotateTransform( -1 * shape.Angle, shape.CenterPoint.X, shape.CenterPoint.Y );
 
             double offsetX = shape.Velocity * Math.Sin( shape.Angle * Math.PI / 180 ) * timeFactor;
             double offsetY = shape.Velocity * Math.Cos( shape.Angle * Math.PI / 180 ) * timeFactor;
@@ -19,6 +18,8 @@ namespace PolyWars.FrameCalculator {
             Point cp = shape.CenterPoint;
             cp.Offset( offsetX, offsetY );
             shape.CenterPoint = cp;
+
+            shape.Polygon.RenderTransform = new RotateTransform( -1 * shape.Angle, shape.CenterPoint.X, shape.CenterPoint.Y ); //TODO only if it actually rotates?
 
             PointCollection pc = shape.Polygon.Points;
             for( int i = 0; i < pc.Count; i++ ) {
@@ -28,15 +29,14 @@ namespace PolyWars.FrameCalculator {
             }
         }
 
-        public static void collisionDetection(List<IResource> resources, IPlayer player ) {
+        public static void collisionDetection( List<IResource> resources, IPlayer player ) {
             // Start iteration from second child in canvas, player is the first child.
-            foreach( IResource resource in resources.GetRange(0, resources.Count - 1 )) {
+            foreach( IResource resource in resources.GetRange( 0, resources.Count - 1 ) ) {
 
-                if( resource.Polygon.RenderedGeometry.Bounds.IntersectsWith( player.Polygon.RenderedGeometry.Bounds ) && !resource.Polygon.Visibility.Equals(Visibility.Hidden)) {
+                if( resource.Polygon.RenderedGeometry.Bounds.IntersectsWith( player.Shape.Polygon.RenderedGeometry.Bounds ) && !resource.Polygon.Visibility.Equals( Visibility.Hidden ) ) {
                     player.CurrencyWallet += resource.ResourceValue;
                     resource.Polygon.Visibility = Visibility.Hidden;
                 }
-                
             }
         }
     }
