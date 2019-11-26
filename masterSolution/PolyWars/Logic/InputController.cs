@@ -3,17 +3,17 @@ using PolyWars.Model;
 
 namespace PolyWars.Logic {
 
-    class InputController {
+    public class InputController {
 
         private InputController() { }
-        private static InputController INSTANCE;
+        private static InputController instance;
 
         public static InputController Instance {
             get {
-                if( INSTANCE == null ) {
-                    INSTANCE = new InputController();
+                if( instance == null ) {
+                    instance = new InputController();
                 }
-                return INSTANCE;
+                return instance;
             }
         }
         /// <summary>
@@ -30,16 +30,15 @@ namespace PolyWars.Logic {
         public void initInput( Player player ) {
             Input = new Input();
             Player = player;
-            //EventController.KeyboardEvents.InputChangedEventHandler += applyInput;
         }
 
 
-        public void queryInput() {
-            ButtonDown input = Input.checkInput();
+        public void applyInput() {
+            ButtonDown input = Input.queryInput();
             IShape shape = Player.Shape;
-            shape.RPS =
-                ( ( ( int ) ( input & ButtonDown.LEFT ) >> 2 ) * shape.MaxRPS ) -
-                ( ( int ) ( input & ButtonDown.RIGHT ) * shape.MaxRPS );
+            shape.RPM =
+                ( ( ( int ) ( input & ButtonDown.LEFT ) >> 2 ) * shape.MaxRPM ) -
+                ( ( int ) ( input & ButtonDown.RIGHT ) * shape.MaxRPM );
 
             shape.Velocity =
                 ( ( ( int ) ( input & ButtonDown.UP ) >> 1 ) * shape.MaxVelocity ) -

@@ -4,14 +4,18 @@ using System.Windows.Input;
 
 namespace PolyWars.Logic {
 
-    enum ButtonDown {
+    public enum ButtonDown {
         RIGHT = 1,
         UP = 2,
         LEFT = 4,
-        DOWN = 8
+        DOWN = 8,
+        SPACE = 16,
+        DEBUG = 32
     }
 
-    class Input {
+    public class Input {
+
+        private Key debugKey = Key.F3;
         Dictionary<Key, ButtonDown> keyBindings = new Dictionary<Key, ButtonDown>();
 
         public ButtonDown PressedKeys { get; set; }
@@ -27,9 +31,11 @@ namespace PolyWars.Logic {
             keyBindings[Key.Left] = ButtonDown.LEFT;
             keyBindings[Key.Down] = ButtonDown.DOWN;
             keyBindings[Key.Right] = ButtonDown.RIGHT;
+            keyBindings[Key.Space] = ButtonDown.SPACE;
+            keyBindings[debugKey] = ButtonDown.DEBUG;
         }
 
-        public ButtonDown checkInput() {
+        public ButtonDown queryInput() {
             try {
                 ThreadController.MainThreadDispatcher.Invoke( () => {
                     PressedKeys &= 0;

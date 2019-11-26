@@ -1,7 +1,7 @@
 ﻿using PolyWars.API;
 
 namespace PolyWars.Model {
-    class ShapeSize : IShapeSize {
+    public class ShapeSize : IShapeSize {
         /// <summary>
         /// You set how big the shape is.
         /// </summary>

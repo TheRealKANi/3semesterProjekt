@@ -10,26 +10,21 @@ namespace PolyWars.UI.GameArena {
     /// This class renders the Arena when the game is started 
     /// </summary>
     class GameArena_ViewModel : Observable {
-        private Dispatcher dispatcher = Dispatcher.CurrentDispatcher;
         public GameController GameController { get; private set; }
         public GameArena_ViewModel() {
             GameController = new GameController();
             ArenaCanvas = GameController.prepareGame();
-            GameController.playGame( ArenaCanvas, onCanvasChanged );
+            GameController.Ticker.CanvasChangedEventHandler += onCanvasChanged;
+            GameController.playGame();
         }
 
         /// <summary>
         /// When the game is started the Arena is associated with a thread
         /// </summary>
         public void onCanvasChanged( object Sender, PropertyChangedEventArgs args ) {
-            //NotifyPropertyChanged(args.PropertyName);
-            if( args.PropertyName.Equals( "ArenaCanvas" ) ) {
-                if( Sender is Renderer r ) {
-                    dispatcher.Invoke( () => NotifyPropertyChanged( "ArenaCanvas" ) );
-                    //ThreadController.MainThreadDispatcher.Invoke(() => ArenaCanvas = r.Canvas) ;
-                }
-            }
+            ThreadController.MainThreadDispatcher?.Invoke( () => NotifyPropertyChanged( "ArenaCanvas" ) );
         }
+
 
         private Canvas arenaCanvas;
         public Canvas ArenaCanvas {

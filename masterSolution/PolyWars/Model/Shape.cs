@@ -16,9 +16,9 @@ namespace PolyWars.Model {
         public Polygon Polygon { get; set; }
         public double Velocity { get; set; }
         public double MaxVelocity { get; private set; }
-        public double RPS { get; set; } // rotations per second
-        public double MaxRPS { get; set; }
-
+        public double RPM { get; set; } // rotations per second
+        public double MaxRPM { get; set; }
+        public int deltaTime;
 
         public Shape( Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS ) {
             CenterPoint = centerPoint;
@@ -28,16 +28,18 @@ namespace PolyWars.Model {
             Size = size;
             Velocity = velocity;
             MaxVelocity = maxVelocity;
-            RPS = rps;
-            MaxRPS = maxRPS;
+            RPM = rps;
+            MaxRPM = maxRPS;
+
             generatePolygon();
+            Polygon.RenderTransform = new RotateTransform( -1 * angle, centerPoint.X, centerPoint.Y );
         }
         private void generatePolygon() {
             ThreadController.MainThreadDispatcher.Invoke( () => {
                 Polygon = new Polygon() {
                     Stroke = new SolidColorBrush( this.BorderColor ),
                     Fill = new SolidColorBrush( this.FillColor ),
-                    StrokeThickness = 2
+                    StrokeThickness = 1,
                 };
             } );
         }

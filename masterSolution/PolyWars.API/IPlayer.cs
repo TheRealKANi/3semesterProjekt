@@ -8,5 +8,6 @@ namespace PolyWars.API {
     public interface IPlayer {
         double CurrencyWallet { get; set; }
         IShape Shape { get; set; }
+        string PlayerShape { get; set; }
     }
 }

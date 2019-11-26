@@ -10,8 +10,7 @@ namespace PolyWars.Model {
         /// </summary>
         public Triangle( Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS ) :
                 base( centerPoint, angle, borderColor, fillColor, size, velocity, maxVelocity, rps, maxRPS ) {
-            Polygon.Points = generateTrianglePoints();
-            Angle += 180;
+            Polygon.Points = generateTrianglePoints(); 
         }
 
         // TODO Refactor Code to external class

@@ -7,7 +7,7 @@ namespace PolyWars.API {
     /// <summary>
     /// Interface class for Shape that contains all the main methods 
     /// </summary>
-    public interface IShape {
+    public interface IShape : IMoveable {
 
         Point CenterPoint { get; set; }
         double Angle { get; set; }
@@ -15,9 +15,5 @@ namespace PolyWars.API {
         Color FillColor { get; set; }
         IShapeSize Size { get; set; }
         Polygon Polygon { get; set; }
-        double Velocity { get; set; }
-        double MaxVelocity { get; }
-        double RPS { get; set; }
-        double MaxRPS { get; set; }
     }
 }
