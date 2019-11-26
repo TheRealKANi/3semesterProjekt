@@ -3,8 +3,6 @@ using PolyWars.Logic.Utility;
 using PolyWars.Model;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -16,14 +14,13 @@ namespace PolyWars.Logic {
         private bool isLoaded;
         private DateTime fpsTimer;
         private int frames = 0;
-
+        private Canvas canvas;
         public static List<IShape> Shapes { get; set; }
         public Ticker Ticker { get; private set; }
         public static List<IResource> Resources { get; set; }
         public static List<IShape> Opponents { get; set; }
         public static IPlayer Player { get; set; }
-        private int fps;
-        public int Fps { get { return fps; } private set { fps = value; Debug.WriteLine( fps ); } } //TODO proper fps display on ui
+        public int Fps { get; set; }
 
         /// <summary>
         /// GameController constructor defines all parameter that this class needs to handle
@@ -51,19 +48,19 @@ namespace PolyWars.Logic {
             Resources = new List<IResource>();
             Opponents = new List<IShape>(); // TODO What type is opponents? IShape? new IOpponents?
 
-            createPlayer();
-            generateResources( 200 );
             // TODO getOpponents();
 
-
-
+            canvas = new Canvas {
+                Background = new SolidColorBrush( Colors.Aquamarine ),
+            };
+            
+            createPlayer();
+            generateResources( 800 );
+            
             Shapes.AddRange( Resources );
             Shapes.AddRange( Opponents );
             Shapes.Add( Player.Shape );
-            
-            Canvas canvas = new Canvas {
-                Background = new SolidColorBrush( Colors.Aquamarine ),
-            };
+
 
             foreach( IShape shape in Shapes ) {
                 canvas.Children.Add( shape.Polygon );
@@ -74,16 +71,28 @@ namespace PolyWars.Logic {
             return canvas;
         }
 
-        private void generateResources( int amount ) {
+        public void generateResources( int amount ) {
             Random r = new Random();
             Window w = Application.Current.MainWindow;
+            object hej = Application.Current.MainWindow.Content;
             int margin = 50;
-            int width = ( int ) w.Width - margin;
-            int height = ( int ) w.Height - margin;
+            int width = ( int ) w.ActualWidth - margin;
+            int height = ( int ) w.ActualHeight - margin;
+            //int width =  (int)(hej as Grid).ActualWidth - margin;
+            //int height = ( int ) ( hej as Grid ).ActualHeight - margin;
+            //int width = ( int ) canvas.Width - margin;
+            //int height = ( int ) canvas.Height - margin;
+
+            //int resourceCount = Resources.Count;
 
             for( int i = 0; i < amount; i++ ) {
                 Resources.Add( new Resource( new Point( r.Next( margin, width ), r.Next( margin, height ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 5 ) ); //TODO make builder pattern
             }
+
+            //Shapes.AddRange( Resources.GetRange( resourceCount, Resources.Count ) );
+            //foreach( IShape shape in Shapes.GetRange(resourceCount, Resources.Count )) {
+            //    canvas.Children.Add( shape.Polygon );
+            //} //TODO
         }
 
         private void createPlayer() {
@@ -148,12 +157,5 @@ namespace PolyWars.Logic {
                 // TODO Do we need to handle this?
             }
         }
-        //public void canvasupdater( object sender, tickeventargs args ) {
-        //    try {
-        //        threadcontroller.mainthreaddispatcher.invoke( () => canvaschangedeventhandler?.invoke( this, new propertychangedeventargs( "arenacanvas" ) ) );
-        //    } catch( taskcanceledexception ) {
-        //        //todo ?!
-        //    }
-        //}
     }
 }
