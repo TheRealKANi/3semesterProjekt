@@ -43,6 +43,7 @@ namespace PolyWars.Logic {
             shape.Velocity =
                 ( ( ( int ) ( input & ButtonDown.UP ) >> 1 ) * shape.MaxVelocity ) -
                 ( ( ( int ) ( input & ButtonDown.DOWN ) >> 3 ) * shape.MaxVelocity );
+
         }
     }
 }

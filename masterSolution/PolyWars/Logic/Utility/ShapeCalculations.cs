@@ -8,6 +8,7 @@ namespace PolyWars.Logic.Utility {
     static class ShapeCalculations {
         public static void moveShape( IShape shape, double timeFactor ) {
             shape.Angle += shape.RPM * 360 / ( 60 * 60 ) * timeFactor;
+
             double offsetX = shape.Velocity * Math.Sin( shape.Angle * Math.PI / 180 ) * timeFactor;
             double offsetY = shape.Velocity * Math.Cos( shape.Angle * Math.PI / 180 ) * timeFactor;
 
