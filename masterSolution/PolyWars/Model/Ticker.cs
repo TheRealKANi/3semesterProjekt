@@ -4,6 +4,7 @@ using PolyWars.Logic.Utility;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Text;
 using System.Threading;
@@ -15,7 +16,7 @@ namespace PolyWars.Model {
         public EventHandler<TickEventArgs> TickerEventHandler;
         public static int Fps { get; set; }
         private bool stopTickerThread;
-        int ticks;
+        long ticks;
         DateTime tickLast;
         DateTime tickStart;
         Thread thread;
@@ -41,21 +42,25 @@ namespace PolyWars.Model {
         private void Tick() {
             // TODO Remove/Refactor try catch block
 
-            double DeltaTime( double tickTime2 ) {
-                return 1d + ( ( 600_000_000 - tickTime2 ) / 600_000_000 );
+            const double stps = 10_000_000; // system ticks per second (this is the system clocks ticks, not the games ticks)
+            const double gtpsBase = 60; // game ticks per second. Movement per game tick is based on this number. Movement per tick is calculated from a baseline of fpsBase ticks per second
+            const double stpgt = stps / gtpsBase; // system ticks per game tick base
+
+            double DeltaTime( long ticks ) {
+                decimal test = ( decimal ) ticks / (decimal)stps / (decimal)stpgt ;
+                return 1;
             }
             
-
             while( !stopTickerThread ) {
-                tickStart = DateTime.Now;
-                double tickTime = ( tickStart - tickLast ).Ticks;
+                tickStart = new DateTime(Stopwatch.GetTimestamp());
                 InputController.Instance.applyInput();
 
-                TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( tickTime ) ) );
-                waitForNextFrame( tickLast );            
+                waitForNextFrame( lastTick );            
                 try {
                     CanvasChangedEventHandler?.Invoke( this, new PropertyChangedEventArgs( "ArenaCanvas" ) );
-                    tickLast = DateTime.Now;
+                    long tickTime = ( tickStart - tickLast ).Ticks;
+                    TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( tickTime ) ) );
+                    tickLast = new DateTime(Stopwatch.GetTimestamp());
                 } catch( TaskCanceledException ) {
                     // TODO Do we need to handle this?
                 }
@@ -64,9 +69,9 @@ namespace PolyWars.Model {
 
         private void waitForNextFrame( DateTime lastTick ) {
             int msDelay = 2;
-            while( ( DateTime.Now.Ticks - lastTick.Ticks ) <= ( 10_000_000d / 60 ) ) {
-                ticks = ( int ) ( ( 1d / 60 ) - ( ( double ) ( DateTime.Now - lastTick ).Ticks / 2 ) );
-                if( ticks > msDelay * 10_000 ) {
+            while( ( Stopwatch.GetTimestamp() - lastTick.Ticks ) <= ( 10_000_000d / 60 ) ) {
+                ticks = ( 1d / 60  -  ( double ) ( Stopwatch.GetTimestamp() - lastTick.Ticks ) / 2  );
+                if( ticks > msDelay * 10_000_000 ) {
                     Thread.Sleep( ticks >= 0 ? ticks : 0 );
                 } else if( ticks > 0 ) {
                     Thread.Sleep( 1 );

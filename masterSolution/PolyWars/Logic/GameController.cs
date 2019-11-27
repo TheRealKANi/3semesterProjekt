@@ -55,7 +55,7 @@ namespace PolyWars.Logic {
             };
             
             createPlayer();
-            generateResources( 800 );
+            generateResources( 1 );
             
             Shapes.AddRange( Resources );
             Shapes.AddRange( Opponents );
