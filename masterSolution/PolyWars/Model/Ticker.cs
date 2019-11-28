@@ -8,19 +8,15 @@ using System.Threading.Tasks;
 
 namespace PolyWars.Model {
     class Ticker {
-        public EventHandler<PropertyChangedEventArgs> CanvasChangedEventHandler;
-        public EventHandler<TickEventArgs> TickerEventHandler;
         public static int Fps { get; set; }
         private bool stopTickerThread;
-        int ticks;
-        DateTime tickLast;
-        DateTime tickStart;
         Thread thread;
 
         public Ticker() {
             thread = new Thread( Tick ) {
                 IsBackground = true
             };
+            
         }
 
         public void Start() {
@@ -38,24 +34,20 @@ namespace PolyWars.Model {
         private void Tick() {
             // TODO Remove/Refactor try catch block
 
-            double DeltaTime( double tickTime2 ) {
-                return 1d + ( ( 600_000_000 - tickTime2 ) / 600_000_000 );
-            }
-
-
+            
+            GameController.tickTimer.Restart();
             while( !stopTickerThread ) {
+
                 // TODO DEBUG - Starts Frame Timer
                 Logic.Utility.FrameDebugTimer.startFrameTimer();
-                tickStart = DateTime.Now;
-                double tickTime = ( tickStart - tickLast ).Ticks;
                 InputController.Instance.applyInput();
 
-                TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( tickTime ) ) );
-                //waitForNextFrame( tickLast );
+                //waitForNextFrame( GameController.tickTimer );
                 try {
-                    CanvasChangedEventHandler?.Invoke( this, new PropertyChangedEventArgs( "ArenaCanvas" ) );
-                    tickLast = DateTime.Now;
-
+                    //TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( GameController. ) ) );
+                    GameController.calculateFrame();
+                    //GameController.calculateFps();
+                    GameController.tickTimer.Restart();
                 } catch( TaskCanceledException ) {
                     // TODO Do we need to handle this?
                 }
@@ -64,15 +56,10 @@ namespace PolyWars.Model {
             }
         }
 
-        private void waitForNextFrame( DateTime lastTick ) {
-            int msDelay = 2;
-            while( ( DateTime.Now.Ticks - lastTick.Ticks ) <= ( 10_000_000d / 60 ) ) {
-                ticks = ( int ) ( ( 1d / 60 ) - ( ( double ) ( DateTime.Now - lastTick ).Ticks / 2 ) );
-                if( ticks > msDelay * 10_000 ) {
-                    Thread.Sleep( ticks >= 0 ? ticks : 0 );
-                } else if( ticks > 0 ) {
-                    Thread.Sleep( 1 );
-                }
+        private void waitForNextFrame( Stopwatch tickTimer ) {
+            TimeSpan sleepDuration = new TimeSpan(1);
+            while( tickTimer.Elapsed.TotalMilliseconds <= ( 935d / 120 ) ) {
+                Thread.Sleep( sleepDuration  );
             }
         }
     }

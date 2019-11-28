@@ -99,12 +99,12 @@ namespace PolyWars.Logic.Utility {
                 totalTickTime += tickTime;
             }
             double averageTickTime = totalTickTime / frameTicks.Count;
-            double totalRunTimeInMs = averageTickTime * frameTicks.Count;
+            double totalRunTimeInMs = totalTickTime;
             double averageFPS = frameTicks.Count / ( totalRunTimeInMs / 1000 );
             double maxFPSms = 1000d / 60d;
 
             Debug.WriteLine( "\n      Frame Rendering Timing Results - Accuracy: " + ( Stopwatch.IsHighResolution ? "High" : "Low") );
-            Debug.WriteLine( "        RunTime    : " + ( totalRunTimeInMs / 1000 ).ToString( "N2" ) + " s" );
+            Debug.WriteLine( "        RunTime    : " + ( totalRunTimeInMs / 1000 ).ToString( "N4" ) + " s" );
             Debug.WriteLine( "        n Frames   : " + frameTicks.Count.ToString( "N0" ) + " frames" );
             Debug.WriteLine( "        AVG FPS    : " + averageFPS.ToString( "N2" ) + " FPS" );
             Debug.WriteLine( "        AVG Frame  : " + averageTickTime.ToString( "N3" ) + " ms" );
@@ -126,7 +126,7 @@ namespace PolyWars.Logic.Utility {
                 totalTickTime += tickTime;
             }
             double averageTickTime = totalTickTime / collisionTicks.Count;
-            double totalRunTimeInMs = averageTickTime * collisionTicks.Count;
+            double totalRunTimeInMs = totalTickTime;
             double maxFPSms = 1000d / 60d;
 
             Debug.WriteLine( "        RunTime      : " + ( totalRunTimeInMs / 1000 ).ToString( "N2" ) + " s" );
@@ -149,7 +149,7 @@ namespace PolyWars.Logic.Utility {
                 totalTickTime += tickTime;
             }
             double averageTickTime = totalTickTime / moveShapeTicks.Count;
-            double totalRunTimeInMs = averageTickTime * moveShapeTicks.Count;
+            double totalRunTimeInMs = totalTickTime;
             double maxFPSms = 1000d / 60d;
 
             Debug.WriteLine( "        RunTime     : " + ( totalRunTimeInMs / 1000 ).ToString( "N2" ) + " s" );

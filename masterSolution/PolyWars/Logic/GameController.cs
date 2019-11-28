@@ -3,6 +3,8 @@ using PolyWars.Logic.Utility;
 using PolyWars.Model;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
@@ -10,17 +12,21 @@ using System.Windows.Media;
 
 namespace PolyWars.Logic {
     class GameController {
-        private DateTime lastTick;
         private bool isLoaded;
-        private DateTime fpsTimer;
-        private int frames = 0;
+        static private int frames = 0;
         private Canvas canvas;
         public static List<IShape> Shapes { get; set; }
         public Ticker Ticker { get; private set; }
         public static List<IResource> Resources { get; set; }
         public static List<IShape> Opponents { get; set; }
         public static IPlayer Player { get; set; }
-        public int Fps { get; set; }
+        static public int Fps { get; set; }
+        static private Stopwatch fpsTimer;
+        public static Stopwatch tickTimer { get; private set; }
+        private const decimal baselineFps = 1000m / 60; // miliseconds per frame at 60 fps 
+
+        static public EventHandler<EventArgs> CanvasChangedEventHandler;
+
 
         /// <summary>
         /// GameController constructor defines all parameter that this class needs to handle
@@ -28,7 +34,8 @@ namespace PolyWars.Logic {
         public GameController() {
 
             isLoaded = false;
-            fpsTimer = DateTime.Now;
+            fpsTimer = new Stopwatch();
+            fpsTimer.Reset();
         }
 
         /// <summary>
@@ -39,10 +46,7 @@ namespace PolyWars.Logic {
         /// </returns>
         public Canvas prepareGame() {
             Ticker = new Ticker();
-            Ticker.TickerEventHandler += calculateFps;
-            Ticker.TickerEventHandler += calculateFrame;
-            //Ticker.TickerEventHandler += CanvasUpdater;
-
+            tickTimer = new Stopwatch();
 
             Shapes = new List<IShape>();
             Resources = new List<IResource>();
@@ -55,7 +59,7 @@ namespace PolyWars.Logic {
             };
             
             createPlayer();
-            generateResources( 100 );
+            generateResources( 500 );
 
             // TODO DEBUG - Init Frame Timer
             Utility.FrameDebugTimer.initTimers();
@@ -80,25 +84,14 @@ namespace PolyWars.Logic {
             int margin = 50;
             int width = ( int ) w.ActualWidth - margin;
             int height = ( int ) w.ActualHeight - margin;
-            //int width =  (int)(hej as Grid).ActualWidth - margin;
-            //int height = ( int ) ( hej as Grid ).ActualHeight - margin;
-            //int width = ( int ) canvas.Width - margin;
-            //int height = ( int ) canvas.Height - margin;
-
-            //int resourceCount = Resources.Count;
 
             for( int i = 0; i < amount; i++ ) {
                 Resources.Add( new Resource( new Point( r.Next( margin, width ), r.Next( margin, height - (margin * 2) ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 5 ) ); //TODO make builder pattern
             }
-
-            //Shapes.AddRange( Resources.GetRange( resourceCount, Resources.Count ) );
-            //foreach( IShape shape in Shapes.GetRange(resourceCount, Resources.Count )) {
-            //    canvas.Children.Add( shape.Polygon );
-            //} //TODO
         }
 
         private void createPlayer() {
-            Player = new Player( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 15 );
+            Player = new Player( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 50, 0, 180 );
         }
 
         /// <summary>
@@ -113,11 +106,13 @@ namespace PolyWars.Logic {
         /// </param>
         public void playGame() {
             if( isPrepared() ) {
+                fpsTimer.Start();
                 Ticker.Start();
             }
         }
         public void endGame() {
             Ticker.Stop();
+            fpsTimer.Stop();
         }
 
         /// <summary>
@@ -130,25 +125,28 @@ namespace PolyWars.Logic {
         public bool isPrepared() {
             return isLoaded;
         }
-
-        public void calculateFrame( object sender, TickEventArgs args ) {
+        private static decimal DeltaTime( Stopwatch _tickTimer ) {
+            return (decimal)_tickTimer.Elapsed.TotalMilliseconds / baselineFps;
+        }
+        static public void calculateFrame( ) {
             try {
                 ThreadController.MainThreadDispatcher.Invoke( () => {
-                    ShapeCalculations.moveShape( Player.Shape, args.deltaTime );
+                    ShapeCalculations.moveShape( Player.Shape, DeltaTime( tickTimer ));
+                    tickTimer.Stop();
+                    CanvasChangedEventHandler?.Invoke( null, EventArgs.Empty );
                 } );
             } catch( TaskCanceledException ) {
                 // TODO Should we do something here
             }
         }
-        public void calculateFps( object sender, TickEventArgs args ) {
+        static public void calculateFps() {
             try {
-                lastTick = DateTime.Now;
-                if( ( DateTime.Now - fpsTimer ).Ticks >= 10_100_000 ) {
-                    Fps = frames + 1;
+                frames++;
+                if( fpsTimer.Elapsed.TotalMilliseconds >= 1000) {
+                    Fps = frames;
                     frames = 0;
-                    fpsTimer = DateTime.Now;
-                } else {
-                    frames++;
+                    fpsTimer.Restart();
+                    
                 }
             } catch( TaskCanceledException ) {
                 // TODO Do we need to handle this?

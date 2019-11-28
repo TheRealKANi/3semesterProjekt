@@ -30,7 +30,9 @@ namespace PolyWars.Model {
             double y3 = this.CenterPoint.Y - ( Math.Sin( ( Math.PI / 2 ) + ( ( Angle + 60 ) * Math.PI / 180 ) ) * this.Size.Height / 2 );
             Point point3 = new Point( x3, y3 );
 
-            return new PointCollection() { point1, point2, point3 };
+            
+
+            return new PointCollection() { point1, CenterPoint, point1, point2, point3 };
         }
     }
 }
