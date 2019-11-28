@@ -7,6 +7,8 @@ using System.Windows.Media;
 namespace PolyWars.Logic.Utility {
     static class ShapeCalculations {
         public static void moveShape( IShape shape, double timeFactor ) {
+            // TODO DEBUG - Starts moveShape Timer
+            FrameDebugTimer.startMoveShapeTimer();
             shape.Angle += shape.RPM * 360 / ( 60 * 60 ) * timeFactor;
 
             double offsetX = shape.Velocity * Math.Sin( shape.Angle * Math.PI / 180 ) * timeFactor;
@@ -24,6 +26,9 @@ namespace PolyWars.Logic.Utility {
                 p.Offset( offsetX, offsetY );
                 pc[i] = p;
             }
+            // TODO DEBUG - Stops moveShape Timer
+            FrameDebugTimer.stopMoveShapeTimer();
+            CollisionDetection.resourceCollisionDetection();
         }
     }
 }

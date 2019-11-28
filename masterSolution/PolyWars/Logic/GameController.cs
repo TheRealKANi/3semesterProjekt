@@ -57,6 +57,9 @@ namespace PolyWars.Logic {
             createPlayer();
             generateResources( 100 );
 
+            // TODO DEBUG - Init Frame Timer
+            Utility.FrameDebugTimer.initTimers();
+
             Shapes.AddRange( Resources );
             Shapes.AddRange( Opponents );
             Shapes.Add( Player.Shape );

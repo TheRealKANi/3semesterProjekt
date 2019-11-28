@@ -6,9 +6,9 @@ using System.Windows;
 namespace PolyWars.Logic.Utility {
     class CollisionDetection {
         public static void resourceCollisionDetection() {
-
+            // TODO DEBUG - Starts collision Timer
+            FrameDebugTimer.startCollisionTimer();
             List<IResource> toRemove = new List<IResource>();
-
             foreach( IResource resource in GameController.Resources ) {
                 if( resource.Polygon.RenderedGeometry.Bounds.IntersectsWith( GameController.Player.Shape.Polygon.RenderedGeometry.Bounds ) && 
                         !resource.Polygon.Visibility.Equals( Visibility.Collapsed ) ) {
@@ -22,6 +22,8 @@ namespace PolyWars.Logic.Utility {
                 resource.Polygon.Visibility = Visibility.Collapsed;
             }
             toRemove.Clear();
+            // TODO DEBUG - Stops collision Timer
+            FrameDebugTimer.stopCollisionTimer();
         }
     }
 }

@@ -1,6 +1,8 @@
 ﻿using PolyWars.Logic;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
@@ -42,18 +44,23 @@ namespace PolyWars.Model {
 
 
             while( !stopTickerThread ) {
+                // TODO DEBUG - Starts Frame Timer
+                Logic.Utility.FrameDebugTimer.startFrameTimer();
                 tickStart = DateTime.Now;
                 double tickTime = ( tickStart - tickLast ).Ticks;
                 InputController.Instance.applyInput();
 
                 TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( tickTime ) ) );
-                waitForNextFrame( tickLast );
+                //waitForNextFrame( tickLast );
                 try {
                     CanvasChangedEventHandler?.Invoke( this, new PropertyChangedEventArgs( "ArenaCanvas" ) );
                     tickLast = DateTime.Now;
+
                 } catch( TaskCanceledException ) {
                     // TODO Do we need to handle this?
                 }
+                // TODO DEBUG - Stops Frame Timer
+                Logic.Utility.FrameDebugTimer.stopFrameTimer();
             }
         }
 
