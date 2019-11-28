@@ -6,10 +6,13 @@ using System.Windows.Media;
 
 namespace PolyWars.Logic.Utility {
     static class ShapeCalculations {
-        public static void moveShape( IShape shape, double timeFactor ) {
-            shape.Angle += shape.RPM * 360 / ( 60 * 60 ) * timeFactor;
-            double offsetX = shape.Velocity * Math.Sin( shape.Angle * Math.PI / 180 ) * timeFactor;
-            double offsetY = shape.Velocity * Math.Cos( shape.Angle * Math.PI / 180 ) * timeFactor;
+        public static void moveShape( IShape shape, decimal deltaTime ) {
+            // TODO DEBUG - Starts moveShape Timer
+            FrameDebugTimer.startMoveShapeTimer();
+            shape.Angle += (double)((decimal)(shape.RPM * 360 / ( 60 * 60 )) * deltaTime);
+
+            double offsetX = (double)((decimal)(shape.Velocity * Math.Sin( shape.Angle * Math.PI / 180 )) * deltaTime);
+            double offsetY = (double)((decimal)(shape.Velocity * Math.Cos( shape.Angle * Math.PI / 180 )) * deltaTime);
 
             Point cp = shape.CenterPoint;
             cp.Offset( offsetX, offsetY );
@@ -22,7 +25,10 @@ namespace PolyWars.Logic.Utility {
                 Point p = pc[i];
                 p.Offset( offsetX, offsetY );
                 pc[i] = p;
-            }
+            }
+            // TODO DEBUG - Stops moveShape Timer
+            FrameDebugTimer.stopMoveShapeTimer();
+            //CollisionDetection.resourceCollisionDetection();
         }
     }
 }

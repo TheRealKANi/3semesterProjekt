@@ -1,5 +1,6 @@
 ﻿using PolyWars.Logic;
 using PolyWars.Model;
+using System;
 using System.ComponentModel;
 using System.Windows;
 using System.Windows.Controls;
@@ -17,14 +18,19 @@ namespace PolyWars.UI.GameArena {
             FpsVisibility = Visibility.Visible;
             GameController = new GameController();
             ArenaCanvas = GameController.prepareGame();
-            GameController.Ticker.CanvasChangedEventHandler += onCanvasChanged;
+            GameController.CanvasChangedEventHandler += onCanvasChanged;
             GameController.playGame();
+            ArenaCanvas.LayoutUpdated += updated;
+        }
+
+        private void updated( object sender, EventArgs e ) {
+            GameController.calculateFps();
         }
 
         /// <summary>
         /// When the game is started the Arena is associated with a thread
         /// </summary>
-        public void onCanvasChanged( object Sender, PropertyChangedEventArgs args ) {
+        public void onCanvasChanged( object Sender, EventArgs args ) {
             ThreadController.MainThreadDispatcher?.Invoke( () => {
                 NotifyPropertyChanged( "ArenaCanvas" );
                 NotifyPropertyChanged( "Fps" );
