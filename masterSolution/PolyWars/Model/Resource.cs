@@ -12,10 +12,11 @@ namespace PolyWars.Logic {
         public int ID { get; private set; }
         public double ResourceValue { get; set; }
         
-        public Resource ( Point centerPoint, int angle, ShapeSize size, double resourceValue ) : 
+        public Resource( Point centerPoint, int angle, ShapeSize size, double resourceValue ) : 
             this(centerPoint, angle, size, 0, 0, 0, 0, resourceValue ) { }
-        public Resource( Point centerPoint, int angle, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS, double resourceValue ) :
-                base( centerPoint, angle, Colors.Black, Colors.ForestGreen, size, velocity, maxVelocity, rps, maxRPS ) {
+
+        public Resource( Point centerPoint, int angle, ShapeSize size, double velocity, double maxVelocity, double rpm, double maxRPM, double resourceValue ) :
+                base( centerPoint, angle, Colors.Black, Colors.ForestGreen, size, velocity, maxVelocity, rpm, maxRPM ) {
             Polygon.Points = generateResourcePoints();
             ResourceValue = resourceValue;
             ID = idCounter++;

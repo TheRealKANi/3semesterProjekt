@@ -81,7 +81,6 @@ namespace PolyWars.Logic {
         public void generateResources( int amount ) {
             Random r = new Random();
             Window w = Application.Current.MainWindow;
-            object hej = Application.Current.MainWindow.Content;
             int margin = 50;
             int width = ( int ) w.ActualWidth - margin;
             int height = ( int ) w.ActualHeight - margin;

@@ -5,12 +5,12 @@ using System.Windows.Input;
 namespace PolyWars.Logic {
 
     public enum ButtonDown {
-        RIGHT = 1,
-        UP = 2,
-        LEFT = 4,
-        DOWN = 8,
-        SPACE = 16,
-        DEBUG = 32
+        RIGHT = 0b000001,
+        UP =    0b000010,
+        LEFT =  0b000100,
+        DOWN =  0b001000,
+        SPACE = 0b010000,
+        DEBUG = 0b100000
     }
 
     public class Input {
