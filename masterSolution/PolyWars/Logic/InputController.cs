@@ -1,5 +1,8 @@
 ﻿using PolyWars.API;
 using PolyWars.Model;
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace PolyWars.Logic {
 
@@ -7,6 +10,9 @@ namespace PolyWars.Logic {
 
         private InputController() { }
         private static InputController instance;
+
+        // Ensures that show tick average only runs once
+        private bool hasRun = false;
 
         public static InputController Instance {
             get {
@@ -44,6 +50,15 @@ namespace PolyWars.Logic {
                 ( ( ( int ) ( input & ButtonDown.UP ) >> 1 ) * shape.MaxVelocity ) -
                 ( ( ( int ) ( input & ButtonDown.DOWN ) >> 3 ) * shape.MaxVelocity );
 
+
+            // TODO Remove Debug Key
+            if( ( ( int ) ( input & ButtonDown.DEBUG ) >> 5 ) > 0 && hasRun == false ) {
+                Utility.FrameDebugTimer.outpuFrameTimerResults();
+                Utility.FrameDebugTimer.outpuMoveShapeTimerResults();
+                Utility.FrameDebugTimer.outpuCollisionTimerResults();
+                hasRun = true;
+            }
+            
         }
     }
 }

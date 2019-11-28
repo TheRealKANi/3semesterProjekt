@@ -55,8 +55,8 @@ namespace PolyWars.Logic {
             };
             
             createPlayer();
-            generateResources( 1 );
-            
+            generateResources( 100 );
+
             Shapes.AddRange( Resources );
             Shapes.AddRange( Opponents );
             Shapes.Add( Player.Shape );
@@ -131,12 +131,7 @@ namespace PolyWars.Logic {
         public void calculateFrame( object sender, TickEventArgs args ) {
             try {
                 ThreadController.MainThreadDispatcher.Invoke( () => {
-                    foreach( IShape shape in Shapes ) {
-                        if( shape.GetType().Name.Equals( Player.PlayerShape ) ) {
-                            ShapeCalculations.moveShape( shape, args.deltaTime );
-                            CollisionDetection.resourceCollisionDetection();
-                        }
-                    }
+                    ShapeCalculations.moveShape( Player.Shape, args.deltaTime );
                 } );
             } catch( TaskCanceledException ) {
                 // TODO Should we do something here
