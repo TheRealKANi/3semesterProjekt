@@ -18,6 +18,7 @@
                     <span class="icon-bar"></span>
                 </button>
                 @Html.ActionLink("PolyWars", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
@@ -35,7 +36,7 @@
         <style>
             .copy {
                 position: fixed;
-                left: 5;
+                left: 0;
                 bottom: 0;
                 width: 100%;
                 background-color: none;
@@ -43,6 +44,7 @@
                 text-align: left;
             }
         </style>
+        </div>
 
         <div class="copy">
             <p>© @DateTime.Now.Year - PolyWars - created by Group 0 - 3. Semester UCN </p>
