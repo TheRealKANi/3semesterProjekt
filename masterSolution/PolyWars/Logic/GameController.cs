@@ -6,7 +6,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media;
+using System.Linq;
 
 namespace PolyWars.Logic {
     class GameController {
@@ -55,11 +57,12 @@ namespace PolyWars.Logic {
             };
             
             createPlayer();
-            generateResources( 800 );
+            generateResources( 20 );
             
             Shapes.AddRange( Resources );
             Shapes.AddRange( Opponents );
             Shapes.Add( Player.Shape );
+            Shapes.OrderByDescending(x => x.CenterPoint.X);
 
 
             foreach( IShape shape in Shapes ) {

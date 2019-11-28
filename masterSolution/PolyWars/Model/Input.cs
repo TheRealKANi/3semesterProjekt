@@ -5,9 +5,9 @@ using System.Windows.Input;
 namespace PolyWars.Logic {
 
     public enum ButtonDown {
-        RIGHT = 1,
-        UP = 2,
-        LEFT = 4,
+        RIGHT = 0b1,
+        UP = 0b10,
+        LEFT = 0b100,
         DOWN = 8,
         SPACE = 16,
         DEBUG = 32
