@@ -13,7 +13,7 @@ namespace PolyWars.WebClient.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Leaderboard()
         {
             ViewBag.Message = "Your application description page.";
 
