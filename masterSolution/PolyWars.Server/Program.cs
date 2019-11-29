@@ -24,7 +24,7 @@ namespace PolyWars.Server
         public class Startup {
             public void Configuration( IAppBuilder app ) {
                 app.UseCors( CorsOptions.AllowAll );
-                app.MapSignalR( "/polyWars", new HubConfiguration() );
+                app.MapSignalR( "/signalchat", new HubConfiguration() );
 
                 GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = null;
             }
