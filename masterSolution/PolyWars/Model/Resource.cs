@@ -9,7 +9,7 @@ namespace PolyWars.Logic {
 
     class Resource : Model.Shape, IResource{
         private static int idCounter;
-        public int ID { get; private set; }
+        //public int ID { get; private set; }
         public double ResourceValue { get; set; }
         
         public Resource( Point centerPoint, int angle, ShapeSize size, double resourceValue ) : 

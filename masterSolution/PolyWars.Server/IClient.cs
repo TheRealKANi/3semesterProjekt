@@ -5,7 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PolyWars.Server {
-    interface IClient {
+    public interface IClient {
         void ParticipantDisconnection( string name );
         void ParticipantReconnection( string name );
         void ParticipantLogin( User client );

@@ -18,6 +18,8 @@ namespace PolyWars.Model {
             InputController.Instance.initInput( this );
             PlayerShape = Shape.GetType().Name;
         }
+        public string Name { get; set; }
+        public string ID { get; set; }
         public IShape Shape { get; set; }
         public double CurrencyWallet { get; set; }
         public string PlayerShape { get; set; }

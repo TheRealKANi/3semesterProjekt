@@ -6,8 +6,8 @@ using System.Windows.Shapes;
 
 namespace PolyWars.Model {
 
-    abstract class Shape : IShape {
-
+    abstract class Shape : IShape, IMoveable, IRay {
+        public int ID { get; set; }
         public Point CenterPoint { get; set; }
         public double Angle { get; set; }
         public Color BorderColor { get; set; }

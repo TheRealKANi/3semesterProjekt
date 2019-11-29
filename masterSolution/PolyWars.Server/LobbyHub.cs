@@ -1,29 +1,32 @@
 ﻿using Microsoft.AspNet.SignalR;
 using System;
 using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 namespace PolyWars.Server {
-    class LobbyHub : Hub<IClient> {
+    public class LobbyHub : Hub<IClient> {
         private static ConcurrentDictionary<string, User> PlayerClients = new ConcurrentDictionary<string, User>();
 
-        public bool Login(string name) {
-            bool addSucceeded = false;
+        public List<User> Login(string name) {
             if(!PlayerClients.ContainsKey(name)) {
-                User user = new User(name, Context.ConnectionId);
-
-                addSucceeded = PlayerClients.TryAdd(name, user);
-
+                Console.WriteLine($"++ {name} logged in with id: {Context.ConnectionId}");
+                List<User> users = new List<User>(PlayerClients.Values);
+                User newUser = new User { Name = name, ID = Context.ConnectionId };
+                var added = PlayerClients.TryAdd(name, newUser);
+                if(!added) return null;
                 Clients.CallerState.UserName = name;
+                Clients.CallerState.ID = newUser.ID;
+                Clients.Others.ParticipantLogin(newUser);
+                return users;
             }
-            return addSucceeded;
+            return null;
         }
         public void Logout() {
             string name = Clients.CallerState.UserName;
             if(!string.IsNullOrEmpty(name)) {
-                User client = new User();
-                PlayerClients.TryRemove(name, out client);
+                PlayerClients.TryRemove(name, out User client);
                 Clients.Others.ParticipantLogout(name);
                 Console.WriteLine($"-- {name} logged out");
             }

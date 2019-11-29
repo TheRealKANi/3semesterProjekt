@@ -7,25 +7,32 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using Microsoft.AspNet.SignalR.Hubs;
 
 namespace PolyWars.Server
 {
     namespace ChatServerCS {
         class Program {
+            public static IAppBuilder app;
             static void Main( string[] args ) {
-                string url = "http://localhost:8080/";
-                using( WebApp.Start<Startup>( url ) ) {
-                    Console.WriteLine( $"Server running at {url}" );
-                    Console.ReadLine();
+                string url = "http://192.168.0.46:8080";
+
+                while(true) {
+                    using(WebApp.Start<Startup>(url)) {
+                        Console.WriteLine( $"Server running at {url}" );
+
+                        Console.ReadLine();
+                    }
                 }
             }
         }
 
         public class Startup {
             public void Configuration( IAppBuilder app ) {
+                Program.app = app;
                 app.UseCors( CorsOptions.AllowAll );
-                app.MapSignalR( "/signalchat", new HubConfiguration() );
-
+                app.MapSignalR("/Polywars", new HubConfiguration() { EnableDetailedErrors = true});
+                
                 GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = null;
             }
         }
