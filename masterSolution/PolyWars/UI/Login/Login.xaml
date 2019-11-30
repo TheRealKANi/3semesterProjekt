@@ -22,7 +22,7 @@
             <Label>Password</Label>
             <PasswordBox  Name="pwBox" />
             
-            <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=pwBox, Path=SecurePassword}" >Log In</Button>
+            <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}" CommandParameter="{Binding Path=SecurePassword, ElementName=pwBox}" >Log In</Button>
         </StackPanel>
     </Grid>
 </Page>

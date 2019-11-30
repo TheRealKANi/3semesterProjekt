@@ -7,9 +7,8 @@ namespace PolyWars.API {
     /// </summary>
     public interface IPlayer {
         string Name { get; set; }
-        string ID { get; set; }
-        double CurrencyWallet { get; set; }
-        IShape Shape { get; set; }
-        string PlayerShape { get; set; }
+        string ID { get; }
+        double Wallet { get; set; }
+        IMoveable PlayerShip { get; }
     }
 }

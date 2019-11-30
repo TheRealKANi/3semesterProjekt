@@ -1,7 +1,9 @@
 ﻿using PolyWars.Model;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Security;
 using System.Text;
 using System.Threading.Tasks;
@@ -35,7 +37,7 @@ namespace PolyWars.UI.Login {
             get {
                 if(loginCommand == null) {
                     loginCommand = new RelayCommand((o) => {
-                        return !string.IsNullOrWhiteSpace(Name) && (o is SecureString sstr ? string.IsNullOrWhiteSpace(sstr.ToString()) : false);
+                        return !string.IsNullOrWhiteSpace(Name) ;
                     }, Login);
                 }
                 return loginCommand; 
@@ -43,7 +45,12 @@ namespace PolyWars.UI.Login {
         }
         
         private void Login(object o) {
-
+            if(o is string sstr) {
+                //IntPtr stringPointer = Marshal.SecureStringToBSTR(sstr);
+                //string normalString = Marshal.PtrToStringBSTR(stringPointer);
+                //Marshal.ZeroFreeBSTR(stringPointer);
+                //Debug.WriteLine(normalString);
+            }
         }
     }
 }

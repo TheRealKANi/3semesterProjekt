@@ -11,18 +11,18 @@ using System.Windows.Shapes;
 
 namespace PolyWars.Model {
     public class Player : IPlayer {
-        public Player( Point centerPoint, int angle, Color borderColor, Color fillColor, ShapeSize size, double velocity, double maxVelocity, double rps, double maxRPS ) { 
-            Shape = new Triangle( centerPoint, 0, borderColor, fillColor, size, velocity, maxVelocity, rps, maxRPS );
-            Shape.Polygon.RenderTransform = new RotateTransform( angle, centerPoint.X, centerPoint.Y ); //TODO doesn't work
+        public Player(string name, string id, double currency, IMoveable playerShip) {
+            Name = name;
+            ID = id;
+            Wallet = currency;
+            PlayerShip = playerShip;
             InputController = InputController.Instance;
             InputController.Instance.initInput( this );
-            PlayerShape = Shape.GetType().Name;
         }
         public string Name { get; set; }
-        public string ID { get; set; }
-        public IShape Shape { get; set; }
-        public double CurrencyWallet { get; set; }
-        public string PlayerShape { get; set; }
+        public string ID { get; private set; }
+        public double Wallet { get; set; }
+        public IMoveable PlayerShip { get; private set; }
 
         public InputController InputController { get; private set; }
 

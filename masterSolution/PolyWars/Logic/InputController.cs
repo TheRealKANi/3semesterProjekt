@@ -41,7 +41,7 @@ namespace PolyWars.Logic {
 
         public void applyInput() {
             ButtonDown input = Input.queryInput();
-            IShape shape = Player.Shape;
+            IMoveable shape = Player.PlayerShip;
             shape.RPM =
                 ( ( ( int ) ( input & ButtonDown.LEFT ) >> 2 ) * shape.MaxRPM ) -
                 ( ( int ) ( input & ButtonDown.RIGHT ) * shape.MaxRPM );

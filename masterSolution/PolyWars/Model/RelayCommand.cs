@@ -15,6 +15,7 @@ namespace PolyWars.Model {
 
         public RelayCommand( Func<object, bool> canExecute, Action<object> execute ) {
             this.canExecute = canExecute;
+            this.execute = execute;
         }
 
         public bool CanExecute( object parameter ) {

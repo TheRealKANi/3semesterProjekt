@@ -108,9 +108,13 @@
     <Compile Include="Model\Shape.cs" />
     <Compile Include="Model\ShapeSize.cs" />
     <Compile Include="Model\Ticker.cs" />
-    <Compile Include="Model\Triangle.cs" />
     <Compile Include="NavigationController.cs" />
     <Compile Include="Network\GameService.cs" />
+    <Compile Include="ServerClasses\Moveable.cs" />
+    <Compile Include="ServerClasses\MoveStrategy.cs" />
+    <Compile Include="ServerClasses\Ray.cs" />
+    <Compile Include="ServerClasses\Renderable.cs" />
+    <Compile Include="ServerClasses\RenderStrategy.cs" />
     <Compile Include="UI\GameArena\GameArenaPage.xaml.cs">
       <DependentUpon>GameArenaPage.xaml</DependentUpon>
     </Compile>
@@ -189,5 +193,6 @@
       <Name>PolyWars.API</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

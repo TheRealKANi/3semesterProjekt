@@ -75,6 +75,10 @@
     <Compile Include="IMoveable.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IRay.cs" />
+    <Compile Include="IRenderable.cs" />
+    <Compile Include="IRenderer.cs" />
+    <Compile Include="Strategies\IMoveStrategy.cs" />
+    <Compile Include="Strategies\IRenderStrategy.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="IShape.cs" />
     <Compile Include="IShapeSize.cs" />

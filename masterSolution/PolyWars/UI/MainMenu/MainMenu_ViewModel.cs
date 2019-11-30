@@ -37,7 +37,7 @@ namespace PolyWars.UI.MainMenu {
         public ICommand StartGame_Command {
             get {
                 if( startGame_Command == null ) {
-                    startGame_Command = new RelayCommand( ( o ) => { return IsConnected && IsLoggedIn; }, ( o ) => { NavigationController.Instance.navigate( Pages.Arena ); } );
+                    startGame_Command = new RelayCommand( ( o ) => { return true /*IsConnected && IsLoggedIn;*/; }, ( o ) => { NavigationController.Instance.navigate( Pages.Arena ); } );
                 }
                 return startGame_Command;
             }

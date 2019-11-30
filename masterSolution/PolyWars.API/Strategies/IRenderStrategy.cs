@@ -5,9 +5,8 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Shapes;
 
-namespace PolyWars.API {
-    public interface IResource {
-        IShape Shape { get; }
-        double Value { get; }
+namespace PolyWars.API.Strategies {
+    public interface IRenderStrategy {
+        Polygon Render(IRenderable r, IRay ray);
     }
 }

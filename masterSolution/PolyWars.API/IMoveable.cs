@@ -1,8 +1,15 @@
-﻿namespace PolyWars.API {
+﻿using PolyWars.API.Strategies;
+
+namespace PolyWars.API {
     public interface IMoveable {
         double Velocity { get; set; }
         double MaxVelocity { get; }
         double RPM { get; set; }
         double MaxRPM { get; set; }
+
+        IShape Shape { get; }
+        IMoveStrategy Mover { get; }
+
+        void Move(decimal deltaTime);
     }
 }
