@@ -1,5 +1,7 @@
-﻿namespace PolyWars.Server {
-    public class User {
+﻿using PolyWars.API.Network;
+
+namespace PolyWars.Server {
+    public class User : IUser {
         public User() {
 
         }

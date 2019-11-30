@@ -1,8 +1,5 @@
 ﻿using PolyWars.API;
-using PolyWars.Model;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using PolyWars.ServerClasses;
 
 namespace PolyWars.Logic {
 
@@ -16,7 +13,7 @@ namespace PolyWars.Logic {
 
         public static InputController Instance {
             get {
-                if( instance == null ) {
+                if(instance == null) {
                     instance = new InputController();
                 }
                 return instance;
@@ -33,7 +30,7 @@ namespace PolyWars.Logic {
 
         public static Player Player { get; private set; }
 
-        public void initInput( Player player ) {
+        public void initInput(Player player) {
             Input = new Input();
             Player = player;
         }
@@ -43,22 +40,22 @@ namespace PolyWars.Logic {
             ButtonDown input = Input.queryInput();
             IMoveable shape = Player.PlayerShip;
             shape.RPM =
-                ( ( ( int ) ( input & ButtonDown.LEFT ) >> 2 ) * shape.MaxRPM ) -
-                ( ( int ) ( input & ButtonDown.RIGHT ) * shape.MaxRPM );
+                (((int) (input & ButtonDown.LEFT) >> 2) * shape.MaxRPM) -
+                ((int) (input & ButtonDown.RIGHT) * shape.MaxRPM);
 
             shape.Velocity =
-                ( ( ( int ) ( input & ButtonDown.UP ) >> 1 ) * shape.MaxVelocity ) -
-                ( ( ( int ) ( input & ButtonDown.DOWN ) >> 3 ) * shape.MaxVelocity );
+                (((int) (input & ButtonDown.UP) >> 1) * shape.MaxVelocity) -
+                (((int) (input & ButtonDown.DOWN) >> 3) * shape.MaxVelocity);
 
 
             // TODO Remove Debug Key
-            if( ( ( int ) ( input & ButtonDown.DEBUG ) >> 5 ) > 0 && hasRun == false ) {
+            if(((int) (input & ButtonDown.DEBUG) >> 5) > 0 && hasRun == false) {
                 Utility.FrameDebugTimer.outpuFrameTimerResults();
                 Utility.FrameDebugTimer.outpuMoveShapeTimerResults();
                 Utility.FrameDebugTimer.outpuCollisionTimerResults();
                 hasRun = true;
             }
-            
+
         }
     }
 }

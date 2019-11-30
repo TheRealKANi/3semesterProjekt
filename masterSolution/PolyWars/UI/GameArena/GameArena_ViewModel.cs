@@ -7,6 +7,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -19,18 +20,22 @@ namespace PolyWars.UI.GameArena {
     /// This class renders the Arena when the game is started 
     /// </summary>
     class GameArena_ViewModel : Observable {
+        private IPlayer player;
+        private IEnumerable<IResource> resources;
         public GameController GameController { get; private set; }
         public GameArena_ViewModel() {
+            ArenaCanvas = new Canvas {
+                Background = new SolidColorBrush(Colors.Aquamarine),
+            };
+
             FpsVisibility = Visibility.Visible;
             GameController = new GameController();
+            player = createPlayer();
 
-            IPlayer player = createPlayer();
-            IEnumerable<IResource> resources = generateResources(200);
-
-            ArenaCanvas = GameController.prepareGame(player, new List<IMoveable>(), resources);
+            GameController.prepareGame(ArenaCanvas, player, new List<IMoveable>(), resources);
             GameController.CanvasChangedEventHandler += onCanvasChanged;
-            GameController.playGame();
             ArenaCanvas.LayoutUpdated += updated;
+
         }
 
         private void updated(object sender, EventArgs e) {
@@ -88,20 +93,37 @@ namespace PolyWars.UI.GameArena {
                 return arenaCanvas;
             }
             set {
+                value.Loaded += OnCanvasLoaded;
+
                 arenaCanvas = value;
                 NotifyPropertyChanged();
             }
         }
+        public double ArenaHeight { get; set; }
+        public double ArenaWidth { get; set; }
+
+        private void OnCanvasLoaded(object sender, RoutedEventArgs e) {
+            if(sender is Canvas canvas) {
+                ArenaHeight = canvas.ActualHeight;
+                ArenaWidth = canvas.ActualWidth;
+                
+                
+                resources = generateResources(2000);
+                ArenaCanvas.UpdateLayout();
+                GameController.playGame();
+            }
+        }
+
         //TODO temp testing stuff below
         private IEnumerable<IResource> generateResources(int amount) {
             Random r = new Random();
-            Window w = Application.Current.MainWindow;
-            int margin = 50;
-            int width = (int) w.ActualWidth - margin;
-            int height = (int) w.ActualHeight - margin;
+            int margin = 15;
+            int width = (int) ArenaWidth - margin;
+            int height = (int) ArenaHeight - margin;
 
             for(int i = 0; i < amount; i++) {
-                IRay ray = new Ray(0, new Point(r.Next(margin, width), r.Next(margin, height - (margin * 2))), r.Next(0, 360));
+                //IRay ray = new Ray(0, new Point(r.Next(margin, width), r.Next(margin, height - (margin * 2))), r.Next(0, 360));
+                IRay ray = new Ray(0, new Point(r.Next(margin, width), r.Next(margin, height)), r.Next(0, 360));
                 IRenderStrategy renderStrategy = new RenderStrategy();
                 IRenderable renderable = new Renderable(Colors.Black, Colors.ForestGreen, 1, 15, 15, 4);
                 IShape shape = new Shape(0, ray, renderable, renderStrategy);
@@ -112,7 +134,7 @@ namespace PolyWars.UI.GameArena {
         }
         private IPlayer createPlayer() {
             IRay ray = new Ray(0, new Point(300, 300), 0);
-            IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 100, 100, 3);
+            IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 50, 50, 3);
             IShape shape = new Shape(0, ray, renderable, new RenderWithHeaderStrategy());
             IMoveable playerShip = new Moveable(0, 20, 0, 60, shape, new MoveStrategy());
             return new Player("", "", 0, playerShip);

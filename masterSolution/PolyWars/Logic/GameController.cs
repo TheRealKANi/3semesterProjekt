@@ -20,7 +20,7 @@ namespace PolyWars.Logic {
         private Canvas canvas;
         public Ticker Ticker { get; private set; }
         public static IPlayer Player { get; private set; }
-        public IEnumerable<IMoveable> Moveables { get; private set; }
+        public IEnumerable<IShape> Moveables { get; private set; }
         public IEnumerable<IResource> Resources { get; private set; }
         static public int Fps { get; set; }
         static private Stopwatch fpsTimer;
@@ -40,41 +40,20 @@ namespace PolyWars.Logic {
             fpsTimer.Reset();
         }
 
-        /// <summary>
-        /// This method prepares the canvas with a color and adds triangle to it with given values
-        /// </summary>
-        /// <returns>
-        /// Returns canvas with background color and triangle
-        /// </returns>
-        public Canvas prepareGame(IPlayer player, IEnumerable<IMoveable> moveables, IEnumerable<IResource> resources) {
+        public void prepareGame(IPlayer player, IEnumerable<IShape> immoveables, IEnumerable<IResource> resources) {
             Ticker = new Ticker();
             tickTimer = new Stopwatch();
 
             Player = player;
-            Moveables = moveables;
+            Moveables = immoveables;
             Resources = resources;
-
-            canvas = new Canvas {
-                Background = new SolidColorBrush( Colors.Aquamarine ),
-            };
-
             // TODO getOpponents();
 
             // TODO DEBUG - Init Frame Timer
-            Utility.FrameDebugTimer.initTimers();
-
-            canvas.Children.Add(player.PlayerShip.Shape.Polygon);
-
-            foreach( IShape shape in moveables.Select(x => x.Shape ).Concat(Resources.Select(x => x.Shape))) {
-                canvas.Children.Add( shape.Polygon );
-            }
-
-            isLoaded = true;
-
-            return canvas;
+            FrameDebugTimer.initTimers();
         }
 
-        
+
 
         /// <summary>
         /// When PlayGame executes, it associates with a thread by using a dispatcher
@@ -87,7 +66,7 @@ namespace PolyWars.Logic {
         /// ????
         /// </param>
         public void playGame() {
-            if( isPrepared() ) {
+            if(isPrepared()) {
                 fpsTimer.Start();
                 Ticker.Start();
             }
@@ -107,30 +86,30 @@ namespace PolyWars.Logic {
         public bool isPrepared() {
             return isLoaded;
         }
-        private static decimal DeltaTime( Stopwatch _tickTimer ) {
-            return (decimal)_tickTimer.Elapsed.TotalMilliseconds / baselineFps;
+        private static decimal DeltaTime(Stopwatch _tickTimer) {
+            return (decimal) _tickTimer.Elapsed.TotalMilliseconds / baselineFps;
         }
-        static public void calculateFrame( ) {
+        static public void calculateFrame() {
             try {
-                ThreadController.MainThreadDispatcher.Invoke( () => {
+                ThreadController.MainThreadDispatcher.Invoke(() => {
                     Player.PlayerShip.Move(DeltaTime(tickTimer));
                     tickTimer.Stop();
-                    CanvasChangedEventHandler?.Invoke( null, EventArgs.Empty );
-                } );
-            } catch( TaskCanceledException ) {
+                    CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
+                });
+            } catch(TaskCanceledException) {
                 // TODO Should we do something here
             }
         }
         static public void calculateFps() {
             try {
                 frames++;
-                if( fpsTimer.Elapsed.TotalMilliseconds >= 1000) {
+                if(fpsTimer.Elapsed.TotalMilliseconds >= 1000) {
                     Fps = frames;
                     frames = 0;
                     fpsTimer.Restart();
-                    
+
                 }
-            } catch( TaskCanceledException ) {
+            } catch(TaskCanceledException) {
                 // TODO Do we need to handle this?
             }
         }

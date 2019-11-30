@@ -93,20 +93,21 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Logic\ArenaController.cs" />
     <Compile Include="Logic\GameController.cs" />
     <Compile Include="Logic\Utility\FrameDebugTimer.cs" />
     <Compile Include="Model\TickEventArgs.cs" />
     <Compile Include="Logic\Utility\CollisionDetection.cs" />
     <Compile Include="Logic\Utility\ShapeCalculations.cs" />
     <Compile Include="Model\Input.cs" />
-    <Compile Include="Model\Player.cs" />
-    <Compile Include="Model\Resource.cs" />
+    <Compile Include="Network\NetworkController.cs" />
+    <Compile Include="ServerClasses\Player.cs" />
     <Compile Include="Logic\ThreadController.cs" />
     <Compile Include="Logic\InputController.cs" />
     <Compile Include="Model\Observable.cs" />
     <Compile Include="Model\RelayCommand.cs" />
-    <Compile Include="Model\Shape.cs" />
-    <Compile Include="Model\ShapeSize.cs" />
+    <Compile Include="ServerClasses\Resource.cs" />
+    <Compile Include="ServerClasses\Shape.cs" />
     <Compile Include="Model\Ticker.cs" />
     <Compile Include="NavigationController.cs" />
     <Compile Include="Network\GameService.cs" />

@@ -1,4 +1,5 @@
 ﻿using PolyWars.Model;
+using PolyWars.Network;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -32,7 +33,6 @@ namespace PolyWars.UI.Login {
             }
         }
         private ICommand loginCommand;
-
         public ICommand LoginCommand {
             get {
                 if(loginCommand == null) {
@@ -43,14 +43,10 @@ namespace PolyWars.UI.Login {
                 return loginCommand; 
             }
         }
-        
         private void Login(object o) {
-            if(o is string sstr) {
-                //IntPtr stringPointer = Marshal.SecureStringToBSTR(sstr);
-                //string normalString = Marshal.PtrToStringBSTR(stringPointer);
-                //Marshal.ZeroFreeBSTR(stringPointer);
-                //Debug.WriteLine(normalString);
-            }
+            NetworkController.GameService.ConnectAsync().Wait();
+            NetworkController.GameService.LoginAsync(Name).Wait();
+            NavigationController.Instance.navigate(Pages.MainMenu);
         }
     }
 }

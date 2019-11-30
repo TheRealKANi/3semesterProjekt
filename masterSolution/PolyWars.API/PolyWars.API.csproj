@@ -71,12 +71,14 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="IGameService.cs" />
+    <Compile Include="Network\IClient.cs" />
+    <Compile Include="Network\IGameService.cs" />
     <Compile Include="IMoveable.cs" />
     <Compile Include="IPlayer.cs" />
     <Compile Include="IRay.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="IRenderer.cs" />
+    <Compile Include="Network\IUser.cs" />
     <Compile Include="Strategies\IMoveStrategy.cs" />
     <Compile Include="Strategies\IRenderStrategy.cs" />
     <Compile Include="IResource.cs" />

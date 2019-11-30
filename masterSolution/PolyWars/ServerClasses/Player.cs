@@ -9,7 +9,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Windows.Shapes;
 
-namespace PolyWars.Model {
+namespace PolyWars.ServerClasses {
     public class Player : IPlayer {
         public Player(string name, string id, double currency, IMoveable playerShip) {
             Name = name;
