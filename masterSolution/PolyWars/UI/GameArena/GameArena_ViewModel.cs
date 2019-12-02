@@ -22,6 +22,8 @@ namespace PolyWars.UI.GameArena {
     class GameArena_ViewModel : Observable {
         private IPlayer player;
         private IEnumerable<IResource> resources;
+        private IEnumerable<IShape> immovables;
+
         public GameController GameController { get; private set; }
         public GameArena_ViewModel() {
             ArenaCanvas = new Canvas {
@@ -30,11 +32,15 @@ namespace PolyWars.UI.GameArena {
 
             FpsVisibility = Visibility.Visible;
             GameController = new GameController();
+
             player = createPlayer();
 
-            GameController.prepareGame(ArenaCanvas, player, new List<IMoveable>(), resources);
-            GameController.CanvasChangedEventHandler += onCanvasChanged;
-            ArenaCanvas.LayoutUpdated += updated;
+            immovables = new List<IShape>();
+            resources = new List<IResource>();
+
+
+            GameController.prepareGame(player, immovables, resources);
+
 
         }
 
@@ -93,9 +99,12 @@ namespace PolyWars.UI.GameArena {
                 return arenaCanvas;
             }
             set {
-                value.Loaded += OnCanvasLoaded;
-
                 arenaCanvas = value;
+                
+                ArenaCanvas.Loaded += OnCanvasLoaded;
+                GameController.CanvasChangedEventHandler += onCanvasChanged;
+                ArenaCanvas.LayoutUpdated += updated;
+
                 NotifyPropertyChanged();
             }
         }
@@ -107,8 +116,8 @@ namespace PolyWars.UI.GameArena {
                 ArenaHeight = canvas.ActualHeight;
                 ArenaWidth = canvas.ActualWidth;
                 
-                
-                resources = generateResources(2000);
+                resources = generateResources(50);
+                ArenaController.fillArena(ArenaCanvas, player, immovables, resources);
                 ArenaCanvas.UpdateLayout();
                 GameController.playGame();
             }

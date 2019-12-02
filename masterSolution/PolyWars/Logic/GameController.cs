@@ -51,6 +51,7 @@ namespace PolyWars.Logic {
 
             // TODO DEBUG - Init Frame Timer
             FrameDebugTimer.initTimers();
+            isLoaded = true;
         }
 
 

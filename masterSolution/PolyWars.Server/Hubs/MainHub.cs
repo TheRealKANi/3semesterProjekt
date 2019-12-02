@@ -7,7 +7,7 @@ using System.Linq;
 using System.Threading.Tasks;
 
 namespace PolyWars.Server.Hubs {
-    class ServerHub : Hub<IClient> {
+    class MainHub : Hub<IClient> {
         private static ConcurrentDictionary<string, IUser> PlayerClients = new ConcurrentDictionary<string, IUser>();
 
 
