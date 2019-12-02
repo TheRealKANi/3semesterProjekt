@@ -1,20 +1,21 @@
-﻿using PolyWars.Server.TestClient.Services;
+﻿using PolyWars.API;
+using PolyWars.Server.TestClient.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Runtime.InteropServices;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PolyWars.Server.TestClient {
     class Program {
-        public static IGameService GameService;
+        public static GameService GameService;
         public static bool IsConnected { get; set; }
         public static User User { get; set; }
         public static string _textMessage;
 
         public static List<User> Participants;
         public static bool IsLoggedIn;
+        public static List<ILobby> lobbies;
 
 
         private static TaskFactory ctxTaskFactory;
@@ -41,8 +42,12 @@ namespace PolyWars.Server.TestClient {
 
             Console.WriteLine("Input Username: ");
             string userName = Console.ReadLine();
-            
-            User = new User { Name = userName };
+
+            Console.WriteLine("Input password: ");
+            string password = Console.ReadLine();
+
+
+            User = new User { Name = userName, HashedPassword = password};
 
             MakeGameService();
             Connect().Wait();
@@ -52,6 +57,8 @@ namespace PolyWars.Server.TestClient {
             }
             if(IsLoggedIn) {
                 Console.WriteLine($"{User.Name} logged in");
+            } else {
+                Console.WriteLine("Could not login");
             }
             Console.ReadLine();
         }
@@ -73,22 +80,23 @@ namespace PolyWars.Server.TestClient {
         // 2
         private static async Task<bool> Login() {
             try {
-                List<User> users = new List<User>();
-                users = await GameService.LoginAsync(User.Name);
-                if(users != null) {
-                    users.ForEach(u => Participants.Add(new User() { Name = u.Name, ID = u.ID }));
+                lobbies = new List<ILobby>();
+                Console.WriteLine("Trying to get Lobbies from server");
+                lobbies = await GameService.LoginAsync(User);
+                Console.WriteLine("Got Lobbies from server");
+                if(lobbies != null) {
                     IsLoggedIn = true;
                     return true;
                 } else { return false; }
 
-            } catch(Exception) { return false; }
+            } catch(Exception e) { Console.WriteLine(printError(e)); return false; }
         }
         private static async Task<bool> Logout() {
             try {
                 await GameService.LogoutAsync();
                 IsLoggedIn = false;
                 return true;
-            } catch(Exception) { return false; }
+            } catch(Exception e) { Console.WriteLine(printError(e)); return false; }
         }
         private static async Task<bool> SendTextMessage() {
             try {
@@ -99,12 +107,11 @@ namespace PolyWars.Server.TestClient {
             }
         }
 
-        private static void ParticipantLogin(User u) {
-            var ptp = Participants.FirstOrDefault(p => string.Equals(p.Name, u.Name));
+        private static void ParticipantLogin(string name) {
+            var ptp = Participants.FirstOrDefault(p => string.Equals(p.Name, name));
             if(IsLoggedIn && ptp == null) {
                 ctxTaskFactory.StartNew(() => Participants.Add(new User {
-                    Name = u.Name,
-                    ID = u.ID
+                    Name = name
                 })).Wait();
             }
         }
@@ -125,7 +132,7 @@ namespace PolyWars.Server.TestClient {
         }
 
         private static async void Reconnected() {
-            if(!string.IsNullOrEmpty(User.Name)) await GameService.LoginAsync(User.Name);
+            if(!string.IsNullOrEmpty(User.Name)) await GameService.LoginAsync(User.Name, User.HashedPassword);
             IsConnected = true;
             IsLoggedIn = true;
         }
@@ -135,7 +142,7 @@ namespace PolyWars.Server.TestClient {
             await connectionTask.ContinueWith(t => {
                 if(!t.IsFaulted) {
                     IsConnected = true;
-                    GameService.LoginAsync(User.Name).Wait();
+                    GameService.LoginAsync(User.Name, User.HashedPassword).Wait();
                     IsLoggedIn = true;
                 }
             });

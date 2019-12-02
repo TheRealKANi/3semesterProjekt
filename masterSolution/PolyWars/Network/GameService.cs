@@ -1,9 +1,8 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using PolyWars.API;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 using PolyWars.API;
 using PolyWars.API.Network;
@@ -61,7 +60,7 @@ namespace PolyWars.Network {
         public async Task SendBroadcastMessageAsync(string msg) {
             await hubProxy.Invoke("BroadcastTextMessage", msg);
         }
-        
+
 
     }
 }

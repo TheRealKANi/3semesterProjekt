@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using PolyWars.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -7,9 +8,9 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PolyWars.Server.TestClient.Services {
-    public class GameService : IGameService   {
+    public class GameService {
 
-        public event Action<User> ParticipantLoggedIn;
+        public event Action<string> ParticipantLoggedIn;
         public event Action<string> ParticipantLoggedOut;
         public event Action<string> ParticipantDisconnected;
         public event Action<string> ParticipantReconnected;
@@ -20,15 +21,15 @@ namespace PolyWars.Server.TestClient.Services {
 
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
-        //private string url = "http://85.191.206.24:8080/Polywars";
-        private string url = "http://192.168.0.46:8080/Polywars";
+        private string url = "http://localhost:8080/Polywars";
+
         public async Task ConnectAsync() {
             Connection = new HubConnection(url);
             hubProxy = Connection.CreateHubProxy("LobbyHub");
-            hubProxy.On<User>("ParticipantLogin", (u) => ParticipantLoggedIn?.Invoke(u));
-            hubProxy.On<string>("ParticipantLogout", (n) => ParticipantLoggedOut?.Invoke(n));
-            hubProxy.On<string>("ParticipantDisconnection", (n) => ParticipantDisconnected?.Invoke(n));
-            hubProxy.On<string>("ParticipantReconnection", (n) => ParticipantReconnected?.Invoke(n));
+            hubProxy.On<string>("ParticipantLogin", (username) => ParticipantLoggedIn?.Invoke(username));
+            hubProxy.On<string>("ParticipantLogout", (username) => ParticipantLoggedOut?.Invoke(username));
+            hubProxy.On<string>("ParticipantDisconnection", (username) => ParticipantDisconnected?.Invoke(username));
+            hubProxy.On<string>("ParticipantReconnection", (username) => ParticipantReconnected?.Invoke(username));
             hubProxy.On<string, string>("BroadcastTextMessage", (author, message) => NewTextMessage?.Invoke(author, message));
 
             Connection.Reconnecting += Reconnecting;
@@ -50,8 +51,12 @@ namespace PolyWars.Server.TestClient.Services {
             ConnectionReconnecting?.Invoke();
         }
 
-        public async Task<List<User>> LoginAsync(string name) {
-            return await hubProxy.Invoke<List<User>>("Login", new object[] { name });
+        public async Task<List<ILobby>> LoginAsync(IUser user) {
+            return await hubProxy.Invoke<List<ILobby>>("Login", new object[] { user.Name, user.HashedPassword });
+        }
+
+        public async Task<List<ILobby>> GetLobbies() {
+            return await hubProxy.Invoke<List<ILobby>>("GetLobbies");
         }
 
         public async Task LogoutAsync() {
@@ -60,7 +65,10 @@ namespace PolyWars.Server.TestClient.Services {
         public async Task SendBroadcastMessageAsync(string msg) {
             await hubProxy.Invoke("BroadcastTextMessage", msg);
         }
-        
+
+        public void DeniedLogin(string msg) {
+            Console.WriteLine(msg);
+        }
 
     }
 }
