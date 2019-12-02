@@ -9,6 +9,7 @@ namespace PolyWars.Server {
         class Program {
             public static IAppBuilder app;
             static void Main(string[] args) {
+                //string url = "http://192.168.0.46:8080";
                 string url = "http://localhost:8080";
 
                 while(true) {

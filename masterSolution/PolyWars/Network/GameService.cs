@@ -21,6 +21,7 @@ namespace PolyWars.Network {
 
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
+        //private string url = "http://polywars.servegame.com:8080/Polywars";
         private string url = "http://localhost:8080/Polywars";
 
         public async Task ConnectAsync() {

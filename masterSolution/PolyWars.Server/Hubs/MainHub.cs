@@ -11,7 +11,11 @@ using System.Threading.Tasks;
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
         private static ConcurrentDictionary<string, IUser> PlayerClients = new ConcurrentDictionary<string, IUser>();
-
+        static Stopwatch s;
+        private static int count;
+        public MainHub() {
+           
+        }
 
         public override Task OnConnected() {
             Console.WriteLine($"Client connected: '{Context.ConnectionId}'");
@@ -40,16 +44,30 @@ namespace PolyWars.Server {
                     return newUser;
                 } else {
                     // Handle what to send back to denied client
-                    Clients.Caller.AccessDenied("No way Hozay!");
+                    Clients.Caller.AccessDenied("No way Jose!");
                 }
             }
             return null;
         }
-
-        public bool PlayerMoved(Ray playerIray) {
+        
+        
+        public bool PlayerMoved(Ray playerIRay) {
+            if(s == null) {
+                s = new Stopwatch();
+                s.Start();
+                count = 0;
+            }
+            count++;
             // Verify that IRay is not beyond movement bounds
             //Console.WriteLine($"Recived IRay from client: '{Clients.CallerState.UserName}'");
             //Console.WriteLine($"IRay: {playerIray.ToString()}");
+            //Console.WriteLine(s.Elapsed.TotalMilliseconds);
+            if(s.Elapsed.TotalMilliseconds >= 1000) {
+                s.Stop();
+                Console.WriteLine(count);
+                s.Restart();
+                count = 0;
+            }
             return true;
         }
         public void Logout() {

@@ -62,11 +62,12 @@ namespace PolyWars.Model {
         }
 
         private void waitForNextFrame(Stopwatch tickTimer) {
-            TimeSpan sleepDuration = new TimeSpan(1);
+            TimeSpan sleepDuration = new TimeSpan(5);
 
-            while(!frameDisplayed && tickTimer.Elapsed.TotalMilliseconds <= (935d / 120)) {
+            while(!frameDisplayed /* && tickTimer.Elapsed.TotalMilliseconds <= (1000d / 120) */) {
                 Thread.Sleep(sleepDuration);
             }
+            tickTimer.Restart();
         }
     }
 }
