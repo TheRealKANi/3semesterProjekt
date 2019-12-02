@@ -1,10 +1,14 @@
-﻿using PolyWars.Model;
+﻿using PolyWars.API.Network;
+using PolyWars.Model;
 using PolyWars.Network;
 using System.Security;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PolyWars.UI.Login {
     class Login_ViewModel : Observable {
+        private IUser user;
         private string name;
         public string Name {
             get {
@@ -15,31 +19,33 @@ namespace PolyWars.UI.Login {
                 NotifyPropertyChanged();
             }
         }
-        private SecureString password;
-        public SecureString Password {
+        private string hashedPassword;
+        public string HashedPassword {
             get {
-                return password;
+                return hashedPassword;
             }
             set {
-                password = value;
+                hashedPassword = value;
                 NotifyPropertyChanged();
             }
         }
+
         private ICommand loginCommand;
         public ICommand LoginCommand {
             get {
-                if(loginCommand == null) {
-                    loginCommand = new RelayCommand((o) => {
-                        return !string.IsNullOrWhiteSpace(Name);
-                    }, Login);
-                }
-                return loginCommand;
+
+                return loginCommand ?? (loginCommand = new RelayCommandAsync(() => Login(Name, HashedPassword)));
             }
         }
-        private void Login(object o) {
-            NetworkController.GameService.ConnectAsync().Wait();
-            NetworkController.GameService.LoginAsync(Name).Wait();
-            NavigationController.Instance.navigate(Pages.MainMenu);
+
+
+        private async Task<bool> Login(string username, string hashedPassword) {
+            if(!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(hashedPassword)) {
+                await NetworkController.GameService.ConnectAsync();
+                user = await NetworkController.GameService.LoginAsync(username, hashedPassword);
+                NavigationController.Instance.navigate(Pages.MainMenu);
+            }
+            return user != null ? true : false;
         }
     }
 }

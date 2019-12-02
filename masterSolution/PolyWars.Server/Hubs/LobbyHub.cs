@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR;
+using PolyWars.API;
 using PolyWars.API.Network;
 using System;
 using System.Collections.Concurrent;
@@ -10,20 +11,17 @@ namespace PolyWars.Server.Hubs {
     public class LobbyHub : Hub<IClient> {
         private static ConcurrentDictionary<string, User> PlayerClients = new ConcurrentDictionary<string, User>();
 
-        public List<User> Login(string name) {
-            if(!PlayerClients.ContainsKey(name)) {
-                Console.WriteLine($"++ {name} logged in with id: {Context.ConnectionId}");
-                List<User> users = new List<User>(PlayerClients.Values);
-                User newUser = new User { Name = name, ID = Context.ConnectionId };
-                var added = PlayerClients.TryAdd(name, newUser);
-                if(!added) return null;
-                Clients.CallerState.UserName = name;
-                Clients.CallerState.ID = newUser.ID;
-                Clients.Others.ClientLogin(newUser);
-                return users;
-            }
-            return null;
-        }
+        //public IUser Login(string name) {
+        //    if(!PlayerClients.ContainsKey(name)) {
+        //        Console.WriteLine($"++ {name} logged in with id: {Context.ConnectionId}");
+        //        User newUser = new User { Name = name, ID = Context.ConnectionId };
+        //        var added = PlayerClients.TryAdd(name, newUser);
+        //        if(!added) return null;
+        //        Clients.Others.announceClientLoggedIn(newUser.Name);
+        //        return newUser;
+        //    }
+        //    return null;
+        //}
         public void Logout() {
             string name = Clients.CallerState.UserName;
             if(!string.IsNullOrEmpty(name)) {

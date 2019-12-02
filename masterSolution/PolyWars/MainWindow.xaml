@@ -7,7 +7,8 @@
         xmlns:nav="clr-namespace:PolyWars"
         xmlns:local="clr-namespace:PolyWars"
         mc:Ignorable="d"
-        Title="PolyWars Ultimate Bloody MMO battle royal Gory War Simulator 9001!" WindowState="Maximized">
+        Title="PolyWars Ultimate Bloody MMO battle royal Gory War Simulator 9001!" Height="600" Width="600" Top="0" Left="1320" >
+    <!--WindowState="Maximized-->
     <Window.Resources>
         <nav:NavigationController x:Key="Nav"/>
     </Window.Resources>

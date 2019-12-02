@@ -1,6 +1,8 @@
 ﻿using PolyWars.Logic;
 using PolyWars.Model;
+using PolyWars.Network;
 using System;
+using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PolyWars.UI.MainMenu {
@@ -9,6 +11,9 @@ namespace PolyWars.UI.MainMenu {
     /// </summary>
     class MainMenu_ViewModel : Observable {
         //private List<IPlayer> Participants;
+        public MainMenu_ViewModel() {
+            
+        }
         private bool isConnected;
         public bool IsConnected {
             get {
@@ -33,7 +38,7 @@ namespace PolyWars.UI.MainMenu {
         public ICommand StartGame_Command {
             get {
                 if(startGame_Command == null) {
-                    startGame_Command = new RelayCommand((o) => { return true /*IsConnected && IsLoggedIn;*/; }, (o) => { NavigationController.Instance.navigate(Pages.Arena); });
+                    startGame_Command = new RelayCommand((o) => { return true; /* IsConnected && IsLoggedIn;*/ }, (o) => { NavigationController.Instance.navigate(Pages.Arena); });
                 }
                 return startGame_Command;
             }
@@ -50,12 +55,11 @@ namespace PolyWars.UI.MainMenu {
         private ICommand login_Command;
         public ICommand Login_Command {
             get {
-                if(login_Command == null) {
-                    login_Command = new RelayCommand((o) => { return true; }, (o) => { NavigationController.Instance.navigate(Pages.Login); });
-                }
-                return login_Command;
+                return login_Command ?? (new RelayCommand((o) => { return true; }, (o) => NavigationController.Instance.navigate(Pages.Login)));
             }
         }
+
+        
 
         /*private static async Task<bool> Login() {
             try {

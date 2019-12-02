@@ -1,4 +1,5 @@
 ﻿using PolyWars.Logic;
+using PolyWars.Network;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -9,11 +10,13 @@ namespace PolyWars.Model {
         public static int Fps { get; set; }
         private bool stopTickerThread;
         Thread thread;
+        public static bool frameDisplayed;
 
         public Ticker() {
             thread = new Thread(Tick) {
                 IsBackground = true
             };
+            frameDisplayed = false;
 
         }
 
@@ -28,6 +31,9 @@ namespace PolyWars.Model {
         public void Stop() {
             stopTickerThread = true;
         }
+        public void onFrameDisplayed(object sender, EventArgs e) {
+            frameDisplayed = true;
+        }
 
         private void Tick() {
             // TODO Remove/Refactor try catch block
@@ -40,7 +46,8 @@ namespace PolyWars.Model {
                 Logic.Utility.FrameDebugTimer.startFrameTimer();
                 InputController.Instance.applyInput();
 
-                //waitForNextFrame( GameController.tickTimer );
+                waitForNextFrame( GameController.tickTimer );
+                frameDisplayed = false;
                 try {
                     //TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( GameController. ) ) );
                     GameController.calculateFrame();
@@ -56,7 +63,8 @@ namespace PolyWars.Model {
 
         private void waitForNextFrame(Stopwatch tickTimer) {
             TimeSpan sleepDuration = new TimeSpan(1);
-            while(tickTimer.Elapsed.TotalMilliseconds <= (935d / 120)) {
+
+            while(!frameDisplayed && tickTimer.Elapsed.TotalMilliseconds <= (935d / 120)) {
                 Thread.Sleep(sleepDuration);
             }
         }

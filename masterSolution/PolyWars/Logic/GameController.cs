@@ -1,7 +1,9 @@
+using PolyWars.Api;
 using PolyWars.API;
 using PolyWars.API.Strategies;
 using PolyWars.Logic.Utility;
 using PolyWars.Model;
+using PolyWars.Network;
 using PolyWars.ServerClasses;
 using System;
 using System.Collections.Generic;
@@ -107,6 +109,12 @@ namespace PolyWars.Logic {
                 });
             } catch(TaskCanceledException) {
                 // TODO Should we do something here
+            }
+            try {
+                // Sends player iray to server
+                NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip.Shape.Ray);
+            } catch(Exception e) {
+                Debug.WriteLine("Error:" + e.Message);
             }
         }
 

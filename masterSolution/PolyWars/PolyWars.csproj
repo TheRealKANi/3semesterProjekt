@@ -101,6 +101,7 @@
     <Compile Include="Logic\Utility\ShapeCalculations.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Network\NetworkController.cs" />
+    <Compile Include="RelayCommandAsync.cs" />
     <Compile Include="ServerClasses\Player.cs" />
     <Compile Include="Logic\ThreadController.cs" />
     <Compile Include="Logic\InputController.cs" />
@@ -113,7 +114,6 @@
     <Compile Include="Network\GameService.cs" />
     <Compile Include="ServerClasses\Moveable.cs" />
     <Compile Include="ServerClasses\MoveStrategy.cs" />
-    <Compile Include="ServerClasses\Ray.cs" />
     <Compile Include="ServerClasses\Renderable.cs" />
     <Compile Include="ServerClasses\RenderStrategy.cs" />
     <Compile Include="UI\GameArena\GameArenaPage.xaml.cs">

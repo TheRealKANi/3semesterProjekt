@@ -1,32 +1,56 @@
 ﻿using Microsoft.AspNet.SignalR;
+using PolyWars.Api;
+using PolyWars.API;
 using PolyWars.API.Network;
 using System;
 using System.Collections.Concurrent;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace PolyWars.Server.Hubs {
-    class MainHub : Hub<IClient> {
+namespace PolyWars.Server {
+    public class MainHub : Hub<IClient> {
         private static ConcurrentDictionary<string, IUser> PlayerClients = new ConcurrentDictionary<string, IUser>();
 
 
+        public override Task OnConnected() {
+            Console.WriteLine($"Client connected: '{Context.ConnectionId}'");
+            //Clients.Caller.OnConnected();
+            return base.OnConnected();
+        }
         // TODO should get user from database
-        public IUser Login(string name) {
-            if(!PlayerClients.ContainsKey(name)) {
-                Console.WriteLine($"++ {name} logged in with id: {Context.ConnectionId}");
-                IUser newUser = new User { Name = name, ID = Context.ConnectionId };
-                bool added = PlayerClients.TryAdd(name, newUser);
+        public User Login(string username, string hashedPassword) {
+            if(!PlayerClients.ContainsKey(username)) {
+                
+                // TODO Verify user creds from DB here
+                if(true) {
+                    Console.WriteLine($"++ {username} logged in on connection id: '{Context.ConnectionId}', pass :'{hashedPassword}'");
+                    User newUser = new User(username, Context.ConnectionId, hashedPassword);
+                    bool added = PlayerClients.TryAdd(username, newUser);
 
-                if(!added) {
-                    return null;
+                    if(!added) {
+                        return null;
+                    }
+                    // Keeps username in shared state until client logs out
+                    Clients.CallerState.UserName = username;
+
+                    // Accounces to all other connected clients that *username* has joined
+                    Clients.Others.announceClientLoggedIn(username);
+
+                    return newUser;
+                } else {
+                    // Handle what to send back to denied client
+                    Clients.Caller.AccessDenied("No way Hozay!");
                 }
-
-                Clients.CallerState.UserName = name;
-                Clients.CallerState.ID = newUser.ID;
-                Clients.Others.ClientLogin(newUser);
-                return newUser;
             }
             return null;
+        }
+
+        public bool PlayerMoved(Ray playerIray) {
+            // Verify that IRay is not beyond movement bounds
+            //Console.WriteLine($"Recived IRay from client: '{Clients.CallerState.UserName}'");
+            //Console.WriteLine($"IRay: {playerIray.ToString()}");
+            return true;
         }
         public void Logout() {
             string name = Clients.CallerState.UserName;
@@ -52,5 +76,10 @@ namespace PolyWars.Server.Hubs {
             }
             return base.OnDisconnected(stopCalled);
         }
+
+        //// Recive Player IRay from clients { }
+        //public Task<IRay> playerMoved() {
+        //    return new Task<IRay>();
+        //}
     }
 }

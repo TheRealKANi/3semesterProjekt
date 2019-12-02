@@ -46,6 +46,7 @@ namespace PolyWars.UI.GameArena {
                 ArenaCanvas.Loaded += OnCanvasLoaded;
                 GameController.CanvasChangedEventHandler += onCanvasChanged;
                 ArenaCanvas.LayoutUpdated += updated;
+                ArenaCanvas.LayoutUpdated += GameController.Ticker.onFrameDisplayed;
 
                 NotifyPropertyChanged();
             }

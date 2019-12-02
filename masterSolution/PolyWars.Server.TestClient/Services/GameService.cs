@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using PolyWars.API.Network;
 using System;
 using System.Collections.Generic;
 using System.Net;

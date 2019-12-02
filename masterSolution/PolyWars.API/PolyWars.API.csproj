@@ -78,13 +78,16 @@
     <Compile Include="IRay.cs" />
     <Compile Include="IRenderable.cs" />
     <Compile Include="IRenderer.cs" />
+    <Compile Include="Network\ILobby.cs" />
     <Compile Include="Network\IUser.cs" />
+    <Compile Include="Ray.cs" />
     <Compile Include="Strategies\IMoveStrategy.cs" />
     <Compile Include="Strategies\IRenderStrategy.cs" />
     <Compile Include="IResource.cs" />
     <Compile Include="IShape.cs" />
     <Compile Include="IShapeSize.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="User.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />

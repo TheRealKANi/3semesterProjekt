@@ -20,9 +20,10 @@
             <Label>Username</Label>
             <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
             <Label>Password</Label>
-            <PasswordBox  Name="pwBox" />
-            
-            <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}" CommandParameter="{Binding Path=SecurePassword, ElementName=pwBox}" >Log In</Button>
+            <TextBox Name="pwBox" Text="{Binding HashedPassword, UpdateSourceTrigger=PropertyChanged}"/>
+
+
+            <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}">Log In</Button>
         </StackPanel>
     </Grid>
 </Page>

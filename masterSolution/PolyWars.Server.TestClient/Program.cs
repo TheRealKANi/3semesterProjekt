@@ -1,4 +1,5 @@
-﻿using PolyWars.Server.TestClient.Services;
+﻿using PolyWars.API.Network;
+using PolyWars.Server.TestClient.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -131,7 +132,7 @@ namespace PolyWars.Server.TestClient {
         }
 
         private static async void Reconnected() {
-            if(!string.IsNullOrEmpty(User.Name)) await GameService.LoginAsync(User.Name, User.HashedPassword);
+            if(!string.IsNullOrEmpty(User.Name)) await GameService.LoginAsync(User);
             IsConnected = true;
             IsLoggedIn = true;
         }

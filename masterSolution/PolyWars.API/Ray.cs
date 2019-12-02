@@ -1,8 +1,8 @@
 ﻿using PolyWars.API;
 using System.Windows;
 
-namespace PolyWars.ServerClasses {
-    class Ray : IRay {
+namespace PolyWars.Api {
+    public class Ray : IRay {
         public int ID { get; set; }
         public Point CenterPoint { get; set; }
         public double Angle { get; set; }
@@ -11,6 +11,10 @@ namespace PolyWars.ServerClasses {
             ID = iD;
             CenterPoint = centerPoint;
             Angle = angle;
+        }
+
+        public override string ToString() {
+            return $"id:{ID}, CenterPointX:{CenterPoint.X}Y:{CenterPoint.Y}, Angle:{Angle}";
         }
     }
 }
