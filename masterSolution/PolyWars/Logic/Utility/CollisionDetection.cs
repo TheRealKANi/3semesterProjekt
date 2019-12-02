@@ -1,9 +1,4 @@
-﻿using PolyWars.API;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Windows;
-
-namespace PolyWars.Logic.Utility {
+﻿namespace PolyWars.Logic.Utility {
     class CollisionDetection {
         public static void resourceCollisionDetection() {
             //// TODO DEBUG - Starts collision Timer

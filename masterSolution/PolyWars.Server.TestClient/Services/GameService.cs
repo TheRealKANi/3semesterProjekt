@@ -1,10 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-using PolyWars.API;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Net;
-using System.Text;
 using System.Threading.Tasks;
 
 namespace PolyWars.Server.TestClient.Services {

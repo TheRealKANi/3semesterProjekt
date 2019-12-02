@@ -23,7 +23,7 @@ namespace PolyWars.ServerClasses {
                 pc.Add(new Point() {
                     X = ray.CenterPoint.X + Math.Cos(radians) * r.Width,
                     Y = ray.CenterPoint.Y + Math.Sin(radians) * r.Height
-                }) ;
+                });
             }
 
             foreach(Point point in pc) {

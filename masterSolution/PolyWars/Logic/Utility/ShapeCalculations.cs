@@ -1,10 +1,4 @@
-﻿using PolyWars.API;
-using System;
-using System.Diagnostics;
-using System.Windows;
-using System.Windows.Media;
-
-namespace PolyWars.Logic.Utility {
+﻿namespace PolyWars.Logic.Utility {
     static class ShapeCalculations {
         //public static void moveShape( IShape shape, decimal deltaTime ) {
         //    // TODO DEBUG - Starts moveShape Timer

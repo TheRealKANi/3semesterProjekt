@@ -1,10 +1,6 @@
-﻿using PolyWars.API;
-using PolyWars.Logic;
+﻿using PolyWars.Logic;
 using PolyWars.Model;
-using PolyWars.Network;
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PolyWars.UI.MainMenu {
@@ -15,10 +11,10 @@ namespace PolyWars.UI.MainMenu {
         //private List<IPlayer> Participants;
         private bool isConnected;
         public bool IsConnected {
-            get { 
-                return isConnected; 
+            get {
+                return isConnected;
             }
-            set { 
+            set {
                 isConnected = value;
                 NotifyPropertyChanged();
             }
@@ -36,8 +32,8 @@ namespace PolyWars.UI.MainMenu {
         private ICommand startGame_Command;
         public ICommand StartGame_Command {
             get {
-                if( startGame_Command == null ) {
-                    startGame_Command = new RelayCommand( ( o ) => { return true /*IsConnected && IsLoggedIn;*/; }, ( o ) => { NavigationController.Instance.navigate( Pages.Arena ); } );
+                if(startGame_Command == null) {
+                    startGame_Command = new RelayCommand((o) => { return true /*IsConnected && IsLoggedIn;*/; }, (o) => { NavigationController.Instance.navigate(Pages.Arena); });
                 }
                 return startGame_Command;
             }
@@ -45,8 +41,8 @@ namespace PolyWars.UI.MainMenu {
         private ICommand settings_Command;
         public ICommand Settings_Command {
             get {
-                if( settings_Command == null ) {
-                    settings_Command = new RelayCommand( ( o ) => { return false; }, ( o ) => { throw new NotImplementedException(); } );
+                if(settings_Command == null) {
+                    settings_Command = new RelayCommand((o) => { return false; }, (o) => { throw new NotImplementedException(); });
                 }
                 return settings_Command;
             }
@@ -54,8 +50,8 @@ namespace PolyWars.UI.MainMenu {
         private ICommand login_Command;
         public ICommand Login_Command {
             get {
-                if( login_Command == null ) {
-                    login_Command = new RelayCommand( ( o ) => { return true; }, ( o ) => { NavigationController.Instance.navigate(Pages.Login); } );
+                if(login_Command == null) {
+                    login_Command = new RelayCommand((o) => { return true; }, (o) => { NavigationController.Instance.navigate(Pages.Login); });
                 }
                 return login_Command;
             }

@@ -1,5 +1,4 @@
-﻿using PolyWars.API;
-using PolyWars.Server.TestClient.Services;
+﻿using PolyWars.Server.TestClient.Services;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -47,7 +46,7 @@ namespace PolyWars.Server.TestClient {
             string password = Console.ReadLine();
 
 
-            User = new User { Name = userName, HashedPassword = password};
+            User = new User { Name = userName, HashedPassword = password };
 
             MakeGameService();
             Connect().Wait();

@@ -1,13 +1,5 @@
 ﻿using PolyWars.API;
 using PolyWars.Logic;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Media;
-using System.Windows.Shapes;
 
 namespace PolyWars.ServerClasses {
     public class Player : IPlayer {
@@ -17,7 +9,7 @@ namespace PolyWars.ServerClasses {
             Wallet = currency;
             PlayerShip = playerShip;
             InputController = InputController.Instance;
-            InputController.Instance.initInput( this );
+            InputController.Instance.initInput(this);
         }
         public string Name { get; set; }
         public string ID { get; private set; }

@@ -6,9 +6,9 @@ namespace PolyWars.Logic {
 
     public enum ButtonDown {
         RIGHT = 1,
-        UP =    2,
-        LEFT =  4,
-        DOWN =  8,
+        UP = 2,
+        LEFT = 4,
+        DOWN = 8,
         SPACE = 16,
         DEBUG = 32
     }
@@ -37,14 +37,14 @@ namespace PolyWars.Logic {
 
         public ButtonDown queryInput() {
             try {
-                ThreadController.MainThreadDispatcher.Invoke( () => {
+                ThreadController.MainThreadDispatcher.Invoke(() => {
                     PressedKeys &= 0;
-                    foreach( KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings ) {
-                        PressedKeys |= Keyboard.IsKeyDown( keyBinding.Key ) ? keyBinding.Value : 0;
+                    foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
+                        PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
                     }
-                } );
+                });
                 return PressedKeys;
-            } catch( TaskCanceledException ) {
+            } catch(TaskCanceledException) {
 
             }
             return PressedKeys;

@@ -1,9 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PolyWars.Logic.Utility {
     public class FrameDebugTimer {
@@ -60,9 +56,9 @@ namespace PolyWars.Logic.Utility {
         /// Stops the internal moveShape timer and adds captured time to internal list
         /// </summary>
         public static void stopMoveShapeTimer() {
-            if( moveShapeTimer.IsRunning ) {
+            if(moveShapeTimer.IsRunning) {
                 moveShapeTimer.Stop();
-                moveShapeTicks.Add( moveShapeTimer.Elapsed.TotalMilliseconds );
+                moveShapeTicks.Add(moveShapeTimer.Elapsed.TotalMilliseconds);
             }
         }
 
@@ -70,9 +66,9 @@ namespace PolyWars.Logic.Utility {
         /// Stops the internal collisionTimer and adds captured time to internal list
         /// </summary>
         public static void stopCollisionTimer() {
-            if( collisionTimer.IsRunning ) {
+            if(collisionTimer.IsRunning) {
                 collisionTimer.Stop();
-                collisionTicks.Add( collisionTimer.Elapsed.TotalMilliseconds );
+                collisionTicks.Add(collisionTimer.Elapsed.TotalMilliseconds);
             }
         }
 
@@ -80,9 +76,9 @@ namespace PolyWars.Logic.Utility {
         /// Stops the internal frameTimer and adds captured time to internal list
         /// </summary>
         public static void stopFrameTimer() {
-            if( frameTimer.IsRunning ) {
+            if(frameTimer.IsRunning) {
                 frameTimer.Stop();
-                frameTicks.Add( frameTimer.Elapsed.TotalMilliseconds );
+                frameTicks.Add(frameTimer.Elapsed.TotalMilliseconds);
             }
         }
 
@@ -95,22 +91,22 @@ namespace PolyWars.Logic.Utility {
         /// </summary>
         public static void outpuFrameTimerResults() {
             double totalTickTime = 0;
-            foreach( double tickTime in frameTicks ) {
+            foreach(double tickTime in frameTicks) {
                 totalTickTime += tickTime;
             }
             double averageTickTime = totalTickTime / frameTicks.Count;
             double totalRunTimeInMs = totalTickTime;
-            double averageFPS = frameTicks.Count / ( totalRunTimeInMs / 1000 );
+            double averageFPS = frameTicks.Count / (totalRunTimeInMs / 1000);
             double maxFPSms = 1000d / 60d;
 
-            Debug.WriteLine( "\n      Frame Rendering Timing Results - Accuracy: " + ( Stopwatch.IsHighResolution ? "High" : "Low") );
-            Debug.WriteLine( "        RunTime    : " + ( totalRunTimeInMs / 1000 ).ToString( "N4" ) + " s" );
-            Debug.WriteLine( "        n Frames   : " + frameTicks.Count.ToString( "N0" ) + " frames" );
-            Debug.WriteLine( "        AVG FPS    : " + averageFPS.ToString( "N2" ) + " FPS" );
-            Debug.WriteLine( "        AVG Frame  : " + averageTickTime.ToString( "N3" ) + " ms" );
-            Debug.WriteLine( "        Using " + ( averageTickTime / maxFPSms * 100d ).ToString( "N2" ) + "% of " + maxFPSms.ToString( "N2" ) + "ms" );
-            Debug.WriteLine( "        With " + numberOfResources + " resource(s)" ); // How manny % from using the full 16.6 ms 
-            Debug.WriteLine( "" );
+            Debug.WriteLine("\n      Frame Rendering Timing Results - Accuracy: " + (Stopwatch.IsHighResolution ? "High" : "Low"));
+            Debug.WriteLine("        RunTime    : " + (totalRunTimeInMs / 1000).ToString("N4") + " s");
+            Debug.WriteLine("        n Frames   : " + frameTicks.Count.ToString("N0") + " frames");
+            Debug.WriteLine("        AVG FPS    : " + averageFPS.ToString("N2") + " FPS");
+            Debug.WriteLine("        AVG Frame  : " + averageTickTime.ToString("N3") + " ms");
+            Debug.WriteLine("        Using " + (averageTickTime / maxFPSms * 100d).ToString("N2") + "% of " + maxFPSms.ToString("N2") + "ms");
+            Debug.WriteLine("        With " + numberOfResources + " resource(s)"); // How manny % from using the full 16.6 ms 
+            Debug.WriteLine("");
         }
 
         /// <summary>
@@ -122,18 +118,18 @@ namespace PolyWars.Logic.Utility {
         /// </summary>
         public static void outpuCollisionTimerResults() {
             double totalTickTime = 0;
-            foreach( double tickTime in collisionTicks ) {
+            foreach(double tickTime in collisionTicks) {
                 totalTickTime += tickTime;
             }
             double averageTickTime = totalTickTime / collisionTicks.Count;
             double totalRunTimeInMs = totalTickTime;
             double maxFPSms = 1000d / 60d;
 
-            Debug.WriteLine( "        RunTime      : " + ( totalRunTimeInMs / 1000 ).ToString( "N2" ) + " s" );
-            Debug.WriteLine( "        n collisions : " + collisionTicks.Count.ToString( "N0" ) + " frames" );
-            Debug.WriteLine( "        AVG collision: " + averageTickTime.ToString( "N3" ) + " ms" );
-            Debug.WriteLine( "        Using " + ( averageTickTime / maxFPSms * 100d ).ToString( "N2" ) + "% of " + maxFPSms.ToString( "N2" ) + "ms" );
-            Debug.WriteLine( "        Ticks pr second " + Stopwatch.Frequency.ToString("N0") + "\n");
+            Debug.WriteLine("        RunTime      : " + (totalRunTimeInMs / 1000).ToString("N2") + " s");
+            Debug.WriteLine("        n collisions : " + collisionTicks.Count.ToString("N0") + " frames");
+            Debug.WriteLine("        AVG collision: " + averageTickTime.ToString("N3") + " ms");
+            Debug.WriteLine("        Using " + (averageTickTime / maxFPSms * 100d).ToString("N2") + "% of " + maxFPSms.ToString("N2") + "ms");
+            Debug.WriteLine("        Ticks pr second " + Stopwatch.Frequency.ToString("N0") + "\n");
         }
 
         /// <summary>
@@ -145,18 +141,18 @@ namespace PolyWars.Logic.Utility {
         /// </summary>
         public static void outpuMoveShapeTimerResults() {
             double totalTickTime = 0;
-            foreach( double tickTime in moveShapeTicks ) {
+            foreach(double tickTime in moveShapeTicks) {
                 totalTickTime += tickTime;
             }
             double averageTickTime = totalTickTime / moveShapeTicks.Count;
             double totalRunTimeInMs = totalTickTime;
             double maxFPSms = 1000d / 60d;
 
-            Debug.WriteLine( "        RunTime     : " + ( totalRunTimeInMs / 1000 ).ToString( "N2" ) + " s" );
-            Debug.WriteLine( "        n moveShape : " + moveShapeTicks.Count.ToString( "N0" ) + " frames" );
-            Debug.WriteLine( "        AVG Move    : " + averageTickTime.ToString( "N3" ) + " ms" );
-            Debug.WriteLine( "        Using " + ( averageTickTime / maxFPSms * 100d ).ToString( "N2" ) + "% of " + maxFPSms.ToString( "N2" ) + "ms" );
-            Debug.WriteLine( "" );
+            Debug.WriteLine("        RunTime     : " + (totalRunTimeInMs / 1000).ToString("N2") + " s");
+            Debug.WriteLine("        n moveShape : " + moveShapeTicks.Count.ToString("N0") + " frames");
+            Debug.WriteLine("        AVG Move    : " + averageTickTime.ToString("N3") + " ms");
+            Debug.WriteLine("        Using " + (averageTickTime / maxFPSms * 100d).ToString("N2") + "% of " + maxFPSms.ToString("N2") + "ms");
+            Debug.WriteLine("");
         }
 
     }

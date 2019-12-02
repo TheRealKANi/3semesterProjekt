@@ -1,7 +1,5 @@
 ﻿using PolyWars.Logic;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
@@ -13,10 +11,10 @@ namespace PolyWars.Model {
         Thread thread;
 
         public Ticker() {
-            thread = new Thread( Tick ) {
+            thread = new Thread(Tick) {
                 IsBackground = true
             };
-            
+
         }
 
         public void Start() {
@@ -34,9 +32,9 @@ namespace PolyWars.Model {
         private void Tick() {
             // TODO Remove/Refactor try catch block
 
-            
+
             GameController.tickTimer.Restart();
-            while( !stopTickerThread ) {
+            while(!stopTickerThread) {
 
                 // TODO DEBUG - Starts Frame Timer
                 Logic.Utility.FrameDebugTimer.startFrameTimer();
@@ -48,7 +46,7 @@ namespace PolyWars.Model {
                     GameController.calculateFrame();
                     //GameController.calculateFps();
                     GameController.tickTimer.Restart();
-                } catch( TaskCanceledException ) {
+                } catch(TaskCanceledException) {
                     // TODO Do we need to handle this?
                 }
                 // TODO DEBUG - Stops Frame Timer
@@ -56,10 +54,10 @@ namespace PolyWars.Model {
             }
         }
 
-        private void waitForNextFrame( Stopwatch tickTimer ) {
+        private void waitForNextFrame(Stopwatch tickTimer) {
             TimeSpan sleepDuration = new TimeSpan(1);
-            while( tickTimer.Elapsed.TotalMilliseconds <= ( 935d / 120 ) ) {
-                Thread.Sleep( sleepDuration  );
+            while(tickTimer.Elapsed.TotalMilliseconds <= (935d / 120)) {
+                Thread.Sleep(sleepDuration);
             }
         }
     }

@@ -1,16 +1,26 @@
 ﻿using PolyWars.API;
-using System.Collections.Generic;
 using System.Linq;
 using System.Windows.Controls;
+using System.Windows.Media;
 
 namespace PolyWars.Logic {
     static class ArenaController {
-        public static void fillArena(Canvas canvas, IPlayer player, IEnumerable<IShape> immovables, IEnumerable<IResource> resources) {
-            canvas.Children.Add(player.PlayerShip.Shape.Polygon);
 
-            foreach(IShape shape in immovables.Concat(resources.Select(x => x.Shape))) {
-                canvas.Children.Add(shape.Polygon);
-            }
+        public static Canvas ArenaCanvas { get; private set; }
+
+        public static void generateCanvas() {
+            ArenaCanvas = new Canvas {
+                Background = new SolidColorBrush(Colors.Aquamarine)
+            };
         }
+
+        public static void fillArena() {
+            foreach(IShape shape in GameController.Immovables.Concat(GameController.Resources.Select(x => x.Shape))) {
+                ArenaCanvas.Children.Add(shape.Polygon);
+            }
+            // Player goes on top of all other IShapes
+            ArenaCanvas.Children.Add(GameController.Player.PlayerShip.Shape.Polygon);
+        }
+
     }
 }

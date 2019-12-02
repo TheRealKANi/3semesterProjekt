@@ -1,13 +1,6 @@
 ﻿using PolyWars.Model;
 using PolyWars.Network;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
-using System.Linq;
-using System.Runtime.InteropServices;
 using System.Security;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
 namespace PolyWars.UI.Login {
@@ -37,10 +30,10 @@ namespace PolyWars.UI.Login {
             get {
                 if(loginCommand == null) {
                     loginCommand = new RelayCommand((o) => {
-                        return !string.IsNullOrWhiteSpace(Name) ;
+                        return !string.IsNullOrWhiteSpace(Name);
                     }, Login);
                 }
-                return loginCommand; 
+                return loginCommand;
             }
         }
         private void Login(object o) {

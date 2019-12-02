@@ -1,37 +1,36 @@
 using PolyWars.API;
+using PolyWars.API.Strategies;
 using PolyWars.Logic.Utility;
 using PolyWars.Model;
+using PolyWars.ServerClasses;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Media;
-using System.Linq;
-using PolyWars.ServerClasses;
-using PolyWars.API.Strategies;
 
 namespace PolyWars.Logic {
     class GameController {
-        private bool isLoaded;
-        static private int frames = 0;
-        private Canvas canvas;
-        public Ticker Ticker { get; private set; }
-        public static IPlayer Player { get; private set; }
-        public IEnumerable<IShape> Moveables { get; private set; }
-        public IEnumerable<IResource> Resources { get; private set; }
-        static public int Fps { get; set; }
-        static private Stopwatch fpsTimer;
-        public static Stopwatch tickTimer { get; private set; }
-        private const decimal baselineFps = 1000m / 60; // miliseconds per frame at 60 fps 
 
+        static private bool isLoaded;
+        static private int frames = 0;
+        static private Stopwatch fpsTimer;
+        static public Ticker Ticker { get; private set; }
+        static public IPlayer Player { get; private set; }
+        static public IEnumerable<IShape> Immovables { get; private set; }
+        static public List<IResource> Resources { get; private set; }
+        static public int Fps { get; set; }
+        static public Stopwatch tickTimer { get; private set; }
+        static public double ArenaWidth { get; set; }
+        static public double ArenaHeight { get; set; }
+
+        private const decimal baselineFps = 1000m / 60; // miliseconds per frame at 60 fps 
         static public EventHandler<EventArgs> CanvasChangedEventHandler;
 
 
         /// <summary>
-        /// GameController constructor defines all parameter that this class needs to handle
+        /// Default constructor of GameController Class
         /// </summary>
         public GameController() {
 
@@ -40,13 +39,14 @@ namespace PolyWars.Logic {
             fpsTimer.Reset();
         }
 
-        public void prepareGame(IPlayer player, IEnumerable<IShape> immoveables, IEnumerable<IResource> resources) {
+        public void prepareGame() {
             Ticker = new Ticker();
             tickTimer = new Stopwatch();
 
-            Player = player;
-            Moveables = immoveables;
-            Resources = resources;
+            ArenaController.generateCanvas();
+            Immovables = new List<IShape>();
+
+            Player = createPlayer();
             // TODO getOpponents();
 
             // TODO DEBUG - Init Frame Timer
@@ -54,42 +54,50 @@ namespace PolyWars.Logic {
             isLoaded = true;
         }
 
-
-
-        /// <summary>
-        /// When PlayGame executes, it associates with a thread by using a dispatcher
-        /// and renders a canvas
-        /// </summary>
-        /// <param name="arenaCanvas">
-        /// Specified canvas that shapes are rendered on to
-        /// </param>
-        /// <param name="eventHandler">
-        /// ????
-        /// </param>
         public void playGame() {
             if(isPrepared()) {
                 fpsTimer.Start();
                 Ticker.Start();
             }
         }
+
         public void endGame() {
             Ticker.Stop();
             fpsTimer.Stop();
         }
 
-        /// <summary>
-        /// This method is run to check if the game runs 
-        /// </summary>
-        /// <returns>
-        /// Loads the game if not already running
-        /// </returns>
+        public static void generateResources(int amount) {
+            Random r = new Random();
+            int margin = 15;
+            int width = (int) ArenaWidth - margin;
+            int height = (int) ArenaHeight - margin;
+            Resources = new List<IResource>();
+            for(int i = 0; i < amount; i++) {
+                IRay ray = new Ray(0, new Point(r.Next(margin, width), r.Next(margin, height)), r.Next(0, 360));
+                IRenderStrategy renderStrategy = new RenderStrategy();
+                IRenderable renderable = new Renderable(Colors.Black, Colors.ForestGreen, 1, 15, 15, 4);
+                IShape shape = new Shape(0, ray, renderable, renderStrategy);
+                IResource resource = new Resource(shape, 5);
+                Resources.Add(resource);
+            }
+        }
+
+        private IPlayer createPlayer() {
+            IRay ray = new Ray(0, new Point(300, 300), 0);
+            IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 50, 50, 3);
+            IShape shape = new Shape(0, ray, renderable, new RenderWithHeaderStrategy());
+            IMoveable playerShip = new Moveable(0, 20, 0, 60, shape, new MoveStrategy());
+            return new Player("", "", 0, playerShip);
+        }
 
         public bool isPrepared() {
             return isLoaded;
         }
+
         private static decimal DeltaTime(Stopwatch _tickTimer) {
             return (decimal) _tickTimer.Elapsed.TotalMilliseconds / baselineFps;
         }
+
         static public void calculateFrame() {
             try {
                 ThreadController.MainThreadDispatcher.Invoke(() => {
@@ -101,6 +109,7 @@ namespace PolyWars.Logic {
                 // TODO Should we do something here
             }
         }
+
         static public void calculateFps() {
             try {
                 frames++;
@@ -108,7 +117,6 @@ namespace PolyWars.Logic {
                     Fps = frames;
                     frames = 0;
                     fpsTimer.Restart();
-
                 }
             } catch(TaskCanceledException) {
                 // TODO Do we need to handle this?

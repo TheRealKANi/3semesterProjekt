@@ -2,7 +2,6 @@
 using PolyWars.API.Network;
 using System;
 using System.Collections.Concurrent;
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -21,7 +20,7 @@ namespace PolyWars.Server.Hubs {
                 if(!added) {
                     return null;
                 }
-                
+
                 Clients.CallerState.UserName = name;
                 Clients.CallerState.ID = newUser.ID;
                 Clients.Others.ClientLogin(newUser);

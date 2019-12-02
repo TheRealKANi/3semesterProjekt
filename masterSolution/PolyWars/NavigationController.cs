@@ -19,9 +19,9 @@ namespace PolyWars {
         private static NavigationController instance;
         public static NavigationController Instance {
             get {
-                if( instance == null ) {
+                if(instance == null) {
                     instance = new NavigationController();
-                    instance.navigate( Pages.MainMenu);
+                    instance.navigate(Pages.MainMenu);
                 }
                 return instance;
             }
@@ -30,7 +30,7 @@ namespace PolyWars {
         private Frame frame;
         public Frame Frame {
             get {
-                if( frame == null ) {
+                if(frame == null) {
                     Frame = new Frame();
                 }
                 return frame;
@@ -44,7 +44,7 @@ namespace PolyWars {
         private MainMenu mainMenu;
         public MainMenu MainMenu {
             get {
-                if( mainMenu == null ) {
+                if(mainMenu == null) {
                     mainMenu = new MainMenu();
                 }
                 return mainMenu;
@@ -54,7 +54,7 @@ namespace PolyWars {
         private GameArenaPage arenaPage;
         public GameArenaPage ArenaPage {
             get {
-                if( arenaPage == null ) {
+                if(arenaPage == null) {
                     arenaPage = new GameArenaPage();
                 }
                 return arenaPage;
@@ -73,7 +73,7 @@ namespace PolyWars {
             }
         }
 
-        public void navigate( Pages p ) {
+        public void navigate(Pages p) {
             switch(p) {
                 case Pages.MainMenu:
                 Frame.Navigate(MainMenu);

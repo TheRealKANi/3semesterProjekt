@@ -13,17 +13,17 @@ namespace PolyWars.Model {
         Func<object, bool> canExecute;
         Action<object> execute;
 
-        public RelayCommand( Func<object, bool> canExecute, Action<object> execute ) {
+        public RelayCommand(Func<object, bool> canExecute, Action<object> execute) {
             this.canExecute = canExecute;
             this.execute = execute;
         }
 
-        public bool CanExecute( object parameter ) {
-            return canExecute.Invoke( parameter );
+        public bool CanExecute(object parameter) {
+            return canExecute.Invoke(parameter);
         }
 
-        public void Execute( object parameter ) {
-            execute( parameter );
+        public void Execute(object parameter) {
+            execute(parameter);
         }
     }
 }

@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-using PolyWars.API;
+using PolyWars.API.Network;
 using System;
-using System.Collections.Generic;
 using System.Net;
 using System.Threading.Tasks;
-using PolyWars.API;
-using PolyWars.API.Network;
 
 namespace PolyWars.Network {
     public class GameService : IGameService {

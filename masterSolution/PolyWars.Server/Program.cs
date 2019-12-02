@@ -8,7 +8,7 @@ namespace PolyWars.Server {
     namespace ChatServerCS {
         class Program {
             public static IAppBuilder app;
-            static void Main( string[] args ) {
+            static void Main(string[] args) {
                 string url = "http://localhost:8080";
 
                 while(true) {

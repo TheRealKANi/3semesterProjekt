@@ -1,6 +1,4 @@
-﻿using PolyWars.API;
-
-namespace PolyWars.Server {
+﻿namespace PolyWars.Server {
     public class User : IUser {
 
         public string HashedPassword { get; set; }
