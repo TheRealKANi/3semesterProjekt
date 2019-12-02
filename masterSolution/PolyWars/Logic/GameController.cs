@@ -84,7 +84,7 @@ namespace PolyWars.Logic {
 
         private IPlayer createPlayer() {
             IRay ray = new Ray(0, new Point(300, 300), 0);
-            IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 50, 50, 3);
+            IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 25, 25, 3);
             IShape shape = new Shape(0, ray, renderable, new RenderWithHeaderStrategy());
             IMoveable playerShip = new Moveable(0, 20, 0, 60, shape, new MoveStrategy());
             return new Player("", "", 0, playerShip);

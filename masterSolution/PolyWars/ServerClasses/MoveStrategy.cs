@@ -1,5 +1,6 @@
 ﻿using PolyWars.API;
 using PolyWars.API.Strategies;
+using PolyWars.Logic.Utility;
 using System;
 using System.Windows;
 using System.Windows.Media;
@@ -26,6 +27,7 @@ namespace PolyWars.ServerClasses {
                 p.Offset(offsetX, offsetY);
                 pc[i] = p;
             }
+            CollisionDetection.resourceCollisionDetection();
         }
     }
 }
