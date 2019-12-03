@@ -44,7 +44,7 @@ namespace PolyWars.Model {
 
                 // TODO DEBUG - Starts Frame Timer
                 Logic.Utility.FrameDebugTimer.startFrameTimer();
-                InputController.Instance.applyInput();
+                InputController.applyInput();
 
                 waitForNextFrame( GameController.tickTimer );
                 frameDisplayed = false;

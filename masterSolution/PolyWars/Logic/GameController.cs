@@ -13,11 +13,12 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
+using System.Collections.Concurrent;
 
 namespace PolyWars.Logic {
     class GameController {
 
-        private static bool isPrepaired;
+        private static bool isPrepared;
         private static int frames = 0;
         private static Stopwatch fpsTimer;
         public static Ticker Ticker { get; private set; }
@@ -25,7 +26,7 @@ namespace PolyWars.Logic {
         public static string Username { get; set; }
         public static string UserID { get; set; }
         public static IEnumerable<IShape> Immovables { get; set; }
-        public static List<IResource> Resources { get; set; }
+        public static ConcurrentDictionary<string, IResource> Resources { get; set; }
         public static int Fps { get; set; }
         public static Stopwatch tickTimer { get; private set; }
         private static Stopwatch ServerTimer { get; set; }
@@ -37,33 +38,32 @@ namespace PolyWars.Logic {
         private static bool serverResponded;
 
 
+
         /// <summary>
         /// Default constructor of GameController Class
         /// </summary>
-        public GameController() {
+        static GameController() {
             serverResponded = true;
-            isPrepaired = false;
+            isPrepared = false;
             fpsTimer = new Stopwatch();
             fpsTimer.Reset();
+            Ticker = new Ticker();
+            tickTimer = new Stopwatch();
             ServerTimer = new Stopwatch();
             ServerTimer.Start();
         }
 
         public async Task prepareGame() {
-            Ticker = new Ticker();
-            tickTimer = new Stopwatch();
-            
             ArenaController.generateCanvas();
-            Player = createBlankPlayer();
-            Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new List<IResource>();
+            //Player = createBlankPlayer();
             Immovables = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new List<IShape>();
-            Immovables = new List<IShape>();
+            Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new ConcurrentDictionary<string, IResource>();
 
-            isLoaded = true;
+            isPrepared = true;
         }
 
         public void playGame() {
-            if(isPrepaired) {
+            if(isPrepared) {
                 fpsTimer.Start();
                 Ticker.Start();
             }
@@ -82,7 +82,7 @@ namespace PolyWars.Logic {
             return new Player(Username, UserID, 0, playerShip);
         }
 
-        private static decimal DeltaTime(Stopwatch _tickTimer) {
+        public static decimal DeltaTime(Stopwatch _tickTimer) {
             return (decimal) _tickTimer.Elapsed.TotalMilliseconds / baselineFps;
         }
 

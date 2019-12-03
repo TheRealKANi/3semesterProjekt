@@ -1,15 +1,13 @@
-﻿using PolyWars.API.Network;
-using PolyWars.API.Network.DTO;
-using System;
-using System.Collections.Generic;
-using System.Diagnostics;
 ﻿using PolyWars.API.Model.Interfaces;
+using PolyWars.API.Network.DTO;
+using PolyWars.Logic;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace PolyWars.Network {
     static class NetworkController {
-
+        public static bool IsConnected { get; set; }
         private static void resourcesChanged(List<ResourceDTO> obj) {
             throw new NotImplementedException();
         }

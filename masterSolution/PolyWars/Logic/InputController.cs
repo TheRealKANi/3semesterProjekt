@@ -4,42 +4,28 @@ using PolyWars.ServerClasses;
 
 namespace PolyWars.Logic {
 
-    public class InputController {
+    public static class InputController {
 
-        private InputController() { }
-        private static InputController instance;
+        static InputController() { Input = new Input(); }
 
         // Ensures that show tick average only runs once
-        private bool hasRun = false;
+        private static bool hasRun = false;
 
-        public static InputController Instance {
-            get {
-                if(instance == null) {
-                    instance = new InputController();
-                }
-                return instance;
-            }
-        }
+        
         /// <summary>
         /// Grabs input from a player
         /// </summary>
-        public Input Input { get; private set; }
+        public static Input Input { get; private set; }
 
         /// <summary>
         /// Initializes input
         /// </summary>
 
-        public static IPlayer Player { get; private set; }
+        //public static IPlayer Player { get; private set; }
 
-        public void initInput(IPlayer player) {
-            Input = new Input();
-            Player = player;
-        }
-
-
-        public void applyInput() {
+        public static void applyInput() {
             ButtonDown input = Input.queryInput();
-            IMoveable shape = Player.PlayerShip;
+            IMoveable shape = GameController.Player.PlayerShip;
             shape.RPM =
                 (((int) (input & ButtonDown.LEFT) >> 2) * shape.MaxRPM) -
                 ((int) (input & ButtonDown.RIGHT) * shape.MaxRPM);

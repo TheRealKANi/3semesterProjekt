@@ -7,7 +7,7 @@ namespace PolyWars.API.Model.Interfaces {
         double RPM { get; set; }
         double MaxRPM { get; set; }
 
-        IShape Shape { get; }
+        IShape Shape { get; set; }
         IMoveStrategy Mover { get; }
 
         void Move(decimal deltaTime);

@@ -9,15 +9,10 @@ namespace PolyWars.ServerClasses {
             ID = id;
             Wallet = currency;
             PlayerShip = playerShip;
-            InputController = InputController.Instance;
-            InputController.Instance.initInput(this);
         }
         public string Name { get; set; }
         public string ID { get; private set; }
         public double Wallet { get; set; }
         public IMoveable PlayerShip { get; private set; }
-
-        public InputController InputController { get; private set; }
-
     }
 }

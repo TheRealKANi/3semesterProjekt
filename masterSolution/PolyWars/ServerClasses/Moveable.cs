@@ -8,7 +8,7 @@ namespace PolyWars.ServerClasses {
         public double MaxVelocity { get; }
         public double RPM { get; set; }
         public double MaxRPM { get; set; }
-        public IShape Shape { get; private set; }
+        public IShape Shape { get; set; }
         public IMoveStrategy Mover { get; set; }
 
         public Moveable(double velocity, double maxVelocity, double rPM, double maxRPM, IShape shape, IMoveStrategy mover) {

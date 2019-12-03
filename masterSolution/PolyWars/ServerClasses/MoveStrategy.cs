@@ -1,6 +1,7 @@
 ﻿using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Strategies;
+using PolyWars.Logic;
 using PolyWars.Logic.Utility;
 using System;
 using System.Windows;
@@ -20,15 +21,16 @@ namespace PolyWars.ServerClasses {
             Point cp = shape.Ray.CenterPoint;
             cp.Offset(offsetX, offsetY);
             shape.Ray.CenterPoint = cp;
+            ThreadController.MainThreadDispatcher.Invoke(() => {
+                shape.Polygon.RenderTransform = new RotateTransform(-1 * shape.Ray.Angle, shape.Ray.CenterPoint.X, shape.Ray.CenterPoint.Y); //TODO only if it actually rotates?
 
-            shape.Polygon.RenderTransform = new RotateTransform(-1 * shape.Ray.Angle, shape.Ray.CenterPoint.X, shape.Ray.CenterPoint.Y); //TODO only if it actually rotates?
-
-            PointCollection pc = shape.Polygon.Points;
-            for(int i = 0; i < pc.Count; i++) {
-                Point p = pc[i];
-                p.Offset(offsetX, offsetY);
-                pc[i] = p;
-            }
+                PointCollection pc = shape.Polygon.Points;
+                for(int i = 0; i < pc.Count; i++) {
+                    Point p = pc[i];
+                    p.Offset(offsetX, offsetY);
+                    pc[i] = p;
+                }
+            });
             FrameDebugTimer.stopMoveShapeTimer();
             CollisionDetection.resourceCollisionDetection();
         }
