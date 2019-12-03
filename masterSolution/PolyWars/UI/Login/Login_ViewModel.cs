@@ -1,5 +1,6 @@
 ﻿using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
+using PolyWars.Logic;
 using PolyWars.Model;
 using PolyWars.Network;
 using System.Collections.Generic;
@@ -46,6 +47,8 @@ namespace PolyWars.UI.Login {
                 await NetworkController.GameService.ConnectAsync();
                 user = await NetworkController.GameService.LoginAsync(username, hashedPassword);
                 NavigationController.Instance.navigate(Pages.MainMenu);
+                GameController.Username = user.Name;
+                GameController.UserID = user.ID;
                 //NetworkController.GameService.test();
             }
             return user != null ? true : false;

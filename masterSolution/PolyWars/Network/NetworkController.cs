@@ -1,11 +1,16 @@
-﻿using PolyWars.API.Network;
+﻿using PolyWars.API.Model.Interfaces;
+using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
+using PolyWars.Logic;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace PolyWars.Network {
     static class NetworkController {
-        
+
+        public static GameService GameService { get; private set; }
+
         static NetworkController() {
             GameService = new GameService();
             //GameService.NewTextMessage += NewTextMessage;
@@ -20,14 +25,21 @@ namespace PolyWars.Network {
             //GameService.ConnectionClosed += Disconnected;
             GameService.announceClientLoggedIn += announceClientLoggedIn;
             //GameService.OnConnected += announceClientConnected;
-            GameService.AccessDenied += DeniedAccess;
+            GameService.accessDenied += deniedAccess;
+            GameService.updateOpponents += updateOpponents;
         }
-        public static GameService GameService { get; private set; }
+
+        public static void updateOpponents(List<PlayerDTO> opponentDTOs) {
+            Debug.WriteLine("Recived Opponents Update");
+            List<IShape> opponents = Adapters.PlayerAdapter.PlayerDTOtoIShape(opponentDTOs);
+            GameController.Immovables = opponents;
+        }
+
 
         public static void announceClientLoggedIn(string userName) {
             Debug.WriteLine($"{userName} has joined the lobby");
         }
-        public static void DeniedAccess(string reason) {
+        public static void deniedAccess(string reason) {
             Debug.WriteLine($"Access Denied, Reason: {reason}");
         }
     }

@@ -18,6 +18,7 @@ namespace PolyWars.API.Network {
         Task<IUser> LoginAsync(string name, string hashedPassword);
         Task LogoutAsync();
         Task<List<ResourceDTO>> getResourcesAsync();
+        Task<List<PlayerDTO>> getOpponentsAsync();
     }
 
 }

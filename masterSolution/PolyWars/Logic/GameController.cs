@@ -17,12 +17,14 @@ using System.Windows.Media;
 namespace PolyWars.Logic {
     class GameController {
 
-        private static bool isLoaded;
+        private static bool isPrepaired;
         private static int frames = 0;
         private static Stopwatch fpsTimer;
         public static Ticker Ticker { get; private set; }
-        public static IPlayer Player { get; private set; }
-        public static IEnumerable<IShape> Immovables { get; private set; }
+        public static IPlayer Player { get; set; }
+        public static string Username { get; set; }
+        public static string UserID { get; set; }
+        public static IEnumerable<IShape> Immovables { get; set; }
         public static List<IResource> Resources { get; set; }
         public static int Fps { get; set; }
         public static Stopwatch tickTimer { get; private set; }
@@ -40,7 +42,7 @@ namespace PolyWars.Logic {
         /// </summary>
         public GameController() {
             serverResponded = true;
-            isLoaded = false;
+            isPrepaired = false;
             fpsTimer = new Stopwatch();
             fpsTimer.Reset();
             ServerTimer = new Stopwatch();
@@ -52,29 +54,19 @@ namespace PolyWars.Logic {
             tickTimer = new Stopwatch();
             
             ArenaController.generateCanvas();
-
-            Player = createPlayer();
+            Player = createBlankPlayer();
             Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new List<IResource>();
+            Immovables = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new List<IShape>();
             Immovables = new List<IShape>();
 
+
+
             ArenaController.fillArena();
-
-            //Task<List<IResource>> OppnentTask = Adapters.ResourceAdapter.ResourceDTOAdapter();
-            
-            //resourceTask.Start();
-            ////tasks[1] = opponents
-            
-            //Task.WaitAll(resourceTask);
-            //Resources = resourceTask.Result;
-
-            // TODO getOpponents();
-
-            // TODO DEBUG - Init Frame Timer
-            isLoaded = true;
+            isPrepaired = true;
         }
 
         public void playGame() {
-            if(isPrepared()) {
+            if(isPrepaired) {
                 fpsTimer.Start();
                 Ticker.Start();
             }
@@ -85,17 +77,12 @@ namespace PolyWars.Logic {
             fpsTimer.Stop();
         }
 
-        private IPlayer createPlayer() {
-            IRay ray = new Ray("0", new Point(300, 300), 0);
-            IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 25, 25, 7);
-            IShape shape = new Shape("0", ray, renderable, new RenderWithHeaderStrategy());
+        private IPlayer createBlankPlayer() {
+            IRay ray = new Ray(UserID, new Point(300, 300), 0);
+            IRenderable renderable = new Renderable(Colors.Black, Colors.DimGray, 1, 25, 25, 3);
+            IShape shape = new Shape(UserID, ray, renderable, new RenderWithHeaderStrategy());
             IMoveable playerShip = new Moveable(0, 20, 0, 180, shape, new MoveStrategy());
-            playerShip.Shape.Polygon.Fill = new SolidColorBrush(Colors.DimGray);
-            return new Player("", "", 0, playerShip);
-        }
-
-        public bool isPrepared() {
-            return isLoaded;
+            return new Player(Username, UserID, 0, playerShip);
         }
 
         private static decimal DeltaTime(Stopwatch _tickTimer) {
@@ -123,7 +110,7 @@ namespace PolyWars.Logic {
             if(serverResponded && ServerTimer.Elapsed.TotalMilliseconds >= (950/60d)) {
                 ServerTimer.Restart();
                 serverResponded = false;
-                serverResponded = await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip.Shape.Ray); 
+                serverResponded = await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip.Shape.Ray);
             }
         }
         static public void calculateFps() {

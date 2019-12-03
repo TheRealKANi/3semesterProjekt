@@ -22,13 +22,12 @@ namespace PolyWars.Network {
         public event Action<string> ClientLoggedOut;
         public event Action<string> ClientDisconnected;
         public event Action<string> ClientReconnected;
-        public event Action<string> AccessDenied;
+        public event Action<string> accessDenied;
         public event Action ConnectionReconnecting;
         public event Action ConnectionReconnected;
         public event Action ConnectionClosed;
         public event Action<string, string> NewTextMessage;
-        public event Action<List<PlayerDTO>> getOpponents;
-        public event Action<List<ResourceDTO>> getResources;
+        public event Action<List<PlayerDTO>> updateOpponents;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
@@ -43,8 +42,10 @@ namespace PolyWars.Network {
             hubProxy.On<string>("ClientLogout", (n) => ClientLoggedOut?.Invoke(n));
             hubProxy.On<string>("ClientDisconnected", (n) => ClientDisconnected?.Invoke(n));
             hubProxy.On<string>("ClientReconnected", (n) => ClientReconnected?.Invoke(n));
+            
             //hubProxy.On<string>("OnConnected", (n) => OnConnected?.Invoke(n));
-            hubProxy.On<string>("AccessDenied", (n) => AccessDenied?.Invoke(n));
+            hubProxy.On<string>("AccessDenied", (n) => accessDenied?.Invoke(n));
+            hubProxy.On<List<PlayerDTO>>("updateOpponents", (l) => updateOpponents?.Invoke(l));
 
             Connection.Reconnecting += Reconnecting;
             Connection.Reconnected += Reconnected;
@@ -54,16 +55,13 @@ namespace PolyWars.Network {
             await Connection.Start();
 
         }
-        //public async void test() {
-        //    ResourceDTO test = await hubProxy.Invoke<ResourceDTO>("test");
-        //}
+
         public async Task<bool> PlayerMovedAsync(IRay playerIRay) {
             return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);
         }
 
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {
             return await hubProxy.Invoke<User>("Login", name, hashedPassword);
-            
         }
 
         public async Task LogoutAsync() {
@@ -75,19 +73,18 @@ namespace PolyWars.Network {
         }
 
         /// <summary>
-        /// Grabs the list of opponents from the server
+        /// Grabs the current list of opponents from the server
         /// </summary>
-        //public async Task<List<IPlayer>> getOpponentsAsync() {
-        //    List<PlayerDTO> opponents = await hubProxy.Invoke<List<PlayerDTO>>("getOpponents");
-        //    // TODO Convert PlayerDTO to IPlayer implement the call somewhere
-        //    return null;
-        //}
+        public async Task<List<PlayerDTO>> getOpponentsAsync() {
+            Debug.WriteLine("Asks Server for opponents");
+            return await hubProxy.Invoke<List<PlayerDTO>>("getOpponents");
+        }
 
         /// <summary>
-        /// Grabs the list of resources from the server
+        /// Grabs the list of remaning resources from the server
         /// </summary>
         public async Task<List<ResourceDTO>> getResourcesAsync() {
-            Debug.WriteLine("Asks for resources");
+            Debug.WriteLine("Asks Server for resources");
             return await hubProxy.Invoke<List<ResourceDTO>>("getResources");
         }
 

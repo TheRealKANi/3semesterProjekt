@@ -59,9 +59,6 @@ namespace PolyWars.UI.GameArena {
             if(sender is Canvas canvas) {
                 GameController.ArenaHeight = canvas.ActualHeight;
                 GameController.ArenaWidth = canvas.ActualWidth;
-                //GameController.generateResources(500);
-                //ArenaController.fillArena();
-
                 ArenaCanvas.UpdateLayout();
                 GameController.playGame();
             }

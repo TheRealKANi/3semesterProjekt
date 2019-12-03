@@ -1,16 +1,11 @@
-﻿using PolyWars.API.Model.Interfaces;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using PolyWars.Api.Model;
 
 namespace PolyWars.API.Network.DTO {
     public class PlayerDTO {
         public string Name { get; set; }
-        public string ID { get; private set; }
+        public string ID { get; set; }
         public double Wallet { get; set; }
         public int Vertices { get; set; }
-        public IRay Ray { get; set; }
+        public Ray Ray { get; set; }
     }
 }
