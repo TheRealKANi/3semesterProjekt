@@ -56,7 +56,7 @@ namespace PolyWars.Logic {
             ArenaController.generateCanvas();
             Player = createBlankPlayer();
             Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new List<IResource>();
-            //Immovables = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new List<IShape>();
+            Immovables = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new List<IShape>();
             Immovables = new List<IShape>();
 
 

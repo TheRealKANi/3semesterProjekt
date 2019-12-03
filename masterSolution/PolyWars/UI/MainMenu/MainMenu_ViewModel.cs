@@ -44,7 +44,6 @@ namespace PolyWars.UI.MainMenu {
         public ICommand StartGame_Command {
             get {
                 if(startGame_Command == null) {
-                    
                     startGame_Command = new RelayCommandAsync(() => startGame(), (o) => { return true; });
                 }
                 return startGame_Command;
@@ -69,7 +68,10 @@ namespace PolyWars.UI.MainMenu {
         }
 
         private async Task startGame() {
+            GameController gameController = new GameController();
+            await gameController.prepareGame();
             NavigationController.Instance.navigate(Pages.Arena);
+            gameController.playGame();
         }
     }
 }
