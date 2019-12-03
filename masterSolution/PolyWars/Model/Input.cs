@@ -1,5 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
 
 namespace PolyWars.Logic {
@@ -39,8 +41,11 @@ namespace PolyWars.Logic {
             try {
                 ThreadController.MainThreadDispatcher.Invoke(() => {
                     PressedKeys &= 0;
-                    foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
-                        PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
+
+                    if(Keyboard.FocusedElement is Frame frame && frame.Content.ToString().Contains("PolyWars")) {
+                        foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
+                            PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
+                        }
                     }
                 });
                 return PressedKeys;

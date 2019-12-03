@@ -19,7 +19,7 @@ namespace PolyWars.Logic.Utility {
         /// <summary>
         /// Initializes timer
         /// </summary>
-        public static void initTimers() {
+        static FrameDebugTimer() {
             //numberOfResources = GameController.Resources.Count;
             frameTicks = new List<double>();
             frameTimer = new Stopwatch();

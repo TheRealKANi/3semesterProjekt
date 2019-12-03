@@ -12,8 +12,8 @@ namespace PolyWars.ServerClasses {
         public Polygon Render(IRenderable r, IRay ray) {
             double verticeAngle = 360d / r.Vertices;
             Polygon p = new Polygon() {
-                Stroke = new SolidColorBrush(Colors.Black),
-                Fill = new SolidColorBrush(Colors.White),
+                Stroke = new SolidColorBrush(r.BorderColor),
+                Fill = new SolidColorBrush(r.FillColor),
                 StrokeThickness = r.StrokeThickness
             };
 

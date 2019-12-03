@@ -47,29 +47,26 @@ namespace PolyWars.Logic {
             ServerTimer.Start();
         }
 
-        public void prepareGame() {
+        public async Task prepareGame() {
             Ticker = new Ticker();
             tickTimer = new Stopwatch();
-
-            ArenaController.generateCanvas();
-            Immovables = new List<IShape>();
-            Resources =  new List<IResource>();
-
             
+            ArenaController.generateCanvas();
 
-            NetworkController.GameService.getResourcesAsync().Wait();
+            Player = createPlayer();
+            Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new List<IResource>();
+            Immovables = new List<IShape>();
 
-            Task<List<IResource>> resourceTask = Adapters.ResourceAdapter.ResourceDTOAdapter();
+            ArenaController.fillArena();
+
             //Task<List<IResource>> OppnentTask = Adapters.ResourceAdapter.ResourceDTOAdapter();
             
-            resourceTask.Start();
-            //tasks[1] = opponents
+            //resourceTask.Start();
+            ////tasks[1] = opponents
             
-            Task.WaitAll(resourceTask);
-            Resources = resourceTask.Result;
+            //Task.WaitAll(resourceTask);
+            //Resources = resourceTask.Result;
 
-            FrameDebugTimer.initTimers();
-            Player = createPlayer();
             // TODO getOpponents();
 
             // TODO DEBUG - Init Frame Timer
@@ -87,22 +84,6 @@ namespace PolyWars.Logic {
             Ticker.Stop();
             fpsTimer.Stop();
         }
-
-        //public static void generateResources(int amount) {
-        //    Random r = new Random();
-        //    int margin = 15;
-        //    int width = (int) ArenaWidth - margin;
-        //    int height = (int) ArenaHeight - margin;
-        //    Resources = new List<IResource>();
-        //    for(int i = 0; i < amount; i++) {
-        //        IRay ray = new Ray(0, new Point(r.Next(margin, width), r.Next(margin, height)), r.Next(0, 360));
-        //        IRenderStrategy renderStrategy = new RenderStrategy();
-        //        IRenderable renderable = new Renderable(Colors.Black, Colors.ForestGreen, 1, 15, 15, 4);
-        //        IShape shape = new Shape(0, ray, renderable, renderStrategy);
-        //        IResource resource = new Resource(0, shape, 5);
-        //        Resources.Add(resource);
-        //    }
-        //}
 
         private IPlayer createPlayer() {
             IRay ray = new Ray("0", new Point(300, 300), 0);

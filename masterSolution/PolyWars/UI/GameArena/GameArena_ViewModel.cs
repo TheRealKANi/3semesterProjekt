@@ -31,7 +31,10 @@ namespace PolyWars.UI.GameArena {
         }
         public string PlayerCurrency {
             get {
-                return GameController.Player.Wallet.ToString();
+                if(GameController.Player != null) {
+                    return GameController.Player.Wallet.ToString();
+                }
+                return 0.ToString();
             }
         }
 
@@ -57,7 +60,7 @@ namespace PolyWars.UI.GameArena {
                 GameController.ArenaHeight = canvas.ActualHeight;
                 GameController.ArenaWidth = canvas.ActualWidth;
                 //GameController.generateResources(500);
-                ArenaController.fillArena();
+                //ArenaController.fillArena();
 
                 ArenaCanvas.UpdateLayout();
                 GameController.playGame();

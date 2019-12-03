@@ -7,7 +7,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace PolyWars.ServerClasses {
-    class MoveStrategy : IMoveStrategy {
+    public class MoveStrategy : IMoveStrategy {
         public void Move(IMoveable moveable, decimal deltaTime) {
             FrameDebugTimer.startMoveShapeTimer();
             IShape shape = moveable.Shape;

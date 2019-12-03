@@ -1,7 +1,10 @@
-﻿using PolyWars.Logic;
+﻿using PolyWars.API.Model.Interfaces;
+using PolyWars.API.Network.DTO;
+using PolyWars.Logic;
 using PolyWars.Model;
 using PolyWars.Network;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Input;
 
@@ -38,7 +41,7 @@ namespace PolyWars.UI.MainMenu {
         public ICommand StartGame_Command {
             get {
                 if(startGame_Command == null) {
-                    startGame_Command = new RelayCommand((o) => { return true; /* IsConnected && IsLoggedIn;*/ }, (o) => { NavigationController.Instance.navigate(Pages.Arena); });
+                    startGame_Command = new RelayCommandAsync(() => startGame(), (o) => { return true; }); /* IsConnected && IsLoggedIn;*/ 
                 }
                 return startGame_Command;
             }
@@ -59,7 +62,11 @@ namespace PolyWars.UI.MainMenu {
             }
         }
 
-        
+        private async Task startGame() {
+            List<ResourceDTO> test = await NetworkController.GameService.getResourcesAsync();
+            NavigationController.Instance.navigate(Pages.Arena);
+
+        }
 
         /*private static async Task<bool> Login() {
             try {
