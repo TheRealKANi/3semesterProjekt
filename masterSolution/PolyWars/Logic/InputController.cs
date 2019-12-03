@@ -29,9 +29,9 @@ namespace PolyWars.Logic {
         /// Initializes input
         /// </summary>
 
-        public static Player Player { get; private set; }
+        public static IPlayer Player { get; private set; }
 
-        public void initInput(Player player) {
+        public void initInput(IPlayer player) {
             Input = new Input();
             Player = player;
         }

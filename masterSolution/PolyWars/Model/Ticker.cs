@@ -49,7 +49,6 @@ namespace PolyWars.Model {
                 waitForNextFrame( GameController.tickTimer );
                 frameDisplayed = false;
                 try {
-                    //TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( GameController. ) ) );
                     GameController.calculateFrame();
                     //GameController.calculateFps();
                     GameController.tickTimer.Restart();

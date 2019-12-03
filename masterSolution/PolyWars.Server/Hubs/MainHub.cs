@@ -10,6 +10,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Windows;
 
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
@@ -21,9 +22,9 @@ namespace PolyWars.Server {
         static Stopwatch s;
         private static int count;
         static MainHub() {
+            PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
-            PlayerClients = new ConcurrentDictionary<string, IUser>();
 
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
             foreach(ResourceDTO resource in resources) {
@@ -42,20 +43,24 @@ namespace PolyWars.Server {
         //}
         public List<ResourceDTO> getResources() {
             List<ResourceDTO> resources = new List<ResourceDTO>(Resources.Values);
-            Console.WriteLine($"Client asked for resources: '{Context.ConnectionId}' {resources}");
+            Console.WriteLine($"Client asked for resources: '{Context.ConnectionId}'");
             return resources;
         }
+
+        /// <summary>
+        /// Returns a list with opponents on the server AND containing the client's own object
+        /// </summary>
         public List<PlayerDTO> getOpponents() {
-            return Opponents.Values.Where(x => x.ID != Context.ConnectionId).ToList();
+            List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
+            Console.WriteLine($"Client asked for opponents: '{Context.ConnectionId}'");
+            return opponents;
         }
+
         public override Task OnConnected() {
             Console.WriteLine($"Client connected: '{Context.ConnectionId}'");
             return base.OnConnected();
         }
-        //public ResourceDTO test() {
-        //    return new ResourceDTO { Resource = ResourceFactory.generateResource() };
 
-        //}
         // TODO should get user from database
         public User Login(string username, string hashedPassword) {
             if(!PlayerClients.ContainsKey(username)) {
@@ -74,7 +79,15 @@ namespace PolyWars.Server {
 
                     // Accounces to all other connected clients that *username* has joined
                     Clients.Others.announceClientLoggedIn(username);
-
+                    Random r = new Random();
+                    // Creates the basic opponent layout
+                    Opponents.TryAdd(username, new PlayerDTO() {
+                        ID = newUser.ID,
+                        Name = newUser.Name,
+                        Ray = new Ray(newUser.ID, new Point(r.Next(50, 400), 300), 0), // Needs ray
+                        Vertices = 3,
+                        Wallet = 0
+                    });
                     return newUser;
                 } /*else {
                     // Handle what to send back to denied client
@@ -86,24 +99,51 @@ namespace PolyWars.Server {
 
 
         public bool PlayerMoved(Ray playerIRay) {
+            
+            // Verify that IRay is not beyond movement bounds
+            //Console.WriteLine($"Recived IRay from client: '{Clients.CallerState.UserName}'");
+            //Console.WriteLine($"IRay: {playerIray.ToString()}");
+            //Console.WriteLine(s.Elapsed.TotalMilliseconds);
+            bool result = false;
+            //// Method 1 - Too complex
+            //PlayerDTO orginal = new PlayerDTO();
+            //PlayerDTO newUser = new PlayerDTO();
+            //Opponents.TryGetValue(Clients.CallerState.UserName, out orginal);
+            //if(orginal.ID.Length > 0) {
+            //    newUser.ID = orginal.ID;
+            //    newUser.Name = orginal.Name;
+            //    newUser.Vertices = orginal.Vertices;
+            //    newUser.Wallet = orginal.Wallet;
+            //    newUser.Ray = playerIRay;
+            //    Opponents.TryUpdate(newUser.Name, newUser, orginal);
+            //    Console.WriteLine("Updated Opponent with new Ray");
+            //    result = true;
+            //}
+
+            // Method 2 - Better
+            string name = Clients.CallerState.UserName;
+            Opponents.TryRemove(name, out PlayerDTO player);
+            if(player != null) {
+                player.Ray = playerIRay;
+                result = Opponents.TryAdd(name, player);
+            }
+
             if(s == null) {
                 s = new Stopwatch();
                 s.Start();
                 count = 0;
             }
-            
             count++;
-            // Verify that IRay is not beyond movement bounds
-            //Console.WriteLine($"Recived IRay from client: '{Clients.CallerState.UserName}'");
-            //Console.WriteLine($"IRay: {playerIray.ToString()}");
-            //Console.WriteLine(s.Elapsed.TotalMilliseconds);
             if(s.Elapsed.TotalMilliseconds >= 1000) {
                 s.Stop();
-                Console.WriteLine(count);
+                Console.WriteLine($"Getting {count} PlayerMoved counts pr. second");
                 s.Restart();
                 count = 0;
+                List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
+                Console.WriteLine("Sending Opponents to all clients once pr. second");
+                Clients.All.updateOpponents(opponents);
             }
-            return true;
+            return result;
         }
 
         public void Logout() {
@@ -130,10 +170,5 @@ namespace PolyWars.Server {
             }
             return base.OnDisconnected(stopCalled);
         }
-
-        //// Recive Player IRay from clients { }
-        //public Task<IRay> playerMoved() {
-        //    return new Task<IRay>();
-        //}
     }
 }
