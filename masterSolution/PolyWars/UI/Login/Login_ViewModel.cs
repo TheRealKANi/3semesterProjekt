@@ -1,6 +1,8 @@
 ﻿using PolyWars.API.Network;
+using PolyWars.API.Network.DTO;
 using PolyWars.Model;
 using PolyWars.Network;
+using System.Collections.Generic;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
@@ -43,7 +45,9 @@ namespace PolyWars.UI.Login {
             if(!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(hashedPassword)) {
                 await NetworkController.GameService.ConnectAsync();
                 user = await NetworkController.GameService.LoginAsync(username, hashedPassword);
+                List<ResourceDTO> list = await NetworkController.GameService.getResourcesAsync();
                 NavigationController.Instance.navigate(Pages.MainMenu);
+                //NetworkController.GameService.test();
             }
             return user != null ? true : false;
         }

@@ -1,6 +1,6 @@
 ﻿using PolyWars.API.Strategies;
 
-namespace PolyWars.API {
+namespace PolyWars.API.Model.Interfaces {
     public interface IRenderer {
         IRenderStrategy Renderer { get; }
     }

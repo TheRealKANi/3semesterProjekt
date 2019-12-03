@@ -1,4 +1,5 @@
 ﻿using PolyWars.API;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Strategies;
 using PolyWars.Logic.Utility;
 using System;
@@ -8,6 +9,7 @@ using System.Windows.Media;
 namespace PolyWars.ServerClasses {
     class MoveStrategy : IMoveStrategy {
         public void Move(IMoveable moveable, decimal deltaTime) {
+            FrameDebugTimer.startMoveShapeTimer();
             IShape shape = moveable.Shape;
             shape.Ray.Angle += (double) ((decimal) (moveable.RPM * 360 / (60 * 60)) * deltaTime);
 
@@ -27,6 +29,7 @@ namespace PolyWars.ServerClasses {
                 p.Offset(offsetX, offsetY);
                 pc[i] = p;
             }
+            FrameDebugTimer.stopMoveShapeTimer();
             CollisionDetection.resourceCollisionDetection();
         }
     }

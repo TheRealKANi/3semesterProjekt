@@ -1,4 +1,5 @@
 ﻿using PolyWars.API;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Strategies;
 
 namespace PolyWars.ServerClasses {

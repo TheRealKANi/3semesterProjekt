@@ -1,8 +1,8 @@
 ﻿using System.Windows;
 
-namespace PolyWars.API {
+namespace PolyWars.API.Model.Interfaces {
     public interface IRay {
-        int ID { get; set; }
+        string ID { get; set; }
         Point CenterPoint { get; set; }
         double Angle { get; set; }
     }

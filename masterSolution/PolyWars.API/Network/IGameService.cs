@@ -1,5 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using PolyWars.API.Network.DTO;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PolyWars.API.Network {
@@ -15,6 +17,7 @@ namespace PolyWars.API.Network {
         Task ConnectAsync();
         Task<IUser> LoginAsync(string name, string hashedPassword);
         Task LogoutAsync();
+        Task<List<ResourceDTO>> getResourcesAsync();
     }
 
 }

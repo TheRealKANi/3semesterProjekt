@@ -1,4 +1,5 @@
 ﻿using PolyWars.API;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Strategies;
 using System;
 using System.Collections.Generic;
@@ -11,8 +12,8 @@ namespace PolyWars.ServerClasses {
         public Polygon Render(IRenderable r, IRay ray) {
             double verticeAngle = 360d / r.Vertices;
             Polygon p = new Polygon() {
-                Stroke = new SolidColorBrush(r.BorderColor),
-                Fill = new SolidColorBrush(r.FillColor),
+                Stroke = new SolidColorBrush(Colors.Black),
+                Fill = new SolidColorBrush(Colors.White),
                 StrokeThickness = r.StrokeThickness
             };
 

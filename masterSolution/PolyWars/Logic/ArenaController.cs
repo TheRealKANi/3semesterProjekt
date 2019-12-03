@@ -1,4 +1,5 @@
 ﻿using PolyWars.API;
+using PolyWars.API.Model.Interfaces;
 using System.Linq;
 using System.Windows.Controls;
 using System.Windows.Media;

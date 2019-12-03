@@ -1,13 +1,13 @@
-﻿using PolyWars.API;
+﻿using PolyWars.API.Model.Interfaces;
 using System.Windows;
 
-namespace PolyWars.Api {
+namespace PolyWars.Api.Model {
     public class Ray : IRay {
-        public int ID { get; set; }
+        public string ID { get; set; }
         public Point CenterPoint { get; set; }
         public double Angle { get; set; }
 
-        public Ray(int iD, Point centerPoint, double angle) {
+        public Ray(string iD, Point centerPoint, double angle) {
             ID = iD;
             CenterPoint = centerPoint;
             Angle = angle;

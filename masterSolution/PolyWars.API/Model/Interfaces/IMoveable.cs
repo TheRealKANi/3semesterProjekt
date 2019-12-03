@@ -1,6 +1,6 @@
 ﻿using PolyWars.API.Strategies;
 
-namespace PolyWars.API {
+namespace PolyWars.API.Model.Interfaces {
     public interface IMoveable {
         double Velocity { get; set; }
         double MaxVelocity { get; }

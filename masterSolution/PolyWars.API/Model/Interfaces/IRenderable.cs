@@ -1,6 +1,6 @@
 ﻿using System.Windows.Media;
 
-namespace PolyWars.API {
+namespace PolyWars.API.Model.Interfaces {
     public interface IRenderable {
         Color BorderColor { get; set; }
         Color FillColor { get; set; }

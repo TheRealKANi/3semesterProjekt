@@ -1,9 +1,19 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using PolyWars.API;
+using PolyWars.API.Model;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
+using PolyWars.API.Network.DTO;
+using PolyWars.API.Strategies;
+using PolyWars.Logic;
+using PolyWars.Server.Model;
+using PolyWars.ServerClasses;
 using System;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
+using System.Windows.Media;
 
 namespace PolyWars.Network {
     public class GameService : IGameService {
@@ -17,6 +27,8 @@ namespace PolyWars.Network {
         public event Action ConnectionReconnected;
         public event Action ConnectionClosed;
         public event Action<string, string> NewTextMessage;
+        public event Action<List<PlayerDTO>> getOpponents;
+        public event Action<List<ResourceDTO>> getResources;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
@@ -40,8 +52,11 @@ namespace PolyWars.Network {
 
             ServicePointManager.DefaultConnectionLimit = 100;
             await Connection.Start();
-        }
 
+        }
+        //public async void test() {
+        //    ResourceDTO test = await hubProxy.Invoke<ResourceDTO>("test");
+        //}
         public async Task<bool> PlayerMovedAsync(IRay playerIRay) {
             return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);
         }
@@ -59,6 +74,22 @@ namespace PolyWars.Network {
             await hubProxy.Invoke("BroadcastTextMessage", msg);
         }
 
+        /// <summary>
+        /// Grabs the list of opponents from the server
+        /// </summary>
+        //public async Task<List<IPlayer>> getOpponentsAsync() {
+        //    List<PlayerDTO> opponents = await hubProxy.Invoke<List<PlayerDTO>>("getOpponents");
+        //    // TODO Convert PlayerDTO to IPlayer implement the call somewhere
+        //    return null;
+        //}
+
+        /// <summary>
+        /// Grabs the list of resources from the server
+        /// </summary>
+        public async Task<List<ResourceDTO>> getResourcesAsync() {
+            Debug.WriteLine("Asks for resources");
+            return await hubProxy.Invoke<List<ResourceDTO>>("getResources");
+        }
 
         private void Disconnected() { ConnectionClosed?.Invoke(); }
 

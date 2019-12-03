@@ -1,4 +1,6 @@
 ﻿using PolyWars.API.Network;
+using PolyWars.API.Network.DTO;
+using System.Collections.Generic;
 using System.Diagnostics;
 
 namespace PolyWars.Network {
@@ -22,16 +24,9 @@ namespace PolyWars.Network {
         }
         public static GameService GameService { get; private set; }
 
-        // WORKS!
         public static void announceClientLoggedIn(string userName) {
             Debug.WriteLine($"{userName} has joined the lobby");
         }
-        //// Works!
-        //public static void announceClientConnected(string name) {
-        //    Debug.WriteLine(name);
-        //}
-
-        // Works!
         public static void DeniedAccess(string reason) {
             Debug.WriteLine($"Access Denied, Reason: {reason}");
         }
