@@ -25,7 +25,7 @@ namespace PolyWars.Logic {
         public static IPlayer Player { get; set; }
         public static string Username { get; set; }
         public static string UserID { get; set; }
-        public static IEnumerable<IShape> Immovables { get; set; }
+        public static ConcurrentDictionary<string, IShape> Opponents { get; set; }
         public static ConcurrentDictionary<string, IResource> Resources { get; set; }
         public static int Fps { get; set; }
         public static Stopwatch tickTimer { get; private set; }
@@ -56,7 +56,7 @@ namespace PolyWars.Logic {
         public async Task prepareGame() {
             ArenaController.generateCanvas();
             //Player = createBlankPlayer();
-            Immovables = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new List<IShape>();
+            Opponents = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new ConcurrentDictionary<string, IShape>();
             Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new ConcurrentDictionary<string, IResource>();
 
             isPrepared = true;
@@ -72,14 +72,6 @@ namespace PolyWars.Logic {
         public void endGame() {
             Ticker.Stop();
             fpsTimer.Stop();
-        }
-
-        private IPlayer createBlankPlayer() {
-            IRay ray = new Ray(UserID, new Point(300, 300), 0);
-            IRenderable renderable = new Renderable(Colors.Black, Colors.DimGray, 1, 25, 25, 3);
-            IShape shape = new Shape(UserID, ray, renderable, new RenderWithHeaderStrategy());
-            IMoveable playerShip = new Moveable(0, 20, 0, 180, shape, new MoveStrategy());
-            return new Player(Username, UserID, 0, playerShip);
         }
 
         public static decimal DeltaTime(Stopwatch _tickTimer) {
@@ -104,7 +96,7 @@ namespace PolyWars.Logic {
             }
         }
         public static async void notifyMoved() {
-            if(serverResponded && ServerTimer.Elapsed.TotalMilliseconds >= (950/60d)) {
+            if(serverResponded && ServerTimer.Elapsed.TotalMilliseconds >= (950 / 60d)) {
                 ServerTimer.Restart();
                 serverResponded = false;
                 serverResponded = await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip.Shape.Ray);

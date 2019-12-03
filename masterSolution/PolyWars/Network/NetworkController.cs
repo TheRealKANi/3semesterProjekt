@@ -32,9 +32,10 @@ namespace PolyWars.Network {
         }
 
         public static void updateOpponents(List<PlayerDTO> opponentDTOs) {
-            Debug.WriteLine("Recived Opponents Update");
-            List<IShape> opponents = Adapters.PlayerAdapter.PlayerDTOtoIShape(opponentDTOs);
-            GameController.Immovables = opponents;
+            //Debug.WriteLine("Recived Opponents Update");
+            if(ArenaController.ArenaCanvas != null) { 
+                GameController.Opponents = Adapters.PlayerAdapter.PlayerDTOtoIShape(opponentDTOs); 
+            }
         }
 
 

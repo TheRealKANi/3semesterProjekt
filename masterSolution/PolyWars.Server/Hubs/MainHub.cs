@@ -96,51 +96,31 @@ namespace PolyWars.Server {
         }
 
 
-        public bool PlayerMoved(Ray playerIRay) {
-            
-            // Verify that IRay is not beyond movement bounds
-            //Console.WriteLine($"Recived IRay from client: '{Clients.CallerState.UserName}'");
-            //Console.WriteLine($"IRay: {playerIray.ToString()}");
-            //Console.WriteLine(s.Elapsed.TotalMilliseconds);
-            bool result = false;
-            //// Method 1 - Too complex
-            //PlayerDTO orginal = new PlayerDTO();
-            //PlayerDTO newUser = new PlayerDTO();
-            //Opponents.TryGetValue(Clients.CallerState.UserName, out orginal);
-            //if(orginal.ID.Length > 0) {
-            //    newUser.ID = orginal.ID;
-            //    newUser.Name = orginal.Name;
-            //    newUser.Vertices = orginal.Vertices;
-            //    newUser.Wallet = orginal.Wallet;
-            //    newUser.Ray = playerIRay;
-            //    Opponents.TryUpdate(newUser.Name, newUser, orginal);
-            //    Console.WriteLine("Updated Opponent with new Ray");
-            //    result = true;
-            //}
-
-            // Method 2 - Better
+        public bool PlayerMoved(Ray playerIRay) {
+            bool result = false;
             string name = Clients.CallerState.UserName;
-            Opponents.TryRemove(name, out PlayerDTO player);
-            if(player != null) {
-                player.Ray = playerIRay;
-                result = Opponents.TryAdd(name, player);
-            }
-
             if(s == null) {
                 s = new Stopwatch();
                 s.Start();
                 count = 0;
             }
             count++;
+
+            Opponents.TryRemove(name, out PlayerDTO player);
+            if(player != null) {
+                player.Ray = playerIRay;
+                result = Opponents.TryAdd(name, player);
+            }
+            List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
+            Clients.All.updateOpponents(opponents);
+
             if(s.Elapsed.TotalMilliseconds >= 1000) {
                 s.Stop();
                 Console.WriteLine($"Getting {count} PlayerMoved counts pr. second");
                 s.Restart();
-                count = 0;
-                List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
-                Console.WriteLine("Sending Opponents to all clients once pr. second");
-                Clients.All.updateOpponents(opponents);
+                count = 0;
             }
+            //Console.WriteLine("Sending Opponents to all clients once pr. second");
             return result;
         }
 

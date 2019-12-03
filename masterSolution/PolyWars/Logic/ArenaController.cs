@@ -16,11 +16,14 @@ namespace PolyWars.Logic {
         }
 
         public static void fillArena() {
-            foreach(IShape shape in GameController.Immovables.Concat(GameController.Resources.Values.Select(x => x.Shape))) {
+            //foreach(IShape shape in GameController.Opponents.Values) {
+            //    ArenaCanvas.Children.Add(shape.Polygon);
+            //}
+            foreach(IShape shape in GameController.Resources.Values.Select(x => x.Shape)) {
                 ArenaCanvas.Children.Add(shape.Polygon);
             }
             // Player goes on top of all other IShapes
-            ArenaCanvas.Children.Add(GameController.Player.PlayerShip.Shape.Polygon);
+           // ArenaCanvas.Children.Add(GameController.Player.PlayerShip.Shape.Polygon);
         }
 
     }

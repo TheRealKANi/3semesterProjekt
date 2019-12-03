@@ -27,7 +27,7 @@ namespace PolyWars.Server {
                 Program.app = app;
                 app.UseCors(CorsOptions.AllowAll);
                 app.MapSignalR("/Polywars", new HubConfiguration() { EnableDetailedErrors = true });
-                
+
 
 
                 GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = null;
