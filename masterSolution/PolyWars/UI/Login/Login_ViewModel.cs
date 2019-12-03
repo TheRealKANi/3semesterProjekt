@@ -44,7 +44,7 @@ namespace PolyWars.UI.Login {
 
         private async Task<bool> Login(string username, string hashedPassword) {
             if(!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(hashedPassword)) {
-                await NetworkController.GameService.ConnectAsync();
+                NetworkController.IsConnected = await NetworkController.GameService.ConnectAsync();
                 user = await NetworkController.GameService.LoginAsync(username, hashedPassword);
                 NavigationController.Instance.navigate(Pages.MainMenu);
                 GameController.Username = user.Name;

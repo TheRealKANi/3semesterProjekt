@@ -1,31 +1,50 @@
 ﻿using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
+using PolyWars.Network;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using System.Windows;
+using System.Linq;
+using System.Diagnostics;
 
 namespace PolyWars.Logic.Utility {
     class CollisionDetection {
-        public static void resourceCollisionDetection() {
+        private static TaskFactory taskFactory;
+        static CollisionDetection() {
+            taskFactory = new TaskFactory();
+        }
+        public static async void resourceCollisionDetection() {
             // TODO DEBUG - Starts collision Timer
             if(GameController.Resources != null) {
                 FrameDebugTimer.startCollisionTimer();
-                List<IResource> toRemove = new List<IResource>();
+
+                ConcurrentBag<IResource> collidedWith = new ConcurrentBag<IResource>();
                 foreach(IResource resource in GameController.Resources) {
-                    if(resource.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(GameController.Player.PlayerShip.Shape.Polygon.RenderedGeometry.Bounds) &&
-                            !resource.Shape.Polygon.Visibility.Equals(Visibility.Collapsed)) {
-                        GameController.Player.Wallet += resource.Value;
-                        toRemove.Add(resource);
-                        //resource.Polygon.Visibility = Visibility.Hidden;
+                    if(resource.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(GameController.Player.PlayerShip.Shape.Polygon.RenderedGeometry.Bounds)) {
+                        collidedWith.Add(resource);
                     }
                 }
-                foreach(IResource resource in toRemove) {
-                    GameController.Resources.Remove(resource);
-                    resource.Shape.Polygon.Visibility = Visibility.Collapsed;
+                List<Task> taskList = new List<Task>();
+                foreach(IResource resource in collidedWith) {
+                    taskFactory.StartNew(async () => {
+                        bool result = await NetworkController.GameService.playerCollectedResource(resource);
+
+                        if(result) {
+                            ThreadController.MainThreadDispatcher.Invoke(() => {
+                                ArenaController.ArenaCanvas.Children.Remove(resource.Shape.Polygon);
+                            });
+                            GameController.Resources.Remove(resource);
+                            Debug.WriteLine($"Removed Resource {resource.ID}");
+                        } else {
+                            return;
+                        }
+                    });
                 }
-                toRemove.Clear();
                 // TODO DEBUG - Stops collision Timer
-                FrameDebugTimer.stopCollisionTimer(); 
+                FrameDebugTimer.stopCollisionTimer();
             }
         }
     }
 }
+

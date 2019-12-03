@@ -1,6 +1,7 @@
 ﻿using PolyWars.Logic;
 using PolyWars.Model;
 using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
@@ -60,14 +61,12 @@ namespace PolyWars.UI.GameArena {
                 GameController.ArenaHeight = canvas.ActualHeight;
                 GameController.ArenaWidth = canvas.ActualWidth;
                 ArenaCanvas.UpdateLayout();
-                GameController.playGame();
             }
         }
 
         public GameArena_ViewModel() {
             FpsVisibility = Visibility.Visible;
-            GameController = new GameController();
-            GameController.prepareGame();
+            ArenaController.fillArena();
             ArenaCanvas = ArenaController.ArenaCanvas;
         }
 

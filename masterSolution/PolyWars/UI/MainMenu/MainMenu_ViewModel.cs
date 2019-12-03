@@ -12,11 +12,11 @@ namespace PolyWars.UI.MainMenu {
     /// <summary>
     /// This class provides navigation in the main menu.
     /// </summary>
-    class MainMenu_ViewModel : Observable {
+    class MainMenu_ViewModel : Observable {
+
+        public GameController GameController { get; set; }
 
-        public GameController GameController { get; set; }
-
-        public MainMenu_ViewModel() { }
+        public MainMenu_ViewModel() { }
 
         private bool isConnected;
         public bool IsConnected {
@@ -27,7 +27,7 @@ namespace PolyWars.UI.MainMenu {
                 isConnected = value;
                 NotifyPropertyChanged();
             }
-        }
+        }
 
         private bool isLoggedIn;
         public bool IsLoggedIn {
@@ -38,18 +38,18 @@ namespace PolyWars.UI.MainMenu {
                 isLoggedIn = value;
                 NotifyPropertyChanged();
             }
-        }
+        }
 
+        }
         private ICommand startGame_Command;
         public ICommand StartGame_Command {
             get {
                 if(startGame_Command == null) {
-                    startGame_Command = new RelayCommandAsync(() => startGame(), (o) => { return true; });
+                    startGame_Command = new RelayCommandAsync(() => startGame(), (o) => { return true; } ); 
                 }
                 return startGame_Command;
             }
         }
-
         private ICommand settings_Command;
         public ICommand Settings_Command {
             get {
@@ -58,20 +58,20 @@ namespace PolyWars.UI.MainMenu {
                 }
                 return settings_Command;
             }
-        }
+        }
 
         private ICommand login_Command;
         public ICommand Login_Command {
             get {
                 return login_Command ?? (new RelayCommand((o) => { return true; }, (o) => NavigationController.Instance.navigate(Pages.Login)));
             }
-        }
-
-        private async Task startGame() {
-            GameController gameController = new GameController();
-            await gameController.prepareGame();
-            NavigationController.Instance.navigate(Pages.Arena);
-            gameController.playGame();
+        }
+
+        private async Task startGame() {
+            GameController gameController = new GameController();
+            await gameController.prepareGame();
+            NavigationController.Instance.navigate(Pages.Arena);
+            gameController.playGame();
         }
     }
 }

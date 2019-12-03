@@ -13,7 +13,7 @@ namespace PolyWars.Logic.Utility {
 
         private static Stopwatch moveShapeTimer;
         private static List<double> moveShapeTicks;
-
+        
         private static int numberOfResources;
 
         /// <summary>
@@ -29,6 +29,7 @@ namespace PolyWars.Logic.Utility {
 
             moveShapeTicks = new List<double>();
             moveShapeTimer = new Stopwatch();
+            Debug.WriteLine("\n\n\ndav\n\n\n");
         }
 
         /// <summary>
@@ -58,7 +59,7 @@ namespace PolyWars.Logic.Utility {
         public static void stopMoveShapeTimer() {
             if(moveShapeTimer.IsRunning) {
                 moveShapeTimer.Stop();
-                //moveShapeTicks.Add(moveShapeTimer.Elapsed.TotalMilliseconds);
+                moveShapeTicks.Add(moveShapeTimer.Elapsed.TotalMilliseconds);
             }
         }
 
@@ -68,7 +69,7 @@ namespace PolyWars.Logic.Utility {
         public static void stopCollisionTimer() {
             if(collisionTimer.IsRunning) {
                 collisionTimer.Stop();
-                //collisionTicks.Add(collisionTimer.Elapsed.TotalMilliseconds);
+                collisionTicks.Add(collisionTimer.Elapsed.TotalMilliseconds);
             }
         }
 
@@ -78,7 +79,7 @@ namespace PolyWars.Logic.Utility {
         public static void stopFrameTimer() {
             if(frameTimer.IsRunning) {
                 frameTimer.Stop();
-                //frameTicks.Add(frameTimer.Elapsed.TotalMilliseconds);
+                frameTicks.Add(frameTimer.Elapsed.TotalMilliseconds);
             }
         }
 

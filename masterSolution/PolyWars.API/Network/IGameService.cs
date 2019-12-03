@@ -13,8 +13,9 @@ namespace PolyWars.API.Network {
         event Action ConnectionReconnecting;
         event Action ConnectionReconnected;
         event Action ConnectionClosed;
+        event Action<List<ResourceDTO>> changedResources;
         HubConnection Connection { get; set; }
-        Task ConnectAsync();
+        Task<bool> ConnectAsync();
         Task<IUser> LoginAsync(string name, string hashedPassword);
         Task LogoutAsync();
         Task<List<ResourceDTO>> getResourcesAsync();

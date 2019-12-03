@@ -21,10 +21,10 @@ namespace PolyWars {
         }
 
         public bool CanExecute(object parameter) {
-            if(!isExecuting || execute == null) {
+            if(!isExecuting && canExecute == null) {
                 return true;
-            } 
-            return !isExecuting && canExecute(parameter);
+            }
+            return !isExecuting && canExecute.Invoke(parameter); ;
         }
 
         public async void Execute(object parameter) {

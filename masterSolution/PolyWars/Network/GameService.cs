@@ -1,20 +1,20 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-using PolyWars.API;
-using PolyWars.API.Model;
-using PolyWars.API.Model.Interfaces;
+using PolyWars.API;
+using PolyWars.API.Model;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
-using PolyWars.API.Network.DTO;
-using PolyWars.API.Strategies;
-using PolyWars.Logic;
-using PolyWars.Server.Model;
-using PolyWars.ServerClasses;
+using PolyWars.API.Network.DTO;
+using PolyWars.API.Strategies;
+using PolyWars.Logic;
+using PolyWars.Server.Model;
+using PolyWars.ServerClasses;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
-using System.Windows.Media;
-
+using System.Windows.Media;
+
 namespace PolyWars.Network {
     public class GameService : IGameService {
 
@@ -27,71 +27,75 @@ namespace PolyWars.Network {
         public event Action ConnectionReconnected;
         public event Action ConnectionClosed;
         public event Action<string, string> NewTextMessage;
+        public event Action<List<ResourceDTO>> changedResources;
+        public event Action<List<ResourceDTO>> getResources;
         public event Action<List<PlayerDTO>> updateOpponents;
-        //public event Action<string> OnConnected;
+        //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
-        //private string url = "http://polywars.servegame.com:8080/Polywars";
-        private string url = "http://localhost:8080/Polywars";
-
-        public async Task ConnectAsync() {
+        //private string url = "http://polywars.servegame.com:8080/Polywars";
+        private string url = "http://localhost:8080/Polywars";
+
+        public async Task<bool> ConnectAsync() {
             Connection = new HubConnection(url);
-            hubProxy = Connection.CreateHubProxy("MainHub");
+            hubProxy = Connection.CreateHubProxy ("MainHub");
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
             hubProxy.On<string>("ClientLogout", (n) => ClientLoggedOut?.Invoke(n));
             hubProxy.On<string>("ClientDisconnected", (n) => ClientDisconnected?.Invoke(n));
-            hubProxy.On<string>("ClientReconnected", (n) => ClientReconnected?.Invoke(n));
+            hubProxy.On<string>("ClientReconnected", (n) => ClientReconnected?.Invoke(n));
             
             //hubProxy.On<string>("OnConnected", (n) => OnConnected?.Invoke(n));
             hubProxy.On<string>("AccessDenied", (n) => accessDenied?.Invoke(n));
             hubProxy.On<List<PlayerDTO>>("updateOpponents", (l) => updateOpponents?.Invoke(l));
+            hubProxy.On<List<ResourceDTO>>("ResourcesUpdated", (n) => changedResources.Invoke(n));
 
             Connection.Reconnecting += Reconnecting;
             Connection.Reconnected += Reconnected;
             Connection.Closed += Disconnected;
 
             ServicePointManager.DefaultConnectionLimit = 100;
-            await Connection.Start();
-
-        }
-
-        public async Task<bool> PlayerMovedAsync(IRay playerIRay) {
-            return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);
-        }
-
+            await Connection.Start();
+            return true;
+        }
+        public async Task<bool> PlayerMovedAsync(IRay playerIRay) {
+            return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);
+        }
+
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {
-            return await hubProxy.Invoke<User>("Login", name, hashedPassword);
+            return await hubProxy.Invoke<User>("Login", name, hashedPassword);
         }
-
+        public async Task<bool> playerCollectedResource(IResource resource) {
+            return await hubProxy.Invoke<bool>("playerCollectedResource", resource.ID);
+        }
         public async Task LogoutAsync() {
             await hubProxy.Invoke("Logout");
-        }
+        }
 
         public async Task SendBroadcastMessageAsync(string msg) {
             await hubProxy.Invoke("BroadcastTextMessage", msg);
-        }
-
-        /// <summary>
-        /// Grabs the current list of opponents from the server
-        /// </summary>
-        public async Task<List<PlayerDTO>> getOpponentsAsync() {
-            Debug.WriteLine("Asks Server for opponents");
-            return await hubProxy.Invoke<List<PlayerDTO>>("getOpponents");
-        }
-
-        /// <summary>
-        /// Grabs the list of remaning resources from the server
-        /// </summary>
-        public async Task<List<ResourceDTO>> getResourcesAsync() {
-            Debug.WriteLine("Asks Server for resources");
-            return await hubProxy.Invoke<List<ResourceDTO>>("getResources");
-        }
-
+        }
+
+        /// <summary>
+        /// Grabs the current list of opponents from the server
+        /// </summary>
+        public async Task<List<PlayerDTO>> getOpponentsAsync() {
+            Debug.WriteLine("Asks Server for opponents");
+            return await hubProxy.Invoke<List<PlayerDTO>>("getOpponents");
+        }
+
+        /// <summary>
+        /// Grabs the list of remaning resources from the server
+        /// </summary>
+        public async Task<List<ResourceDTO>> getResourcesAsync() {
+            Debug.WriteLine("Asks Server for resources");
+            return await hubProxy.Invoke<List<ResourceDTO>>("getResources");
+        }
+
         private void Disconnected() { ConnectionClosed?.Invoke(); }
 
         private void Reconnected() { ConnectionReconnected?.Invoke(); }
 
-        private void Reconnecting() { ConnectionReconnecting?.Invoke(); }
+        private void Reconnecting() { ConnectionReconnecting?.Invoke(); }
     }
 }

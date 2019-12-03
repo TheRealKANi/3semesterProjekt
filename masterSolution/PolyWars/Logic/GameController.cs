@@ -59,10 +59,7 @@ namespace PolyWars.Logic {
             Immovables = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new List<IShape>();
             Immovables = new List<IShape>();
 
-
-
-            ArenaController.fillArena();
-            isPrepaired = true;
+            isLoaded = true;
         }
 
         public void playGame() {
