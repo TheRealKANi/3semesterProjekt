@@ -111,14 +111,15 @@ namespace PolyWars.Server {
                 player.Ray = playerIRay;
                 result = Opponents.TryAdd(name, player);
             }
-            List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
-            Clients.All.updateOpponents(opponents);
+            
 
-            if(s.Elapsed.TotalMilliseconds >= 1000) {
+            if(s.Elapsed.TotalMilliseconds >= 500) {
                 s.Stop();
-                Console.WriteLine($"Getting {count} PlayerMoved counts pr. second");
+                Console.WriteLine($"Getting {count} PlayerMoved counts pr. 1/2 second");
                 s.Restart();
                 count = 0;
+                List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
+                Clients.All.updateOpponents(opponents);
             }
             //Console.WriteLine("Sending Opponents to all clients once pr. second");
             return result;
