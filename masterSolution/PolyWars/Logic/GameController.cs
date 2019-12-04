@@ -1,11 +1,19 @@
+using PolyWars.Api;
 using PolyWars.Api.Model;
+using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
+using PolyWars.API.Strategies;
+using PolyWars.Logic.Utility;
 using PolyWars.Model;
 using PolyWars.Network;
+using PolyWars.ServerClasses;
 using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Media;
+using System.Collections.Concurrent;
 
 namespace PolyWars.Logic {
     class GameController {
@@ -13,7 +21,6 @@ namespace PolyWars.Logic {
         private static bool isPrepared;
         private static int frames = 0;
         private static Stopwatch fpsTimer;
-        private static Ray lastRay;
         public static Ticker Ticker { get; private set; }
         public static IPlayer Player { get; set; }
         public static string Username { get; set; }
@@ -76,22 +83,23 @@ namespace PolyWars.Logic {
                 ThreadController.MainThreadDispatcher.Invoke(() => {
                     Player.PlayerShip.Move(DeltaTime(tickTimer));
                     tickTimer.Stop();
-                    if(lastRay == null || !lastRay.IsEqual(Player.PlayerShip.Shape.Ray)) {
-                        Task.Run(() => notifyMoved());
-                    }
                     CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
                 });
-            } catch(Exception e) {
+            } catch(TaskCanceledException) {
                 // TODO Should we do something here
-                Debug.WriteLine("GameController.calculateFrame " + "Error:" + e.Message);
+            }
+            try {
+                // Sends player iray to server
+                Task.Run(() => notifyMoved());
+            } catch(Exception e) {
+                Debug.WriteLine("Error:" + e.Message);
             }
         }
         public static async void notifyMoved() {
-            if(serverResponded && ServerTimer.Elapsed.TotalMilliseconds >= 10/*(950 / 60d)*/) {
+            if(serverResponded && ServerTimer.Elapsed.TotalMilliseconds >= (950 / 60d)) {
                 ServerTimer.Restart();
                 serverResponded = false;
-                lastRay = ((Ray) Player.PlayerShip.Shape.Ray).Clone();
-                serverResponded = await NetworkController.GameService.PlayerMovedAsync(lastRay);
+                serverResponded = await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip.Shape.Ray);
             }
         }
         static public void calculateFps() {
@@ -100,8 +108,8 @@ namespace PolyWars.Logic {
                 if(fpsTimer.Elapsed.TotalMilliseconds >= 1000) {
                     Fps = frames;
                     frames = 0;
-                    fpsTimer.Restart();
-
+                    fpsTimer.Restart(); 
+                    
                 }
             } catch(TaskCanceledException) {
                 // TODO Do we need to handle this?
