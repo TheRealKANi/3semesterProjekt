@@ -41,7 +41,7 @@ namespace PolyWars.Adapters {
         private static IShape renderPlayer(PlayerDTO opponent) {
             IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 25, 25, opponent.Vertices);
             IShape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
-            IMoveable playerShip = new Moveable(0, 80, 0, 360, shape, new MoveStrategy());
+            IMoveable playerShip = new Moveable(0, 180, 0, 360, shape, new MoveStrategy());
             GameController.Player = new Player(opponent.Name, opponent.Name, opponent.Wallet, playerShip);
             return shape;
         }
@@ -49,9 +49,7 @@ namespace PolyWars.Adapters {
         private static Shape renderOpponent(PlayerDTO opponent) {
             IRenderable renderable = new Renderable(Colors.Black, Colors.DarkSlateGray, 1, 25, 25, opponent.Vertices);
             Shape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
-            IMoveable opponentShip = new Moveable(0, 80, 0, 360, shape, new MoveStrategy());
             shape.Renderer.Render(shape.Renderable, shape.Ray);
-            opponentShip.Mover.Move(opponentShip, GameController.DeltaTime(GameController.tickTimer));
             return shape;
         }
 
@@ -65,12 +63,13 @@ namespace PolyWars.Adapters {
                     removeOpponentFromCanvas(opponentShape);
                     IRenderable renderable = new Renderable(Colors.Black, Colors.HotPink, 1, 25, 25, opponentDTO.Vertices);
                     Shape shape = new Shape(opponentDTO.Name, opponentDTO.Ray, renderable, new RenderWithHeaderStrategy());
-                    shape.Renderer.Render(shape.Renderable, shape.Ray);
                     if(GameController.Opponents.TryAdd(opponentDTO.Name, shape)) {
                         addOpponentToCanvas(shape);
                     }
+                    //IMoveable opponentShip = new Moveable(0, 80, 0, 360, shape, new MoveStrategy());
+                    //opponentShip.Mover.Move(opponentShip, GameController.DeltaTime(GameController.tickTimer));
                 }
-            }     
+            }
         }
 
         internal static void removeOpponentFromCanvas(IShape shape) {
