@@ -3,10 +3,8 @@ using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
 using PolyWars.Network;
 using PolyWars.ServerClasses;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
@@ -23,29 +21,21 @@ namespace PolyWars.Adapters {
             ConcurrentDictionary<string, IShape> opponents = new ConcurrentDictionary<string, IShape>(); // TODO Use this as conccurrency issue?
             foreach(PlayerDTO opponent in opponentDTOs) {
                 if(!opponent.Name.Equals(GameController.Username)) {
+                    removeOpponentFromCanvas(opponent.Name);
                     IRenderable renderable = new Renderable(Colors.Black, Colors.OrangeRed, 1, 25, 25, opponent.Vertices);
-                    Shape s = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
-                    ThreadController.MainThreadDispatcher.Invoke(() => {
-                        if(GameController.Opponents != null && GameController.Opponents.ContainsKey(opponent.Name)) {
-                            System.Windows.Shapes.Polygon p = GameController.Opponents[opponent.Name].Polygon;
-                            ArenaController.ArenaCanvas.Children.Remove(p);
-                        }
-                    });
-                    opponents.TryAdd(opponent.Name, s);
+                    Shape s = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy()); 
                     s.Renderer.Render(s.Renderable, s.Ray);
-                    ThreadController.MainThreadDispatcher.Invoke(() => {
-                        ArenaController.ArenaCanvas.Children.Add(s.Polygon);
-                    });
-
+                    if(opponents.TryAdd(opponent.Name, s)) {
+                        addOpponentToCanvas(s);
+                    }
+                    
                 } else {
                     if(GameController.Player == null) {
                         IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 25, 25, opponent.Vertices);
                         IShape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
                         IMoveable playerShip = new Moveable(0, 20, 0, 180, shape, new MoveStrategy());
                         GameController.Player = new Player(opponent.Name, opponent.Name, opponent.Wallet, playerShip);
-                        ThreadController.MainThreadDispatcher.Invoke(() => {
-                            ArenaController.ArenaCanvas.Children.Add(GameController.Player.PlayerShip.Shape.Polygon);
-                        });
+                        addOpponentToCanvas(shape);
                     } else {
                         GameController.Player.Wallet = opponent.Wallet;
                         GameController.Player.PlayerShip.Mover.Move(GameController.Player.PlayerShip, GameController.DeltaTime(GameController.tickTimer));
@@ -63,6 +53,12 @@ namespace PolyWars.Adapters {
                     }
                 });
             }
+        }
+
+        public static void addOpponentToCanvas(IShape shape) {
+            ThreadController.MainThreadDispatcher.Invoke(() => {
+                ArenaController.ArenaCanvas.Children.Add(shape.Polygon);
+            });
         }
     }
 }

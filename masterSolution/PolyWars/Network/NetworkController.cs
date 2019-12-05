@@ -32,6 +32,7 @@ namespace PolyWars.Network {
         }
 
         private static void clientLoggedOut(string username) {
+            //Debug.WriteLine("Server - Recieved Client logged out");
             Adapters.PlayerAdapter.removeOpponentFromCanvas(username);
         }
 
