@@ -12,5 +12,6 @@ namespace PolyWars.API.Network {
         void updateOpponents(List<PlayerDTO> opponentDTOs);
         void updateResources(List<ResourceDTO> resourcesDTOs);
         void removeResource(string removedResourceID);
+        void opponentMoved(string username, PlayerDTO playerDTO);
     }
 }

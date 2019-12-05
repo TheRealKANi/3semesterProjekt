@@ -1,7 +1,5 @@
-﻿using PolyWars.API.Model.Interfaces;
-using PolyWars.API.Network.DTO;
+﻿using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
-using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -29,8 +27,12 @@ namespace PolyWars.Network {
             GameService.updateResources += updateResources;
             GameService.removeResource += removeResource;
             GameService.clientLoggedOut += clientLoggedOut;
+            GameService.opponentMoved += opponentMoved;
         }
 
+        private static void opponentMoved(string username, PlayerDTO playerDTO) {
+            Adapters.PlayerAdapter.moveOpponentOnCanvas(username, playerDTO);
+        }
         private static void clientLoggedOut(string username) {
             //Debug.WriteLine("Server - Recieved Client logged out");
             Adapters.PlayerAdapter.removeOpponentFromCanvas(username);
@@ -43,8 +45,8 @@ namespace PolyWars.Network {
 
         public static void updateOpponents(List<PlayerDTO> opponentDTOs) {
             //Debug.WriteLine("Server - Recived Opponents Update");
-            if(ArenaController.ArenaCanvas != null) { 
-                GameController.Opponents = Adapters.PlayerAdapter.PlayerDTOtoIShape(opponentDTOs); 
+            if(ArenaController.ArenaCanvas != null) {
+                GameController.Opponents = Adapters.PlayerAdapter.PlayerDTOtoIShape(opponentDTOs);
             }
         }
 

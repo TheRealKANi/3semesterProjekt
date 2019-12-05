@@ -103,33 +103,15 @@ namespace PolyWars.Server {
 
         public bool PlayerMoved(Ray playerIRay) {
             bool result = false;
-            string name = Clients.CallerState.UserName;
-            if(s == null) {
-                s = new Stopwatch();
-                s.Start();
-                count = 0;
+            string username = Clients.CallerState.UserName;
+            // Move player in table and transmit new location to other clients
+            if(Opponents.TryRemove(username, out PlayerDTO playerDTO)) {
+                playerDTO.Ray = playerIRay;
+                if(Opponents.TryAdd(username, playerDTO)) {
+                    Clients.Others.opponentMoved(username, playerDTO);
+                    result = true;
+                }
             }
-            count++;
-
-            Opponents.TryRemove(name, out PlayerDTO player);
-            if(player != null) {
-                player.Ray = playerIRay;
-                result = Opponents.TryAdd(name, player);
-            }
-            //if(s.Elapsed.TotalMilliseconds >= 1000d/120) {
-                List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
-                Clients.All.updateOpponents(opponents);
-            //}
-
-            if(s.Elapsed.TotalMilliseconds >= 1000) {
-                s.Stop();
-                Console.WriteLine($"Getting {count} PlayerMoved counts pr. second");
-                s.Restart();
-                count = 0;
-                //List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
-                //Clients.All.updateOpponents(opponents);
-            }
-            //Console.WriteLine("Sending Opponents to all clients once pr. second");
             return result;
         }
 

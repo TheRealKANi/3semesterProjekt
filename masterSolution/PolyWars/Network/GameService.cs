@@ -25,13 +25,11 @@ namespace PolyWars.Network {
         public event Action<string> accessDenied;
         public event Action ConnectionReconnecting;
         public event Action ConnectionReconnected;
-        public event Action ConnectionClosed;
-        public event Action<string, string> NewTextMessage;
-        public event Action<List<ResourceDTO>> changedResources;
-        public event Action<List<ResourceDTO>> getResources;
+        public event Action ConnectionClosed;
         public event Action<List<PlayerDTO>> updateOpponents;
         public event Action<List<ResourceDTO>> updateResources;
         public event Action<string> removeResource;
+        public event Action<string, PlayerDTO> opponentMoved;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
@@ -52,6 +50,7 @@ namespace PolyWars.Network {
             hubProxy.On<List<PlayerDTO>>("updateOpponents", (lo) => updateOpponents?.Invoke(lo));
             hubProxy.On<List<ResourceDTO>>("updateResources", (lr) => updateResources.Invoke(lr));
             hubProxy.On<string>("removeResource", (rID) => removeResource.Invoke(rID));
+            hubProxy.On<string, PlayerDTO>("opponentMoved", (username, dto) => opponentMoved.Invoke(username, dto));
 
             Connection.Reconnecting += Reconnecting;
             Connection.Reconnected += Reconnected;
@@ -65,7 +64,7 @@ namespace PolyWars.Network {
             return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);
         }
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {
-            return await hubProxy.Invoke<User>("Login", name, hashedPassword);
+            return await hubProxy.Invoke<User>("Login", name, hashedPassword);
         }
 
         public async Task<bool> playerCollectedResource(IResource resource) {
