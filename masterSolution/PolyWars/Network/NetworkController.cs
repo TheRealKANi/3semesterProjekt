@@ -36,19 +36,19 @@ namespace PolyWars.Network {
         }
 
         private static void removeResource(string resourceID) {
-            Debug.WriteLine("Server - Recieved Resource Removal");
+            //Debug.WriteLine("Server - Recieved Resource Removal");
             Adapters.ResourceAdapter.removeResourceFromCanvas(resourceID);
         }
 
         public static void updateOpponents(List<PlayerDTO> opponentDTOs) {
-            Debug.WriteLine("Server - Recived Opponents Update");
+            //Debug.WriteLine("Server - Recived Opponents Update");
             if(ArenaController.ArenaCanvas != null) { 
                 GameController.Opponents = Adapters.PlayerAdapter.PlayerDTOtoIShape(opponentDTOs); 
             }
         }
 
         public static void updateResources(List<ResourceDTO> resourceDTOs) {
-            Debug.WriteLine("Server - Recieved Resource Update");
+            //Debug.WriteLine("Server - Recieved Resource Update");
             if(ArenaController.ArenaCanvas != null) {
                 GameController.Resources = Adapters.ResourceAdapter.ResourceDTOtoIResource(resourceDTOs);
             }

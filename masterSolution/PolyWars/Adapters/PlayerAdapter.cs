@@ -6,6 +6,7 @@ using PolyWars.ServerClasses;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
@@ -46,6 +47,7 @@ namespace PolyWars.Adapters {
                             ArenaController.ArenaCanvas.Children.Add(GameController.Player.PlayerShip.Shape.Polygon);
                         });
                     } else {
+                        GameController.Player.Wallet = opponent.Wallet;
                         GameController.Player.PlayerShip.Mover.Move(GameController.Player.PlayerShip, GameController.DeltaTime(GameController.tickTimer));
                     }
                 }

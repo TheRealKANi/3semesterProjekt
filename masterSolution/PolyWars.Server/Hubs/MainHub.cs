@@ -40,6 +40,8 @@ namespace PolyWars.Server {
                 // Updates all other clients with new list of resources
                 Clients.Others.removeResource(resourceId);
                 //Console.WriteLine("Removed resource on other clients");
+                string username = Clients.CallerState.UserName;
+                Opponents[username].Wallet += r.Value;
                 return true;
             }
             return removed;
@@ -50,7 +52,6 @@ namespace PolyWars.Server {
             Console.WriteLine($"Client asked for resources: '{Context.ConnectionId}'");
             return resources;
         }
-
         /// <summary>
         /// Returns a list with opponents on the server AND containing the client's own object
         /// </summary>
@@ -86,7 +87,7 @@ namespace PolyWars.Server {
                     Opponents.TryAdd(username, new PlayerDTO() {
                         ID = newUser.ID,
                         Name = newUser.Name,
-                        Ray = new Ray(newUser.ID, new Point(r.Next(50, 400), 300), 0), // Needs ray
+                        Ray = new Ray(newUser.ID, new Point(r.Next(50, 800), 300), 0),
                         Vertices = 3,
                         Wallet = 0
                     });
