@@ -42,7 +42,9 @@ namespace PolyWars.Network {
         }
         private static void clientLoggedOut(string username) {
             //Debug.WriteLine("Server - Recieved Client logged out");
-            Adapters.PlayerAdapter.removeOpponentFromCanvas(GameController.Opponents[username]);
+            if(GameController.Opponents.ContainsKey(username)) {
+                Adapters.PlayerAdapter.removeOpponentFromCanvas(GameController.Opponents[username]);
+            }
         }
 
         private static void removeResource(string resourceID) {
