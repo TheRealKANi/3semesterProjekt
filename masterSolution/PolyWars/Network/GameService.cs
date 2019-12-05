@@ -30,6 +30,8 @@ namespace PolyWars.Network {
         public event Action<List<ResourceDTO>> changedResources;
         public event Action<List<ResourceDTO>> getResources;
         public event Action<List<PlayerDTO>> updateOpponents;
+        public event Action<List<ResourceDTO>> updateResources;
+        public event Action<string> removeResource;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
@@ -43,12 +45,13 @@ namespace PolyWars.Network {
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
             hubProxy.On<string>("ClientLogout", (n) => ClientLoggedOut?.Invoke(n));
             hubProxy.On<string>("ClientDisconnected", (n) => ClientDisconnected?.Invoke(n));
-            hubProxy.On<string>("ClientReconnected", (n) => ClientReconnected?.Invoke(n));
+            hubProxy.On<string>("ClientReconnected", (n) => ClientReconnected?.Invoke(n));
             
             //hubProxy.On<string>("OnConnected", (n) => OnConnected?.Invoke(n));
             hubProxy.On<string>("AccessDenied", (n) => accessDenied?.Invoke(n));
-            hubProxy.On<List<PlayerDTO>>("updateOpponents", (l) => updateOpponents?.Invoke(l));
-            hubProxy.On<List<ResourceDTO>>("ResourcesUpdated", (n) => changedResources.Invoke(n));
+            hubProxy.On<List<PlayerDTO>>("updateOpponents", (lo) => updateOpponents?.Invoke(lo));
+            hubProxy.On<List<ResourceDTO>>("updateResources", (lr) => updateResources.Invoke(lr));
+            hubProxy.On<string>("removeResource", (rID) => removeResource.Invoke(rID));
 
             Connection.Reconnecting += Reconnecting;
             Connection.Reconnected += Reconnected;
@@ -58,16 +61,17 @@ namespace PolyWars.Network {
             await Connection.Start();
             return true;
         }
-        public async Task<bool> PlayerMovedAsync(IRay playerIRay) {
-            return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);
+        public async Task<bool> PlayerMovedAsync(IRay playerIRay) {
+            return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);
         }
-
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {
             return await hubProxy.Invoke<User>("Login", name, hashedPassword);
         }
-        public async Task<bool> playerCollectedResource(IResource resource) {
-            return await hubProxy.Invoke<bool>("playerCollectedResource", resource.ID);
+
+        public async Task<bool> playerCollectedResource(IResource resource) {
+            return await hubProxy.Invoke<bool>("playerCollectedResource", resource.ID);
         }
+
         public async Task LogoutAsync() {
             await hubProxy.Invoke("Logout");
         }
@@ -75,20 +79,18 @@ namespace PolyWars.Network {
         public async Task SendBroadcastMessageAsync(string msg) {
             await hubProxy.Invoke("BroadcastTextMessage", msg);
         }
-
-        /// <summary>
-        /// Grabs the current list of opponents from the server
-        /// </summary>
-        public async Task<List<PlayerDTO>> getOpponentsAsync() {
-            Debug.WriteLine("Asks Server for opponents");
+        /// <summary>
+        /// Grabs the current list of opponents from the server
+        /// </summary>
+        public async Task<List<PlayerDTO>> getOpponentsAsync() {
+            Debug.WriteLine("Client - Asks Server for opponents");
             return await hubProxy.Invoke<List<PlayerDTO>>("getOpponents");
         }
-
-        /// <summary>
-        /// Grabs the list of remaning resources from the server
-        /// </summary>
-        public async Task<List<ResourceDTO>> getResourcesAsync() {
-            Debug.WriteLine("Asks Server for resources");
+        /// <summary>
+        /// Grabs the list of remaning resources from the server
+        /// </summary>
+        public async Task<List<ResourceDTO>> getResourcesAsync() {
+            Debug.WriteLine("Client - Asks Server for resources");
             return await hubProxy.Invoke<List<ResourceDTO>>("getResources");
         }
 

@@ -8,10 +8,12 @@ using System.Threading.Tasks;
 
 namespace PolyWars.API.Network.DTO {
     public class ResourceDTO {
+
+        public string ID { get; set; }
         public Ray Ray { get; set; }
         public int Value { get; set; }
         public override string ToString() {
-            return Ray.ID.ToString() + Value.ToString();
+            return ID.ToString() + Value.ToString();
         }
     }
 }

@@ -100,7 +100,6 @@
     <Compile Include="Logic\Utility\CollisionDetection.cs" />
     <Compile Include="Logic\Utility\FrameDebugTimer.cs" />
     <Compile Include="Model\TickEventArgs.cs" />
-    <Compile Include="Logic\Utility\ShapeCalculations.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Network\NetworkController.cs" />
     <Compile Include="RelayCommandAsync.cs" />

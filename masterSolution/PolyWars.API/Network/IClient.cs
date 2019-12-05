@@ -10,5 +10,7 @@ namespace PolyWars.API.Network {
         void BroadcastTextMessage(string sender, string message);
         void AccessDenied(string reason);
         void updateOpponents(List<PlayerDTO> opponentDTOs);
+        void updateResources(List<ResourceDTO> resourcesDTOs);
+        void removeResource(string removedResourceID);
     }
 }

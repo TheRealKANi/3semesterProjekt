@@ -37,7 +37,8 @@ namespace PolyWars.Server.Factories {
         }
         public static ResourceDTO generateResource(int value) {
             return new ResourceDTO {
-                Ray = new Ray(getId(), new Point(r.Next(margin, width), r.Next(margin, height)), r.Next(0, 360)),
+                ID = getId(),
+                Ray = new Ray(id.ToString(), new Point(r.Next(margin, width), r.Next(margin, height)), r.Next(0, 360)),
                 Value = value
             };
 

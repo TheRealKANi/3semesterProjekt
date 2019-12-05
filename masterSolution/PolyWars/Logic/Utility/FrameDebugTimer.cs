@@ -13,14 +13,11 @@ namespace PolyWars.Logic.Utility {
 
         private static Stopwatch moveShapeTimer;
         private static List<double> moveShapeTicks;
-        
-        private static int numberOfResources;
 
         /// <summary>
         /// Initializes timer
         /// </summary>
         static FrameDebugTimer() {
-            //numberOfResources = GameController.Resources.Count;
             frameTicks = new List<double>();
             frameTimer = new Stopwatch();
 
@@ -29,7 +26,6 @@ namespace PolyWars.Logic.Utility {
 
             moveShapeTicks = new List<double>();
             moveShapeTimer = new Stopwatch();
-            Debug.WriteLine("\n\n\ndav\n\n\n");
         }
 
         /// <summary>
@@ -91,6 +87,7 @@ namespace PolyWars.Logic.Utility {
         /// and the number of resources on the Arena
         /// </summary>
         public static void outpuFrameTimerResults() {
+
             double totalTickTime = 0;
             foreach(double tickTime in frameTicks) {
                 totalTickTime += tickTime;
@@ -106,7 +103,7 @@ namespace PolyWars.Logic.Utility {
             Debug.WriteLine("        AVG FPS    : " + averageFPS.ToString("N2") + " FPS");
             Debug.WriteLine("        AVG Frame  : " + averageTickTime.ToString("N3") + " ms");
             Debug.WriteLine("        Using " + (averageTickTime / maxFPSms * 100d).ToString("N2") + "% of " + maxFPSms.ToString("N2") + "ms");
-            Debug.WriteLine("        With " + numberOfResources + " resource(s)"); // How manny % from using the full 16.6 ms 
+            Debug.WriteLine("        With " + GameController.Resources.Count + " resource(s)"); // How manny % from using the full 16.6 ms 
             Debug.WriteLine("");
         }
 

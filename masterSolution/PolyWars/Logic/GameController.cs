@@ -21,6 +21,7 @@ namespace PolyWars.Logic {
         private static bool isPrepared;
         private static int frames = 0;
         private static Stopwatch fpsTimer;
+        private static Ray lastRay;
         public static Ticker Ticker { get; private set; }
         public static IPlayer Player { get; set; }
         public static string Username { get; set; }
@@ -34,6 +35,7 @@ namespace PolyWars.Logic {
         public static double ArenaHeight { get; set; }
 
         private const decimal baselineFps = 1000m / 60; // miliseconds per frame at 60 fps 
+
         static public EventHandler<EventArgs> CanvasChangedEventHandler;
         private static bool serverResponded;
 
@@ -55,15 +57,13 @@ namespace PolyWars.Logic {
 
         public async Task prepareGame() {
             ArenaController.generateCanvas();
-            //Player = createBlankPlayer();
-            Opponents = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new ConcurrentDictionary<string, IShape>();
-            Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new ConcurrentDictionary<string, IResource>();
-
             isPrepared = true;
         }
 
-        public void playGame() {
+        public async Task playGame() {
             if(isPrepared) {
+                Opponents = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new ConcurrentDictionary<string, IShape>();
+                Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new ConcurrentDictionary<string, IResource>();
                 fpsTimer.Start();
                 Ticker.Start();
             }
@@ -81,24 +81,22 @@ namespace PolyWars.Logic {
         static public void calculateFrame() {
             try {
                 ThreadController.MainThreadDispatcher.Invoke(() => {
-                    Player.PlayerShip.Move(DeltaTime(tickTimer));
+                    Player.PlayerShip.Move(DeltaTime(tickTimer)); 
+                    if(lastRay == null || !lastRay.IsEqual(Player.PlayerShip.Shape.Ray)) {
+                        Task.Run(() => notifyMoved());
+                    }
                     tickTimer.Stop();
                     CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
                 });
             } catch(TaskCanceledException) {
                 // TODO Should we do something here
             }
-            try {
-                // Sends player iray to server
-                Task.Run(() => notifyMoved());
-            } catch(Exception e) {
-                Debug.WriteLine("Error:" + e.Message);
-            }
         }
         public static async void notifyMoved() {
-            if(serverResponded && ServerTimer.Elapsed.TotalMilliseconds >= (950 / 60d)) {
+            if(serverResponded && ServerTimer.Elapsed.TotalMilliseconds >= 100 ) { // ish 10 times a second
                 ServerTimer.Restart();
                 serverResponded = false;
+                lastRay = ((Ray)Player.PlayerShip.Shape.Ray).Clone();
                 serverResponded = await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip.Shape.Ray);
             }
         }

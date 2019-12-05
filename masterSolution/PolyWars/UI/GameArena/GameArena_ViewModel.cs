@@ -14,7 +14,6 @@ namespace PolyWars.UI.GameArena {
         public GameController GameController { get; private set; }
         public double ArenaHeight { get; set; }
         public double ArenaWidth { get; set; }
-        
         private Visibility fpsVisibility;
         public Visibility FpsVisibility {
             get {
@@ -66,7 +65,6 @@ namespace PolyWars.UI.GameArena {
 
         public GameArena_ViewModel() {
             FpsVisibility = Visibility.Visible;
-            ArenaController.fillArena();
             ArenaCanvas = ArenaController.ArenaCanvas;
         }
 

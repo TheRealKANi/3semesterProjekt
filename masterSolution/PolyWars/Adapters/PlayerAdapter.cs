@@ -3,7 +3,6 @@ using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
 using PolyWars.Network;
 using PolyWars.ServerClasses;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -19,7 +18,7 @@ namespace PolyWars.Adapters {
         }
 
         public static ConcurrentDictionary<string, IShape> PlayerDTOtoIShape(List<PlayerDTO> opponentDTOs) {
-            ConcurrentDictionary<string, IShape> opponents = new ConcurrentDictionary<string, IShape>();
+            ConcurrentDictionary<string, IShape> opponents = new ConcurrentDictionary<string, IShape>(); // TODO Use this as conccurrency issue?
             foreach(PlayerDTO opponent in opponentDTOs) {
                 if(!opponent.Name.Equals(GameController.Username)) {
                     IRenderable renderable = new Renderable(Colors.Black, Colors.OrangeRed, 1, 25, 25, opponent.Vertices);
@@ -48,12 +47,8 @@ namespace PolyWars.Adapters {
                     } else {
                         GameController.Player.PlayerShip.Mover.Move(GameController.Player.PlayerShip, GameController.DeltaTime(GameController.tickTimer));
                     }
-                    //GameController.Player.PlayerShip.Shape = shape;
                 }
             }
-            //ThreadController.MainThreadDispatcher.Invoke(() => {
-            //    GameController.CanvasChangedEventHandler.Invoke(null, EventArgs.Empty);
-            //});
             return opponents;
         }
     }
