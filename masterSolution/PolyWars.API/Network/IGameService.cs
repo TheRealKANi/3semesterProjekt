@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PolyWars.API.Network {
     public interface IGameService {
         event Action<string> announceClientLoggedIn;
-        event Action<string> ClientLoggedOut;
+        event Action<string> clientLoggedOut;
         event Action<string> ClientDisconnected;
         event Action<string> ClientReconnected;
         event Action ConnectionReconnecting;

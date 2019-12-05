@@ -26,7 +26,7 @@ namespace PolyWars.Server.Hubs {
             string name = Clients.CallerState.UserName;
             if(!string.IsNullOrEmpty(name)) {
                 PlayerClients.TryRemove(name, out User client);
-                Clients.Others.ClientLogout(name);
+                Clients.Others.clientLogout(name);
                 Console.WriteLine($"-- {name} logged out");
             }
         }

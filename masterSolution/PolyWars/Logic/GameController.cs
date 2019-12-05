@@ -57,13 +57,13 @@ namespace PolyWars.Logic {
 
         public async Task prepareGame() {
             ArenaController.generateCanvas();
+            Opponents = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new ConcurrentDictionary<string, IShape>();
+            Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new ConcurrentDictionary<string, IResource>();
             isPrepared = true;
         }
 
         public async Task playGame() {
             if(isPrepared) {
-                Opponents = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new ConcurrentDictionary<string, IShape>();
-                Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new ConcurrentDictionary<string, IResource>();
                 fpsTimer.Start();
                 Ticker.Start();
             }

@@ -3,6 +3,7 @@ using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
 using PolyWars.Network;
 using PolyWars.ServerClasses;
+using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -22,14 +23,14 @@ namespace PolyWars.Adapters {
             foreach(PlayerDTO opponent in opponentDTOs) {
                 if(!opponent.Name.Equals(GameController.Username)) {
                     IRenderable renderable = new Renderable(Colors.Black, Colors.OrangeRed, 1, 25, 25, opponent.Vertices);
-                    Shape s = new Shape(opponent.ID, opponent.Ray, renderable, new RenderWithHeaderStrategy());
+                    Shape s = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
                     ThreadController.MainThreadDispatcher.Invoke(() => {
-                        if(GameController.Opponents != null && GameController.Opponents.ContainsKey(opponent.ID)) {
-                            System.Windows.Shapes.Polygon p = GameController.Opponents[opponent.ID].Polygon;
+                        if(GameController.Opponents != null && GameController.Opponents.ContainsKey(opponent.Name)) {
+                            System.Windows.Shapes.Polygon p = GameController.Opponents[opponent.Name].Polygon;
                             ArenaController.ArenaCanvas.Children.Remove(p);
                         }
                     });
-                    opponents.TryAdd(s.ID, s);
+                    opponents.TryAdd(opponent.Name, s);
                     s.Renderer.Render(s.Renderable, s.Ray);
                     ThreadController.MainThreadDispatcher.Invoke(() => {
                         ArenaController.ArenaCanvas.Children.Add(s.Polygon);
@@ -38,9 +39,9 @@ namespace PolyWars.Adapters {
                 } else {
                     if(GameController.Player == null) {
                         IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 25, 25, opponent.Vertices);
-                        IShape shape = new Shape(opponent.ID, opponent.Ray, renderable, new RenderWithHeaderStrategy());
+                        IShape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
                         IMoveable playerShip = new Moveable(0, 20, 0, 180, shape, new MoveStrategy());
-                        GameController.Player = new Player(opponent.Name, opponent.ID, opponent.Wallet, playerShip);
+                        GameController.Player = new Player(opponent.Name, opponent.Name, opponent.Wallet, playerShip);
                         ThreadController.MainThreadDispatcher.Invoke(() => {
                             ArenaController.ArenaCanvas.Children.Add(GameController.Player.PlayerShip.Shape.Polygon);
                         });
@@ -50,6 +51,16 @@ namespace PolyWars.Adapters {
                 }
             }
             return opponents;
+        }
+
+        internal static void removeOpponentFromCanvas(string username) {
+            if(GameController.Opponents != null && GameController.Opponents.ContainsKey(username)) {
+                ThreadController.MainThreadDispatcher.Invoke(() => {
+                    if(GameController.Opponents.TryRemove(username, out IShape r)) {
+                        ArenaController.ArenaCanvas.Children.Remove(r.Polygon);
+                    }
+                });
+            }
         }
     }
 }

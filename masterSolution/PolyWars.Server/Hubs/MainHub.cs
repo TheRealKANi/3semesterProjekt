@@ -26,7 +26,7 @@ namespace PolyWars.Server {
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
 
-            IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(5, 1);
+            IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(100, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
@@ -129,11 +129,13 @@ namespace PolyWars.Server {
         }
 
         public void Logout() {
-            string name = Clients.CallerState.UserName;
-            if(!string.IsNullOrEmpty(name)) {
-                PlayerClients.TryRemove(name, out IUser client);
-                Clients.Others.ClientLogout(name);
-                Console.WriteLine($"-- {name} logged out");
+            string username = Clients.CallerState.UserName;
+            if(!string.IsNullOrEmpty(username)) {
+                if(Opponents.TryRemove(username, out PlayerDTO player)) {
+                    PlayerClients.TryRemove(username, out IUser client);
+                    Clients.Others.clientLogout(username);
+                    Console.WriteLine($"-- {username} logged out");
+                }
             }
         }
         public override Task OnReconnected() {
@@ -148,8 +150,6 @@ namespace PolyWars.Server {
             string userName = PlayerClients.SingleOrDefault((c) => c.Value.ID == Context.ConnectionId).Key;
             if(userName != null) {
                 Clients.Others.ClientDisconnected(userName);
-                List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
-                Clients.All.updateOpponents(opponents);
                 Console.WriteLine($"<> {userName} disconnected");
             }
             return base.OnDisconnected(stopCalled);

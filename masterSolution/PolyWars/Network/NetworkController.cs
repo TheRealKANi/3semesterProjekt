@@ -28,6 +28,11 @@ namespace PolyWars.Network {
             GameService.updateOpponents += updateOpponents;
             GameService.updateResources += updateResources;
             GameService.removeResource += removeResource;
+            GameService.clientLoggedOut += clientLoggedOut;
+        }
+
+        private static void clientLoggedOut(string username) {
+            Adapters.PlayerAdapter.removeOpponentFromCanvas(username);
         }
 
         private static void removeResource(string resourceID) {

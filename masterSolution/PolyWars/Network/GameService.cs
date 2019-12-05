@@ -19,7 +19,7 @@ namespace PolyWars.Network {
     public class GameService : IGameService {
 
         public event Action<string> announceClientLoggedIn;
-        public event Action<string> ClientLoggedOut;
+        public event Action<string> clientLoggedOut;
         public event Action<string> ClientDisconnected;
         public event Action<string> ClientReconnected;
         public event Action<string> accessDenied;
@@ -43,7 +43,7 @@ namespace PolyWars.Network {
             Connection = new HubConnection(url);
             hubProxy = Connection.CreateHubProxy ("MainHub");
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
-            hubProxy.On<string>("ClientLogout", (n) => ClientLoggedOut?.Invoke(n));
+            hubProxy.On<string>("clientLogout", (n) => clientLoggedOut?.Invoke(n));
             hubProxy.On<string>("ClientDisconnected", (n) => ClientDisconnected?.Invoke(n));
             hubProxy.On<string>("ClientReconnected", (n) => ClientReconnected?.Invoke(n));
             
