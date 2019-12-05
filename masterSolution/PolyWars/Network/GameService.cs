@@ -1,19 +1,15 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-using PolyWars.API;
-using PolyWars.API.Model;
-using PolyWars.API.Model.Interfaces;
+
+using PolyWars.API.Model;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
-using PolyWars.API.Network.DTO;
-using PolyWars.API.Strategies;
-using PolyWars.Logic;
-using PolyWars.Server.Model;
-using PolyWars.ServerClasses;
+using PolyWars.API.Network.DTO;
 using System;
-using System.Collections.Generic;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
-using System.Windows.Media;
+
 
 namespace PolyWars.Network {
     public class GameService : IGameService {
@@ -29,28 +25,29 @@ namespace PolyWars.Network {
         public event Action<List<PlayerDTO>> updateOpponents;
         public event Action<List<ResourceDTO>> updateResources;
         public event Action<string> removeResource;
-        public event Action<string, PlayerDTO> opponentMoved;
+        public event Action<PlayerDTO> opponentMoved;
+        public event Action<double> updateWallet;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
-        //private string url = "http://polywars.servegame.com:8080/Polywars";
-        private string url = "http://localhost:8080/Polywars";
-
+        //private string url = "http://polywars.servegame.com:8080/Polywars";
+        private string url = "http://localhost:8080/Polywars";
         public async Task<bool> ConnectAsync() {
             Connection = new HubConnection(url);
-            hubProxy = Connection.CreateHubProxy ("MainHub");
+            hubProxy = Connection.CreateHubProxy("MainHub");
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
             hubProxy.On<string>("clientLogout", (n) => clientLoggedOut?.Invoke(n));
             hubProxy.On<string>("ClientDisconnected", (n) => ClientDisconnected?.Invoke(n));
             hubProxy.On<string>("ClientReconnected", (n) => ClientReconnected?.Invoke(n));
-            
+
             //hubProxy.On<string>("OnConnected", (n) => OnConnected?.Invoke(n));
             hubProxy.On<string>("AccessDenied", (n) => accessDenied?.Invoke(n));
             hubProxy.On<List<PlayerDTO>>("updateOpponents", (lo) => updateOpponents?.Invoke(lo));
             hubProxy.On<List<ResourceDTO>>("updateResources", (lr) => updateResources.Invoke(lr));
             hubProxy.On<string>("removeResource", (rID) => removeResource.Invoke(rID));
-            hubProxy.On<string, PlayerDTO>("opponentMoved", (username, dto) => opponentMoved.Invoke(username, dto));
+            hubProxy.On<PlayerDTO>("opponentMoved", (dto) => opponentMoved.Invoke(dto));
+            hubProxy.On<double>("updateWallet", (wallet) => updateWallet.Invoke(wallet));
 
             Connection.Reconnecting += Reconnecting;
             Connection.Reconnected += Reconnected;

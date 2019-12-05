@@ -1,5 +1,6 @@
 ﻿using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 
@@ -28,14 +29,20 @@ namespace PolyWars.Network {
             GameService.removeResource += removeResource;
             GameService.clientLoggedOut += clientLoggedOut;
             GameService.opponentMoved += opponentMoved;
+            GameService.updateWallet += updateWallet;
         }
 
-        private static void opponentMoved(string username, PlayerDTO playerDTO) {
-            Adapters.PlayerAdapter.moveOpponentOnCanvas(username, playerDTO);
+        private static void updateWallet(double walletAmount) {
+            GameController.Player.Wallet = walletAmount;
+            //Debug.WriteLine("Server - Recieved wallet update");
+        }
+
+        private static void opponentMoved(PlayerDTO playerDTO) {
+            Adapters.PlayerAdapter.moveOpponentOnCanvas(playerDTO);
         }
         private static void clientLoggedOut(string username) {
             //Debug.WriteLine("Server - Recieved Client logged out");
-            Adapters.PlayerAdapter.removeOpponentFromCanvas(username);
+            Adapters.PlayerAdapter.removeOpponentFromCanvas(GameController.Opponents[username]);
         }
 
         private static void removeResource(string resourceID) {

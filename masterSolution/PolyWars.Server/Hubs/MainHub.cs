@@ -39,9 +39,9 @@ namespace PolyWars.Server {
                 Console.WriteLine($"Player Removed Resource: {resourceId}");
                 // Updates all other clients with new list of resources
                 Clients.Others.removeResource(resourceId);
-                //Console.WriteLine("Removed resource on other clients");
                 string username = Clients.CallerState.UserName;
                 Opponents[username].Wallet += r.Value;
+                Clients.Caller.updateWallet(Opponents[username].Wallet);
                 return true;
             }
             return removed;
@@ -108,7 +108,7 @@ namespace PolyWars.Server {
             if(Opponents.TryRemove(username, out PlayerDTO playerDTO)) {
                 playerDTO.Ray = playerIRay;
                 if(Opponents.TryAdd(username, playerDTO)) {
-                    Clients.Others.opponentMoved(username, playerDTO);
+                    Clients.Others.opponentMoved(playerDTO);
                     result = true;
                 }
             }

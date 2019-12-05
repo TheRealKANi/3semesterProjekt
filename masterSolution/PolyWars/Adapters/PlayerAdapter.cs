@@ -20,47 +20,62 @@ namespace PolyWars.Adapters {
 
         public static ConcurrentDictionary<string, IShape> PlayerDTOtoIShape(List<PlayerDTO> opponentDTOs) {
             ConcurrentDictionary<string, IShape> opponents = new ConcurrentDictionary<string, IShape>(); // TODO Use this as conccurrency issue?
-            foreach(PlayerDTO opponent in opponentDTOs) {
-                if(!opponent.Name.Equals(GameController.Username)) {
-                    IRenderable renderable = new Renderable(Colors.Black, Colors.HotPink, 1, 25, 25, opponent.Vertices);
-                    Shape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
-                    shape.Renderer.Render(shape.Renderable, shape.Ray);
-                    if(GameController.Opponents.TryAdd(opponent.Name, shape)) {
+            foreach(PlayerDTO playerDTO in opponentDTOs) {
+                if(!playerDTO.Name.Equals(GameController.Username)) {
+                    // Initial render of an opponent when game is launched
+                    Shape shape = renderOpponent(playerDTO);
+                    if(opponents.TryAdd(playerDTO.Name, shape)) {
                         addOpponentToCanvas(shape);
                     }
                 } else {
+                    // Initial render of clients Player when game is launched
                     if(GameController.Player == null) {
-                        IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 25, 25, opponent.Vertices);
-                        IShape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
-                        IMoveable playerShip = new Moveable(0, 20, 0, 180, shape, new MoveStrategy());
-                        GameController.Player = new Player(opponent.Name, opponent.Name, opponent.Wallet, playerShip);
+                        IShape shape = renderPlayer(playerDTO);
                         addOpponentToCanvas(shape);
-                    } else {
-                        GameController.Player.Wallet = opponent.Wallet;
-                        GameController.Player.PlayerShip.Mover.Move(GameController.Player.PlayerShip, GameController.DeltaTime(GameController.tickTimer));
                     }
                 }
             }
             return opponents;
         }
 
-        internal static void moveOpponentOnCanvas(string username, PlayerDTO playerDTO) {
-            if(GameController.Opponents != null && GameController.Opponents.ContainsKey(username)) {
-                removeOpponentFromCanvas(playerDTO.Name);
-                IRenderable renderable = new Renderable(Colors.Black, Colors.HotPink, 1, 25, 25, playerDTO.Vertices);
-                Shape shape = new Shape(playerDTO.Name, playerDTO.Ray, renderable, new RenderWithHeaderStrategy());
-                shape.Renderer.Render(shape.Renderable, shape.Ray);
-                if(GameController.Opponents.TryAdd(username, shape)) {
-                    addOpponentToCanvas(shape);
-                }
-            }
+        private static IShape renderPlayer(PlayerDTO opponent) {
+            IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 25, 25, opponent.Vertices);
+            IShape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
+            IMoveable playerShip = new Moveable(0, 80, 0, 360, shape, new MoveStrategy());
+            GameController.Player = new Player(opponent.Name, opponent.Name, opponent.Wallet, playerShip);
+            return shape;
         }
 
-        internal static void removeOpponentFromCanvas(string username) {
-            ThreadController.MainThreadDispatcher.Invoke(() => {
-                if(GameController.Opponents.TryRemove(username, out IShape r)) {
-                    ArenaController.ArenaCanvas.Children.Remove(r.Polygon);
+        private static Shape renderOpponent(PlayerDTO opponent) {
+            IRenderable renderable = new Renderable(Colors.Black, Colors.DarkSlateGray, 1, 25, 25, opponent.Vertices);
+            Shape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
+            IMoveable opponentShip = new Moveable(0, 80, 0, 360, shape, new MoveStrategy());
+            shape.Renderer.Render(shape.Renderable, shape.Ray);
+            opponentShip.Mover.Move(opponentShip, GameController.DeltaTime(GameController.tickTimer));
+            return shape;
+        }
+
+        /// <summary>
+        /// 'Moves' a opponent around on the arena based on the input DTO
+        /// </summary>
+        /// <param name="opponentDTO">The DTO of the user from server</param>
+        internal static void moveOpponentOnCanvas(PlayerDTO opponentDTO) {
+            if(GameController.Opponents != null && GameController.Opponents.ContainsKey(opponentDTO.Name)) {
+                if(GameController.Opponents.TryRemove(opponentDTO.Name, out IShape opponentShape)) {
+                    removeOpponentFromCanvas(opponentShape);
+                    IRenderable renderable = new Renderable(Colors.Black, Colors.HotPink, 1, 25, 25, opponentDTO.Vertices);
+                    Shape shape = new Shape(opponentDTO.Name, opponentDTO.Ray, renderable, new RenderWithHeaderStrategy());
+                    shape.Renderer.Render(shape.Renderable, shape.Ray);
+                    if(GameController.Opponents.TryAdd(opponentDTO.Name, shape)) {
+                        addOpponentToCanvas(shape);
+                    }
                 }
+            }     
+        }
+
+        internal static void removeOpponentFromCanvas(IShape shape) {
+            ThreadController.MainThreadDispatcher.Invoke(() => {
+                ArenaController.ArenaCanvas.Children.Remove(shape.Polygon);
             });
         }
 
