@@ -87,7 +87,7 @@ namespace PolyWars.Server {
                     Opponents.TryAdd(username, new PlayerDTO() {
                         ID = newUser.ID,
                         Name = newUser.Name,
-                        Ray = new Ray(newUser.ID, new Point(r.Next(50, 800), 300), 0),
+                        Ray = new Ray(newUser.ID, new Point(r.Next(50, 400), 300), 0),
                         Vertices = 3,
                         Wallet = 0
                     });
