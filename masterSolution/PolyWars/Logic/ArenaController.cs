@@ -1,7 +1,4 @@
-﻿using PolyWars.API;
-using PolyWars.API.Model.Interfaces;
-using System.Linq;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 using System.Windows.Media;
 
 namespace PolyWars.Logic {
@@ -14,17 +11,5 @@ namespace PolyWars.Logic {
                 Background = new SolidColorBrush(Colors.Aquamarine)
             };
         }
-
-        public static void fillArena() {
-            //foreach(IShape shape in GameController.Opponents.Values) {
-            //    ArenaCanvas.Children.Add(shape.Polygon);
-            //}
-            foreach(IShape shape in GameController.Resources.Values.Select(x => x.Shape)) {
-                ArenaCanvas.Children.Add(shape.Polygon);
-            }
-            // Player goes on top of all other IShapes
-           // ArenaCanvas.Children.Add(GameController.Player.PlayerShip.Shape.Polygon);
-        }
-
     }
 }

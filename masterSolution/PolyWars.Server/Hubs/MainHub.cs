@@ -26,18 +26,24 @@ namespace PolyWars.Server {
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
 
-            IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
+            IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(100, 1);
             foreach(ResourceDTO resource in resources) {
-                Resources.TryAdd(resource.Ray.ID, resource);
+                Resources.TryAdd(resource.ID, resource);
             }
         }
+
+        // Called from client when they collide with a resource
         public bool playerCollectedResource(string resourceId) {
             bool removed = Resources.TryRemove(resourceId, out ResourceDTO r);
-
             if(removed) {
+                Console.WriteLine($"Player Removed Resource: {resourceId}");
+                // Updates all other clients with new list of resources
+                Clients.Others.removeResource(resourceId);
+                string username = Clients.CallerState.UserName;
+                Opponents[username].Wallet += r.Value;
+                Clients.Caller.updateWallet(Opponents[username].Wallet);
                 return true;
             }
-
             return removed;
         }
 
@@ -46,12 +52,11 @@ namespace PolyWars.Server {
             Console.WriteLine($"Client asked for resources: '{Context.ConnectionId}'");
             return resources;
         }
-
-        /// <summary>
-        /// Returns a list with opponents on the server AND containing the client's own object
-        /// </summary>
-        public List<PlayerDTO> getOpponents() {
-            List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
+        /// <summary>
+        /// Returns a list with opponents on the server AND containing the client's own object
+        /// </summary>
+        public List<PlayerDTO> getOpponents() {
+            List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
             Console.WriteLine($"Client asked for opponents: '{Context.ConnectionId}'");
             return opponents;
         }
@@ -76,14 +81,14 @@ namespace PolyWars.Server {
                     Clients.CallerState.UserName = username;
 
                     // Accounces to all other connected clients that *username* has joined
-                    Clients.Others.announceClientLoggedIn(username);
+                    Clients.Others.announceClientLoggedIn(username);
                     Random r = new Random();
-                    // Creates the basic opponent layout
-                    Opponents.TryAdd(username, new PlayerDTO() {
-                        ID = newUser.ID,
-                        Name = newUser.Name,
-                        Ray = new Ray(newUser.ID, new Point(r.Next(50, 400), 300), 0), // Needs ray
-                        Vertices = 3,
+                    // Creates the basic opponent layout
+                    Opponents.TryAdd(username, new PlayerDTO() {
+                        ID = newUser.ID,
+                        Name = newUser.Name,
+                        Ray = new Ray(newUser.ID, new Point(r.Next(50, 400), 300), 0),
+                        Vertices = 3,
                         Wallet = 0
                     });
                     return newUser;
@@ -96,41 +101,28 @@ namespace PolyWars.Server {
         }
 
 
-        public bool PlayerMoved(Ray playerIRay) {
+        public bool PlayerMoved(Ray playerIRay) {
             bool result = false;
-            string name = Clients.CallerState.UserName;
-            if(s == null) {
-                s = new Stopwatch();
-                s.Start();
-                count = 0;
+            string username = Clients.CallerState.UserName;
+            // Move player in table and transmit new location to other clients
+            if(Opponents.TryRemove(username, out PlayerDTO playerDTO)) {
+                playerDTO.Ray = playerIRay;
+                if(Opponents.TryAdd(username, playerDTO)) {
+                    Clients.Others.opponentMoved(playerDTO);
+                    result = true;
+                }
             }
-            count++;
-
-            Opponents.TryRemove(name, out PlayerDTO player);
-            if(player != null) {
-                player.Ray = playerIRay;
-                result = Opponents.TryAdd(name, player);
-            }
-            
-
-            if(s.Elapsed.TotalMilliseconds >= 500) {
-                s.Stop();
-                Console.WriteLine($"Getting {count} PlayerMoved counts pr. 1/2 second");
-                s.Restart();
-                count = 0;
-                List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
-                Clients.All.updateOpponents(opponents);
-            }
-            //Console.WriteLine("Sending Opponents to all clients once pr. second");
             return result;
         }
 
         public void Logout() {
-            string name = Clients.CallerState.UserName;
-            if(!string.IsNullOrEmpty(name)) {
-                PlayerClients.TryRemove(name, out IUser client);
-                Clients.Others.ClientLogout(name);
-                Console.WriteLine($"-- {name} logged out");
+            string username = Clients.CallerState.UserName;
+            if(!string.IsNullOrEmpty(username)) {
+                if(Opponents.TryRemove(username, out PlayerDTO player)) {
+                    PlayerClients.TryRemove(username, out IUser client);
+                    Clients.Others.clientLogout(username);
+                    Console.WriteLine($"-- {username} logged out");
+                }
             }
         }
         public override Task OnReconnected() {

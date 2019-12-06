@@ -1,13 +1,8 @@
-﻿using PolyWars.API;
-using PolyWars.API.Model.Interfaces;
+﻿using PolyWars.API.Model.Interfaces;
 using PolyWars.Network;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using System.Windows;
-using System.Linq;
-using System.Diagnostics;
-using System.Threading;
 
 namespace PolyWars.Logic.Utility {
     class CollisionDetection {
@@ -21,7 +16,7 @@ namespace PolyWars.Logic.Utility {
                 FrameDebugTimer.startCollisionTimer();
 
                 ConcurrentBag<IResource> collidedWith = new ConcurrentBag<IResource>();
-                
+
                 foreach(IResource resource in GameController.Resources.Values) {
                     ThreadController.MainThreadDispatcher.Invoke(() => {
                         if(resource.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(GameController.Player.PlayerShip.Shape.Polygon.RenderedGeometry.Bounds)) {
@@ -33,15 +28,13 @@ namespace PolyWars.Logic.Utility {
                 foreach(IResource resource in collidedWith) {
                     taskList.Add(taskFactory.StartNew(async () => {
                         bool result = await NetworkController.GameService.playerCollectedResource(resource);
-
                         if(result) {
                             ThreadController.MainThreadDispatcher.Invoke(() => {
-                                ArenaController.ArenaCanvas.Children.Remove(resource.Shape.Polygon);
+                                if(GameController.Resources != null) {
+                                    System.Windows.Shapes.Polygon p = GameController.Resources[resource.ID].Shape.Polygon;
+                                    ArenaController.ArenaCanvas.Children.Remove(p);
+                                }
                             });
-                            GameController.Resources.TryRemove(resource.ID, out IResource _resource);
-                            Debug.WriteLine($"Removed Resource {_resource.ID}");
-                        } else {
-                            return;
                         }
                     }));
                 }
