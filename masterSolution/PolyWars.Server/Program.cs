@@ -10,7 +10,7 @@ namespace PolyWars.Server {
             public static IAppBuilder app;
             static void Main(string[] args) {
                 string url = "http://*:5700/";
-                // netsh http add urlacl url=http://*:5700/ user=Alle // KUN HVIS DANSK OS
+                // netsh http add urlacl url=http://*:5700/ user=Alle // only if not started as an admin user
 
                 while(true) {
                     using(WebApp.Start<Startup>(url)) {
