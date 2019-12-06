@@ -32,7 +32,7 @@ namespace PolyWars.Network {
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
         //private string url = "http://polywars.servegame.com:8080/Polywars";
-        private string url = "http://localhost:8080/Polywars";
+        private string url = "http://192.168.8.15:5700/Polywars"; // Lan k home        //private string url = "http://109.56.76.238:5700/Polywars"; // Wan k home
         public async Task<bool> ConnectAsync() {
             Connection = new HubConnection(url);
             hubProxy = Connection.CreateHubProxy("MainHub");
