@@ -25,6 +25,7 @@ namespace PolyWars.API.Network {
         Task LogoutAsync();
         Task<List<ResourceDTO>> getResourcesAsync();
         Task<List<PlayerDTO>> getOpponentsAsync();
+        Task<List<BulletDTO>> getBulletsAsync();
     }
 
 }

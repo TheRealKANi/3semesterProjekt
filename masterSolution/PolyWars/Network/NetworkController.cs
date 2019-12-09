@@ -1,7 +1,9 @@
-﻿using PolyWars.Api.Model;
+﻿using PolyWars.Adapters;
+using PolyWars.Api.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
+using PolyWars.ServerClasses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -27,7 +29,7 @@ namespace PolyWars.Network {
             GameService = new GameService();
 
             GameService.announceClientLoggedIn += announceClientLoggedIn;
-            GameService.accessDenied += deniedAccess;
+            //GameService.accessDenied += deniedAccess;
             //GameService.updateOpponents += updateOpponents;
             //GameService.updateResources += updateResources;
             GameService.removeResource += removeResource;
@@ -35,6 +37,13 @@ namespace PolyWars.Network {
             GameService.opponentMoved += opponentMoved;
             GameService.updateWallet += updateWallet;
             GameService.opponentJoined += opponentJoined;
+            GameService.opponentShot += opponentShot;
+        }
+        private static void opponentShot(BulletDTO bullet) {
+            Bullet newBullet = BulletAdapter.renderBullet(bullet);
+            if(GameController.Bullets.TryAdd(newBullet.ID, newBullet)) {
+                BulletAdapter.addBulletToCanvas(newBullet);
+            }
         }
         private static void updateWallet(double walletAmount) {
             GameController.Player.Wallet = walletAmount;
@@ -59,11 +68,9 @@ namespace PolyWars.Network {
 
                 IRay ray = new Ray(opponent.Shape.Ray.ID, new Point(dto.centerX, dto.centerY), dto.Angle);
                 opponent.Shape.Ray = ray;
-                //opponent.MoveToNewRay();
             }
         }
         private static void clientLoggedOut(string id) {
-            //Debug.WriteLine("Server - Recieved Client logged out");
             if(GameController.Opponents.ContainsKey(id)) {
                 IMoveable opponent;
                 while(!GameController.Opponents.TryRemove(id, out opponent)) {
@@ -100,8 +107,10 @@ namespace PolyWars.Network {
         public static void announceClientLoggedIn(string userName) {
             Debug.WriteLine($"Server - {userName} has joined the lobby");
         }
-        public static void deniedAccess(string reason) {
-            Debug.WriteLine($"Server - Access Denied, Reason: {reason}");
+
+        private static void updateHealth(int healthLeft) {
+            GameController.Player.Health = healthLeft;
+            //Debug.WriteLine("Server - Recieved health update");
         }
     }
 }

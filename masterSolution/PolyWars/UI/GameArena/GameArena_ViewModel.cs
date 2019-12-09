@@ -38,6 +38,15 @@ namespace PolyWars.UI.GameArena {
             }
         }
 
+        public string PlayerHealth {
+            get {
+                if(GameController.Player != null) {
+                    return GameController.Player.Health.ToString();
+                }
+                return 100.ToString();
+            }
+        }
+
         private Canvas arenaCanvas;
         public Canvas ArenaCanvas {
             get {
@@ -80,6 +89,7 @@ namespace PolyWars.UI.GameArena {
                 NotifyPropertyChanged("ArenaCanvas");
                 NotifyPropertyChanged("Fps");
                 NotifyPropertyChanged("PlayerCurrency");
+                NotifyPropertyChanged("PlayerHealth");
             });
         }
     }

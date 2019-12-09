@@ -19,7 +19,9 @@ namespace PolyWars.Server {
         private static ConcurrentDictionary<string, IUser> PlayerClients;
         private static ConcurrentDictionary<string, PlayerDTO> Opponents;
         private static ConcurrentDictionary<string, ResourceDTO> Resources;
+        private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
+        private static object statisticsLock = new object();
 
         private static Stopwatch statisticTimer;
         //private static ConcurrentDictionary<string, IUser> ActiveShot = new ConcurrentDictionary<string, IUser>();
@@ -41,7 +43,7 @@ namespace PolyWars.Server {
                     Console.WriteLine($"{key,-30} was called {statistics[key],-6} times");
                 }
                 Console.WriteLine("****************************************************************************");
-                Console.SetCursorPosition(x, y);
+                Console.SetCursorPosition(x, statistics.Count + 3);
             }
         }
         static MainHub() {
@@ -49,13 +51,30 @@ namespace PolyWars.Server {
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
+            Bullets = new ConcurrentDictionary<string, BulletDTO>();
             statistics = new ConcurrentDictionary<string, int>();
             statisticTimer = new Stopwatch();
-            statisticTimer.Restart();
+            statistics.TryAdd("moved stack", 0);
+            statisticTimer.Start();
+
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(100, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
+        }
+
+        public bool playerShot(int amount) {
+            bool result = false;
+            PlayerDTO shootingPlayer = Opponents[Clients.CallerState.UserName];
+            if(shootingPlayer != null) {
+                BulletDTO bullet = BulletFactory.generateBullet(amount, shootingPlayer);
+                bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
+                if(addBullet) {
+                    result = true;
+                    Clients.All.opponentShot(bullet);
+                }
+            }
+            return result;
         }
 
         // Called from client when they collide with a resource
@@ -65,7 +84,7 @@ namespace PolyWars.Server {
             await Task.Factory.StartNew(() => {
                 removed = Resources.TryRemove(resourceId, out ResourceDTO r);
                 if(removed) {
-                    Console.WriteLine($"Player Removed Resource: {resourceId}");
+                    //Console.WriteLine($"Player Removed Resource: {resourceId}");
                     // Updates all other clients with new list of resources
                     Clients.Others.removeResource(resourceId);
                     string username = Clients.CallerState.UserName;
@@ -99,6 +118,12 @@ namespace PolyWars.Server {
                 return null;
             });
         }
+
+        public List<BulletDTO> getBullets() {
+            List<BulletDTO> bullets = new List<BulletDTO>(Bullets.Values);
+            Console.WriteLine($"Client asked for bullets: '{Context.ConnectionId}'");
+            return bullets;
+        }
 
         public override Task OnConnected() {
             methodCallCounter();
@@ -157,17 +182,27 @@ namespace PolyWars.Server {
 
 
         public async Task<bool> playerMoved(PlayerDTO player) {
+            lock(statisticsLock) {
+                statistics["moved stack"]++; 
+            }
+
             methodCallCounter();
             // Move player in table and transmit new location to other clients
             bool result = false;
             await Task.Factory.StartNew(() => {
                 if(Opponents.ContainsKey(player.Name)) {
                     if(Opponents.TryUpdate(player.Name, player, Opponents[player.Name])) {
-                        Clients.Others.opponentMoved(player);
+                        Task.Run(() => {
+                            Clients.Others.opponentMoved(player);
+                            lock(statisticsLock) {
+                                statistics["moved stack"]--; 
+                            }
+                        });
                         result = true;
                     }
                 }
             });
+
             return result;
         }
 

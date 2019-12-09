@@ -29,11 +29,14 @@ namespace PolyWars.Logic {
         public static string UserID { get; set; }
         public static ConcurrentDictionary<string, IMoveable> Opponents { get; set; }
         public static ConcurrentDictionary<string, IResource> Resources { get; set; }
+        public static ConcurrentDictionary<string, IBullet> Bullets { get; set; }
         public static int Fps { get; set; }
         public static Stopwatch tickTimer { get; private set; }
         private static Stopwatch ServerTimer { get; set; }
         public static double ArenaWidth { get; set; }
         public static double ArenaHeight { get; set; }
+        private static long timeStamp;
+        private static long lastStamp;
 
         private const decimal baselineFps = 1000m / 60; // miliseconds per frame at 60 fps 
 
@@ -46,6 +49,7 @@ namespace PolyWars.Logic {
         /// Default constructor of GameController Class
         /// </summary>
         static GameController() {
+            timeStamp = 0;
             serverResponded = true;
             isPrepared = false;
             fpsTimer = new Stopwatch();
@@ -59,6 +63,7 @@ namespace PolyWars.Logic {
         public void prepareGame() {
             // instanciate
             ArenaController.generateCanvas();
+            Bullets = new ConcurrentDictionary<string, IBullet>();
             Opponents = new ConcurrentDictionary<string, IMoveable>();
             Resources = new ConcurrentDictionary<string, IResource>();
 
@@ -79,7 +84,7 @@ namespace PolyWars.Logic {
             playerShip.Shape.Renderable.BorderColor = Colors.Black;
             playerShip.Shape.Renderable.FillColor = Colors.Gray;
             playerShip.Mover = new MoveStrategy();
-            UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, 0, playerShip); });
+            UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, 0, 100, playerShip); });
 
             // convert data transfer objects to their respective types and add them to list
             foreach(PlayerDTO opponent in opponentDTOs) {
@@ -128,12 +133,15 @@ namespace PolyWars.Logic {
 
         static public void calculateFrame() {
             try {
+                decimal deltaTime = DeltaTime(tickTimer);
+                Player.PlayerShip.Move(deltaTime);
                 UIDispatcher.Invoke(() => {
-                    decimal deltaTime = DeltaTime(tickTimer);
-                    Player.PlayerShip.Move(deltaTime);
                     Task.Run(() => notifyMoved());
                     foreach(IMoveable opponent in Opponents.Values) {
                         opponent.Move(deltaTime);
+                    }
+                    foreach(IBullet bullet in Bullets.Values) {
+                        bullet.BulletShip.Move(DeltaTime(tickTimer));
                     }
                     tickTimer.Stop();
                     CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
@@ -143,11 +151,14 @@ namespace PolyWars.Logic {
             }
         }
         public static async void notifyMoved() {
-            if(serverResponded) { // ish 100 times a second
-                serverResponded = false;
+
+            if((timeStamp = Stopwatch.GetTimestamp()) - lastStamp > 70) { // ish 100 times a second
+                //serverResponded = false;
                 ServerTimer.Restart();
-                serverResponded = await UIDispatcher.Invoke(() => NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip));
-                lastRay = ((Ray)Player.PlayerShip.Shape.Ray).Clone();
+                //serverResponded = await UIDispatcher.Invoke(() => NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip));
+                UIDispatcher.Invoke( () => NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip));
+                lastRay = ((Ray) Player.PlayerShip.Shape.Ray).Clone();
+                lastStamp = timeStamp;
             }
         }
         static public void calculateFps() {

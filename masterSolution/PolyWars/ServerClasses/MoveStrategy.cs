@@ -22,13 +22,13 @@ namespace PolyWars.ServerClasses {
             cp.Offset(offsetX, offsetY);
             shape.Ray.CenterPoint = cp;
 
-            PointCollection pc = shape.Polygon.Points;
-            for(int i = 0; i < pc.Count; i++) {
-                Point p = pc[i];
-                p.Offset(offsetX, offsetY);
-                pc[i] = p;
-            }
             UIDispatcher.Invoke(() => {
+                PointCollection pc = shape.Polygon.Points;
+                for(int i = 0; i < pc.Count; i++) {
+                    Point p = pc[i];
+                    p.Offset(offsetX, offsetY);
+                    pc[i] = p;
+                }
                 shape.Polygon.RenderTransform = new RotateTransform(-1 * shape.Ray.Angle, shape.Ray.CenterPoint.X, shape.Ray.CenterPoint.Y); //TODO only if it actually rotates?
             });
             FrameDebugTimer.stopMoveShapeTimer();
@@ -51,7 +51,7 @@ namespace PolyWars.ServerClasses {
                         Point p = pc[i];
                         p.Offset(deltaX, deltaY);
                         pc[i] = p;
-                    } 
+                    }
                 }
             });
             base.Move(moveable, deltaTime);

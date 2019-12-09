@@ -3,26 +3,27 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
+using System.Linq;
 
 namespace PolyWars.Logic {
-
     public enum ButtonDown {
-        RIGHT = 1,
-        UP = 2,
-        LEFT = 4,
-        DOWN = 8,
-        SPACE = 16,
-        DEBUG = 32
+        RIGHT = 0b000001,
+        UP =    0b000010,
+        LEFT =  0b000100,
+        DOWN =  0b001000,
+        SHOOT = 0b010000,
+        DEBUG = 0b100000
     }
 
     public class Input {
-
+        public bool shootFlag { get; private set; }
         private Key debugKey = Key.F3;
         Dictionary<Key, ButtonDown> keyBindings = new Dictionary<Key, ButtonDown>();
 
         public ButtonDown PressedKeys { get; set; }
 
         public Input() {
+            shootFlag = false;
             PressedKeys = new ButtonDown();
 
             keyBindings[Key.W] = ButtonDown.UP;
@@ -33,7 +34,7 @@ namespace PolyWars.Logic {
             keyBindings[Key.Left] = ButtonDown.LEFT;
             keyBindings[Key.Down] = ButtonDown.DOWN;
             keyBindings[Key.Right] = ButtonDown.RIGHT;
-            keyBindings[Key.Space] = ButtonDown.SPACE;
+            keyBindings[Key.Space] = ButtonDown.SHOOT;
             keyBindings[debugKey] = ButtonDown.DEBUG;
         }
 
@@ -46,6 +47,12 @@ namespace PolyWars.Logic {
                         foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
                             PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
                         }
+                    }
+                    bool shootPressed = Keyboard.IsKeyDown(keyBindings.FirstOrDefault(x => x.Value == ButtonDown.SHOOT).Key);
+                    if(shootPressed && !shootFlag) {
+                        shootFlag = true;
+                    } else if(!shootPressed){
+                        shootFlag = false;
                     }
                 });
                 return PressedKeys;
