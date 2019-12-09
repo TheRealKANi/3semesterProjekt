@@ -42,7 +42,7 @@ namespace PolyWars.Adapters {
             IRenderable renderable = new Renderable(Colors.Black, Colors.Gray, 1, 25, 25, opponent.Vertices);
             IShape shape = new Shape(opponent.Name, opponent.Ray, renderable, new RenderWithHeaderStrategy());
             IMoveable playerShip = new Moveable(0, 180, 0, 360, shape, new MoveStrategy());
-            GameController.Player = new Player(opponent.Name, opponent.Name, opponent.Wallet, playerShip);
+            GameController.Player = new Player(opponent.Name, opponent.Name, opponent.Wallet, opponent.Health, playerShip);
             return shape;
         }
 

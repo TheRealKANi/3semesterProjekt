@@ -37,6 +37,12 @@ namespace PolyWars.Network {
             //Debug.WriteLine("Server - Recieved wallet update");
         }
 
+        private static void updateHealth(int healthLeft) {
+            GameController.Player.Health = healthLeft;
+            //Debug.WriteLine("Server - Recieved health update");
+        }
+
+
         private static void opponentMoved(PlayerDTO playerDTO) {
             Adapters.PlayerAdapter.moveOpponentOnCanvas(playerDTO);
         }

@@ -5,6 +5,7 @@ namespace PolyWars.API.Network.DTO {
         public string Name { get; set; }
         public string ID { get; set; }
         public double Wallet { get; set; }
+        public int Health { get; set; }
         public int Vertices { get; set; }
         public Ray Ray { get; set; }
     }
