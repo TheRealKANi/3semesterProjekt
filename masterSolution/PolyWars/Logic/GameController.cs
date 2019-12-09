@@ -28,7 +28,7 @@ namespace PolyWars.Logic {
         public static string UserID { get; set; }
         public static ConcurrentDictionary<string, IShape> Opponents { get; set; }
         public static ConcurrentDictionary<string, IResource> Resources { get; set; }
-        public ConcurrentDictionary<string, IBullet> Bullets { get; private set; }
+        public static ConcurrentDictionary<string, IBullet> Bullets { get; set; }
         public static int Fps { get; set; }
         public static Stopwatch tickTimer { get; private set; }
         private static Stopwatch ServerTimer { get; set; }

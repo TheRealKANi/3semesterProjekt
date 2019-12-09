@@ -26,10 +26,16 @@ namespace PolyWars.Server {
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
+            Bullets = new ConcurrentDictionary<string, BulletDTO>();
 
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(100, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
+            }
+
+            IEnumerable<BulletDTO> bullets = BulletFactory.generateBullets(100, 1);
+            foreach(BulletDTO bullet in bullets) {
+                Bullets.TryAdd(bullet.ID, bullet);
             }
         }
 

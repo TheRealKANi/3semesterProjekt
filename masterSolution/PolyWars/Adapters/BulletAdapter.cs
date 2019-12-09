@@ -26,7 +26,7 @@ namespace PolyWars.Adapters {
             foreach(BulletDTO bullet in bulletDTOs) {
                 IRay ray = bullet.Ray;
                 IRenderStrategy renderStrategy = new RenderStrategy();
-                IRenderable renderable = new Renderable(Colors.Black, Colors.Orange, 1, 15, 15, 40);
+                IRenderable renderable = new Renderable(Brushes.Black.Color, Brushes.BlanchedAlmond.Color, 1, 4, 4, 40);
                 IShape shape = new Shape(bullet.ID, ray, renderable, renderStrategy);
                 Bullet newBullet = new Bullet(bullet.ID, shape, bullet.Damage);
                 if(bullets.TryAdd(bullet.ID, newBullet)) {
