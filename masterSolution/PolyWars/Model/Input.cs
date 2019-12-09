@@ -16,14 +16,13 @@ namespace PolyWars.Logic {
     }
 
     public class Input {
-        public bool shootFlag { get; private set; }
+        
         private Key debugKey = Key.F3;
         Dictionary<Key, ButtonDown> keyBindings = new Dictionary<Key, ButtonDown>();
 
         public ButtonDown PressedKeys { get; set; }
 
         public Input() {
-            shootFlag = false;
             PressedKeys = new ButtonDown();
 
             keyBindings[Key.W] = ButtonDown.UP;
@@ -48,12 +47,7 @@ namespace PolyWars.Logic {
                             PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
                         }
                     }
-                    bool shootPressed = Keyboard.IsKeyDown(keyBindings.FirstOrDefault(x => x.Value == ButtonDown.SHOOT).Key);
-                    if(shootPressed && !shootFlag) {
-                        shootFlag = true;
-                    } else if(!shootPressed){
-                        shootFlag = false;
-                    }
+                    
                 });
                 return PressedKeys;
             } catch(TaskCanceledException) {
