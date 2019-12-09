@@ -42,7 +42,10 @@ namespace PolyWars.Network {
         }
 
         private static void playerDied(string killedBy) {
-            Debug.WriteLine("I Got killed by that bitch!: " + killedBy);
+            // Remove player from canvas and disable input
+            GameController.IsPlayerDead = true;
+            UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(GameController.Player.PlayerShip.Shape.Polygon));
+            Debug.WriteLine(GameController.Player.Name + " got killed by " + killedBy);
         }
 
         private static void updateHealth(int healthLeft) {

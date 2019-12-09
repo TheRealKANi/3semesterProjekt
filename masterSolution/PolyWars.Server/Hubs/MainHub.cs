@@ -65,18 +65,20 @@ namespace PolyWars.Server {
 
         public bool playerGotShot(BulletDTO bullet) {
             bool result = false;
-            PlayerDTO player = Opponents[Clients.CallerState.UserName];
-            if(Bullets.ContainsKey(bullet.ID)) {
-                Console.WriteLine(player.Name + " has " + player.Health + " hp left - BEFORE");
-                player.Health -= bullet.Damage;
-                Console.WriteLine(player.Name + " got hit with a bullet, dealing " + bullet.Damage + " damage");
-                Console.WriteLine(player.Name + " has " + player.Health + " hp left + AFTER");
-                Clients.Caller.updateHealth(player.Health);
-                result = true;
-                if(player.Health < 1) {
-                    bool couldRemove = Opponents.TryRemove(player.Name, out PlayerDTO playerRemoved);
-                    if(couldRemove) {
-                        Clients.Caller.playerDied(bullet.PlayerID);
+            if(Opponents.ContainsKey(Clients.CallerState.UserName)) {
+                PlayerDTO player = Opponents[Clients.CallerState.UserName];
+                if(Bullets.ContainsKey(bullet.ID)) {
+                    Console.WriteLine(player.Name + " has " + player.Health + " hp left - BEFORE");
+                    player.Health -= bullet.Damage;
+                    Console.WriteLine(player.Name + " got hit with a bullet, dealing " + bullet.Damage + " damage");
+                    Console.WriteLine(player.Name + " has " + player.Health + " hp left + AFTER");
+                    Clients.Caller.updateHealth(player.Health);
+                    result = true;
+                    if(player.Health < 1) {
+                        bool couldRemove = Opponents.TryRemove(player.Name, out PlayerDTO playerRemoved);
+                        if(couldRemove) {
+                            Clients.Caller.playerDied(bullet.PlayerID);
+                        }
                     }
                 }
             }

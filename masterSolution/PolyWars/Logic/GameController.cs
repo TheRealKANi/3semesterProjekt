@@ -36,6 +36,8 @@ namespace PolyWars.Logic {
         private static Stopwatch ServerTimer { get; set; }
         public static double ArenaWidth { get; set; }
         public static double ArenaHeight { get; set; }
+        public static bool IsPlayerDead { get; set; }
+
         private static long timeStamp;
         private static long lastStamp;
 
@@ -117,6 +119,7 @@ namespace PolyWars.Logic {
         }
 
         public void playGame() {
+            IsPlayerDead = false;
             if(isPrepared) {
                 fpsTimer.Start();
                 Ticker.Start();
