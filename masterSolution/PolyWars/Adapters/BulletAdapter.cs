@@ -24,16 +24,20 @@ namespace PolyWars.Adapters {
             ConcurrentDictionary<string, IBullet> bullets = new ConcurrentDictionary<string, IBullet>();
             // TODO Convert ResourceDTO to IResources and implement the call somewhere
             foreach(BulletDTO bullet in bulletDTOs) {
-                IRay ray = bullet.Ray;
-                IRenderStrategy renderStrategy = new RenderStrategy();
-                IRenderable renderable = new Renderable(Brushes.Black.Color, Brushes.BlanchedAlmond.Color, 1, 4, 4, 40);
-                IShape shape = new Shape(bullet.ID, ray, renderable, renderStrategy);
-                Bullet newBullet = new Bullet(bullet.ID, shape, bullet.Damage);
+                Bullet newBullet = renderBullet(bullet);
+
                 if(bullets.TryAdd(bullet.ID, newBullet)) {
                     addBulletToCanvas(newBullet);
                 }
             }
             return bullets;
+        }
+
+        public static Bullet renderBullet(BulletDTO bullet) {
+            IRenderable renderable = new Renderable(Brushes.Black.Color, Brushes.DarkViolet.Color, 1, 4, 4, 40);
+            IShape shape = new Shape(bullet.ID, bullet.Ray, renderable, new RenderStrategy());
+            IMoveable bulletShip = new Moveable(9, 9, 0, 0, shape, new MoveStrategy());
+            return new Bullet(bullet.ID, bulletShip, bullet.Damage);
         }
 
         //public static void removeBulletFromCanvas(string bulletID) {
@@ -48,9 +52,9 @@ namespace PolyWars.Adapters {
         //}
 
         public static void addBulletToCanvas(Bullet bullet) {
-            bullet.Shape.Renderer.Render(bullet.Shape.Renderable, bullet.Shape.Ray);
+            bullet.BulletShip.Shape.Renderer.Render(bullet.BulletShip.Shape.Renderable, bullet.BulletShip.Shape.Ray);
             ThreadController.MainThreadDispatcher.Invoke(() => {
-                ArenaController.ArenaCanvas.Children.Add(bullet.Shape.Polygon);
+                ArenaController.ArenaCanvas.Children.Add(bullet.BulletShip.Shape.Polygon);
             });
         }
     }

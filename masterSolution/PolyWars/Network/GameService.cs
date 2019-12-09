@@ -26,7 +26,8 @@ namespace PolyWars.Network {
         public event Action<List<ResourceDTO>> updateResources;
         public event Action<string> removeResource;
         public event Action<PlayerDTO> opponentMoved;
-        public event Action<double> updateWallet;
+        public event Action<double> updateWallet; 
+        public event Action<BulletDTO> opponentShot;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
@@ -49,6 +50,7 @@ namespace PolyWars.Network {
             hubProxy.On<string>("removeResource", (rID) => removeResource.Invoke(rID));
             hubProxy.On<PlayerDTO>("opponentMoved", (dto) => opponentMoved.Invoke(dto));
             hubProxy.On<double>("updateWallet", (wallet) => updateWallet.Invoke(wallet));
+            hubProxy.On<BulletDTO>("opponentShot", (bullet) => opponentShot.Invoke(bullet));
 
             Connection.Reconnecting += Reconnecting;
             Connection.Reconnected += Reconnected;
@@ -57,6 +59,10 @@ namespace PolyWars.Network {
             ServicePointManager.DefaultConnectionLimit = 100;
             await Connection.Start();
             return true;
+        }
+
+        public async Task<bool> playerShooted(int amount) {
+            return await hubProxy.Invoke<bool>("playerShooted", amount);
         }
         public async Task<bool> PlayerMovedAsync(IRay playerIRay) {
             return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);

@@ -83,6 +83,9 @@ namespace PolyWars.Logic {
         static public void calculateFrame() {
             try {
                 ThreadController.MainThreadDispatcher.Invoke(() => {
+                    foreach(IBullet bullet in Bullets.Values) {
+                        bullet.BulletShip.Move(DeltaTime(tickTimer));
+                    }
                     Player.PlayerShip.Move(DeltaTime(tickTimer)); 
                     if(lastRay == null || !lastRay.IsEqual(Player.PlayerShip.Shape.Ray)) {
                         Task.Run(() => notifyMoved());

@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 namespace PolyWars.API.Model.Interfaces {
     public interface IBullet {
         string ID { get; }
-        IShape Shape { get; }
+        IMoveable BulletShip { get; }
         int Damage { get; }
 
     }

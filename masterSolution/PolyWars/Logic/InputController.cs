@@ -1,5 +1,6 @@
 ﻿using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
+using PolyWars.Network;
 using PolyWars.ServerClasses;
 
 namespace PolyWars.Logic {
@@ -10,6 +11,7 @@ namespace PolyWars.Logic {
 
         // Ensures that show tick average only runs once
         private static bool hasRun = false;
+        private static bool isShooting = false;
 
         
         /// <summary>
@@ -42,6 +44,12 @@ namespace PolyWars.Logic {
                 Utility.FrameDebugTimer.outpuCollisionTimerResults();
                 hasRun = true;
             }
+
+            if(((int) (input & ButtonDown.SPACE) >> 4) > 0 && !isShooting){
+                NetworkController.GameService.playerShooted(1).Wait();
+                isShooting = true;
+            }
+            isShooting = false;
 
         }
     }

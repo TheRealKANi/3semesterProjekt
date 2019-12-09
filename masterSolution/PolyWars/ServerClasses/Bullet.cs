@@ -7,13 +7,13 @@ using System.Threading.Tasks;
 
 namespace PolyWars.ServerClasses {
     class Bullet : IBullet {
-        public Bullet(string id, IShape shape, int damage) {
+        public Bullet(string id, IMoveable bulletShip, int damage) {
             ID = id;
-            Shape = shape;
+            BulletShip = bulletShip;
             Damage = damage;
         }
         public string ID { get; private set; }
-        public IShape Shape { get; private set; }
+        public IMoveable BulletShip { get; set; }
         public int Damage { get; private set; }
     }
 }

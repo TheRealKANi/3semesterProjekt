@@ -14,5 +14,6 @@ namespace PolyWars.API.Network {
         void removeResource(string removedResourceID);
         void opponentMoved(PlayerDTO playerDTO);
         void updateWallet(double wallet);
+        void opponentShot(BulletDTO bullet);
     }
 }

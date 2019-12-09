@@ -32,11 +32,20 @@ namespace PolyWars.Server {
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
+        }
 
-            IEnumerable<BulletDTO> bullets = BulletFactory.generateBullets(100, 1);
-            foreach(BulletDTO bullet in bullets) {
-                Bullets.TryAdd(bullet.ID, bullet);
+        public bool playerShooted(int amount) {
+            bool result = false;
+            PlayerDTO shootingPlayer = Opponents[Clients.CallerState.UserName];
+            if(shootingPlayer != null) {
+                BulletDTO bullet = BulletFactory.generateBullet(amount, shootingPlayer);
+                bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
+                if(addBullet) {
+                    result = true;
+                    Clients.All.opponentShot(bullet);
+                }
             }
+            return result;
         }
 
         // Called from client when they collide with a resource
@@ -104,6 +113,7 @@ namespace PolyWars.Server {
                         Vertices = 3,
                         Wallet = 0
                     });
+
                     return newUser;
                 } /*else {
                     // Handle what to send back to denied client

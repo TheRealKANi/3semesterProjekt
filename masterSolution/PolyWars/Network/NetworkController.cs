@@ -1,5 +1,7 @@
-﻿using PolyWars.API.Network.DTO;
+﻿using PolyWars.Adapters;
+using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
+using PolyWars.ServerClasses;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -30,6 +32,14 @@ namespace PolyWars.Network {
             GameService.clientLoggedOut += clientLoggedOut;
             GameService.opponentMoved += opponentMoved;
             GameService.updateWallet += updateWallet;
+            GameService.opponentShot += opponentShot;
+        }
+
+        private static void opponentShot(BulletDTO bullet) {
+            Bullet newBullet = BulletAdapter.renderBullet(bullet);
+            if(GameController.Bullets.TryAdd(newBullet.ID, newBullet)) {
+                BulletAdapter.addBulletToCanvas(newBullet);
+            }
         }
 
         private static void updateWallet(double walletAmount) {
