@@ -1,6 +1,7 @@
 ﻿using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Strategies;
+using PolyWars.Logic;
 using System.Windows.Shapes;
 
 namespace PolyWars.ServerClasses {
@@ -18,8 +19,9 @@ namespace PolyWars.ServerClasses {
             Ray = ray;
             Renderable = renderable;
             Renderer = renderer;
-
-            Polygon = Renderer.Render(Renderable, Ray);
+            UIDispatcher.Invoke(() => {
+                Polygon = Renderer.Render(Renderable, Ray);
+            });
         }
     }
 }

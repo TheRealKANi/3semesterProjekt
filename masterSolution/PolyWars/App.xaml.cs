@@ -1,5 +1,6 @@
 ﻿using PolyWars.Network;
 using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 
 namespace PolyWars {
@@ -12,7 +13,7 @@ namespace PolyWars {
             // send server a logout signal
             GameService gm = NetworkController.GameService;
             Debug.WriteLine("App Closed - Logging out");
-            gm.LogoutAsync();
+            Task.Factory.StartNew( () => gm.LogoutAsync()).Wait();
         }
 
     }

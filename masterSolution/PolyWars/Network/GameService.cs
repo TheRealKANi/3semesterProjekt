@@ -27,12 +27,14 @@ namespace PolyWars.Network {
         public event Action<string> removeResource;
         public event Action<PlayerDTO> opponentMoved;
         public event Action<double> updateWallet;
+        public event Action<PlayerDTO> opponentJoined;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
         //private string url = "http://polywars.servegame.com:8080/Polywars";
-        private string url = "http://192.168.8.15:5700/Polywars"; // Lan k home        //private string url = "http://109.56.76.238:5700/Polywars"; // Wan k home
+        //private string url = "http://192.168.8.15:5700/Polywars"; // Lan k home        //private string url = "http://109.56.76.238:5700/Polywars"; // Wan k home
+        private string url = "http://localhost:8080/Polywars";
         public async Task<bool> ConnectAsync() {
             Connection = new HubConnection(url);
             hubProxy = Connection.CreateHubProxy("MainHub");
@@ -40,25 +42,30 @@ namespace PolyWars.Network {
             hubProxy.On<string>("clientLogout", (n) => clientLoggedOut?.Invoke(n));
             hubProxy.On<string>("ClientDisconnected", (n) => ClientDisconnected?.Invoke(n));
             hubProxy.On<string>("ClientReconnected", (n) => ClientReconnected?.Invoke(n));
-
             //hubProxy.On<string>("OnConnected", (n) => OnConnected?.Invoke(n));
-            hubProxy.On<string>("AccessDenied", (n) => accessDenied?.Invoke(n));
-            hubProxy.On<List<PlayerDTO>>("updateOpponents", (lo) => updateOpponents?.Invoke(lo));
-            hubProxy.On<List<ResourceDTO>>("updateResources", (lr) => updateResources.Invoke(lr));
-            hubProxy.On<string>("removeResource", (rID) => removeResource.Invoke(rID));
-            hubProxy.On<PlayerDTO>("opponentMoved", (dto) => opponentMoved.Invoke(dto));
-            hubProxy.On<double>("updateWallet", (wallet) => updateWallet.Invoke(wallet));
 
             Connection.Reconnecting += Reconnecting;
             Connection.Reconnected += Reconnected;
             Connection.Closed += Disconnected;
 
             ServicePointManager.DefaultConnectionLimit = 100;
-            await Connection.Start();
-            return true;
-        }
-        public async Task<bool> PlayerMovedAsync(IRay playerIRay) {
-            return await hubProxy.Invoke<bool>("PlayerMoved", playerIRay);
+            await Connection.Start();            
+            bool connectionStatus = Connection.State == ConnectionState.Connected ? true : false;
+
+            NetworkController.IsConnected = connectionStatus;
+            return connectionStatus;
+        }        public void initIngameBindings() {
+            hubProxy.On<string>("AccessDenied", (n) => accessDenied?.Invoke(n));
+            hubProxy.On<List<PlayerDTO>>("updateOpponents", (lo) => updateOpponents?.Invoke(lo));
+            hubProxy.On<List<ResourceDTO>>("updateResources", (lr) => updateResources.Invoke(lr));
+            hubProxy.On<string>("removeResource", (rID) => removeResource.Invoke(rID));
+            hubProxy.On<PlayerDTO>("opponentMoved", (dto) => opponentMoved.Invoke(dto));
+            hubProxy.On<double>("updateWallet", (wallet) => updateWallet.Invoke(wallet));
+            hubProxy.On<PlayerDTO>("opponentJoined", (dto) => opponentJoined.Invoke(dto));
+        }
+        public async Task<bool> PlayerMovedAsync(IMoveable playerIRay) {
+            PlayerDTO dto = Adapters.PlayerAdapter.MoveableToPlayerDTO(playerIRay);
+            return await hubProxy.Invoke<bool>("playerMoved", dto); ;
         }
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {
             return await hubProxy.Invoke<User>("Login", name, hashedPassword);
@@ -70,11 +77,11 @@ namespace PolyWars.Network {
 
         public async Task LogoutAsync() {
             await hubProxy.Invoke("Logout");
-        }
-
-        public async Task SendBroadcastMessageAsync(string msg) {
+        }        public async Task SendBroadcastMessageAsync(string msg) {
             await hubProxy.Invoke("BroadcastTextMessage", msg);
-        }
+        }        public async Task<PlayerDTO> getPlayerShip() {
+            return await hubProxy.Invoke<PlayerDTO>("getPlayerShip");
+        }
         /// <summary>
         /// Grabs the current list of opponents from the server
         /// </summary>

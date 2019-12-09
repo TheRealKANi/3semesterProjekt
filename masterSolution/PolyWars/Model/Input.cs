@@ -39,10 +39,10 @@ namespace PolyWars.Logic {
 
         public ButtonDown queryInput() {
             try {
-                ThreadController.MainThreadDispatcher.Invoke(() => {
+                UIDispatcher.Invoke(() => {
                     PressedKeys &= 0;
 
-                    if(Keyboard.FocusedElement is Frame frame && frame.Content.ToString().Contains("PolyWars")) {
+                    if(Application.Current != null && Application.Current.MainWindow.IsKeyboardFocused) {
                         foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
                             PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
                         }

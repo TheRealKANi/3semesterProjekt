@@ -44,11 +44,11 @@ namespace PolyWars.Model {
 
                 // TODO DEBUG - Starts Frame Timer
                 Logic.Utility.FrameDebugTimer.startFrameTimer();
-                InputController.applyInput();
 
                 waitForNextFrame( GameController.tickTimer );
                 frameDisplayed = false;
                 try {
+                    InputController.applyInput();
                     GameController.calculateFrame();
                     //GameController.calculateFps();
                     GameController.tickTimer.Restart();

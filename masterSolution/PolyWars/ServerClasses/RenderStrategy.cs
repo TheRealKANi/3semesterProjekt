@@ -12,7 +12,7 @@ namespace PolyWars.ServerClasses {
         public Polygon Render(IRenderable r, IRay ray) {
             double verticeAngle = 360d / r.Vertices;
             Polygon p;
-            return ThreadController.MainThreadDispatcher.Invoke(() => {
+            return UIDispatcher.Invoke(() => {
                 p = new Polygon() {
                     Stroke = new SolidColorBrush(r.BorderColor),
                     Fill = new SolidColorBrush(r.FillColor),
@@ -24,8 +24,8 @@ namespace PolyWars.ServerClasses {
                 for(int i = 0; i < r.Vertices; i++) {
                     double radians = Math.PI / 2 - ((verticeAngle * i + ray.Angle) / 180) * Math.PI;
                     pc.Add(new Point() {
-                        X = ray.CenterPoint.X + Math.Cos(radians) * r.Width,
-                        Y = ray.CenterPoint.Y + Math.Sin(radians) * r.Height
+                        X = ray.CenterPoint.X + Math.Cos(radians) * r.Width / 2,
+                        Y = ray.CenterPoint.Y + Math.Sin(radians) * r.Height / 2
                     });
                 }
 
@@ -38,7 +38,7 @@ namespace PolyWars.ServerClasses {
     }
     class RenderWithHeaderStrategy : RenderStrategy, IRenderStrategy {
         public new Polygon Render(IRenderable r, IRay ray) {
-            return ThreadController.MainThreadDispatcher.Invoke(() => {
+            return UIDispatcher.Invoke(() => {
                 Polygon p = base.Render(r, ray);
                 PointCollection pc = p.Points;
                 pc.Add(pc[0]);
