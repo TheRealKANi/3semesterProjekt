@@ -1,5 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
-
+using PolyWars.API;
 using PolyWars.API.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
@@ -33,12 +33,15 @@ namespace PolyWars.Network {
 
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
-        //private string url = "http://polywars.servegame.com:8080/Polywars";
-        //private string url = "http://192.168.8.15:5700/Polywars"; // Lan k home        //private string url = "http://109.56.76.238:5700/Polywars"; // Wan k home
-        private string url = "http://192.168.0.46:8080/Polywars"; // Local T        //private string url = "http://polywars.servegame.com:8080/Polywars"; // Lan T home
+
+        private string serverIP = "localhost"; // Lan Client Test
+        //private string serverIP = "xxx.xxx.xxx.xxx"; // WAN Client Test
+
+        private string protocol = "http://";
+
 
         public async Task<bool> ConnectAsync() {
-            Connection = new HubConnection(url);
+            Connection = new HubConnection(protocol + serverIP + ":" + Constants.serverPort + Constants.serverEndPoint);
             hubProxy = Connection.CreateHubProxy("MainHub");
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
             hubProxy.On<string>("clientLogout", (n) => clientLoggedOut?.Invoke(n));

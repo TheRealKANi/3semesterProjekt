@@ -15,6 +15,7 @@ using System.Windows;
 using System.Windows.Media;
 using System.Collections.Concurrent;
 using PolyWars.API.Network.DTO;
+using PolyWars.Adapters;
 
 namespace PolyWars.Logic {
     class GameController {
@@ -141,7 +142,13 @@ namespace PolyWars.Logic {
                         opponent.Move(deltaTime);
                     }
                     foreach(IBullet bullet in Bullets.Values) {
-                        bullet.BulletShip.Move(DeltaTime(tickTimer));
+                        Point p = bullet.BulletShip.Shape.Ray.CenterPoint;
+                        if(bulletOutOfBounds(p)) {
+                            BulletAdapter.removeBulletFromCanvas(bullet.ID);
+                            Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
+                        } else {
+                            bullet.BulletShip.Move(DeltaTime(tickTimer));
+                        }
                     }
                     tickTimer.Stop();
                     CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
@@ -150,6 +157,26 @@ namespace PolyWars.Logic {
                 // TODO Should we do something here
             }
         }
+
+        /// <summary>
+        ///     Checks if a bullet is trying to go past the bounds
+        /// </summary>
+        private static bool bulletOutOfBounds(Point p) {
+            bool result = true;
+            int upperWidthBound = 4000; // Ish 4k 
+            int upperHeightBound = 2200;
+
+            int lowerHeightBound = 0;
+            int lowerWidthBound = 0;
+
+            if(p.X > lowerWidthBound && p.X <= upperWidthBound) {
+                if(p.Y > lowerHeightBound && p.Y <= upperHeightBound) {
+                    result = false;
+                }
+            }
+            return result;
+        }
+
         public static async void notifyMoved() {
 
             if((timeStamp = Stopwatch.GetTimestamp()) - lastStamp > 70) { // ish 100 times a second

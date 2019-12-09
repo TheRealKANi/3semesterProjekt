@@ -40,16 +40,16 @@ namespace PolyWars.Adapters {
             return new Bullet(bullet.ID, bulletShip, bullet.Damage);
         }
 
-        //public static void removeBulletFromCanvas(string bulletID) {
-        //    if(GameController.Bullets != null && GameController.Bullets.ContainsKey(bulletID)) {
-        //        ThreadController.MainThreadDispatcher.Invoke(() => {
-        //            if(GameController.Bullets.TryRemove(bulletID, out IBullet b)) {
-        //                ArenaController.ArenaCanvas.Children.Remove(b.Shape.Polygon);
-        //                //Debug.WriteLine($"Client - Removed Resource: {resourceID} from canvas");
-        //            }
-        //        });
-        //    }
-        //}
+        public static void removeBulletFromCanvas(string bulletID) {
+            if(GameController.Bullets != null && GameController.Bullets.ContainsKey(bulletID)) {
+                UIDispatcher.Invoke(() => {
+                    if(GameController.Bullets.TryRemove(bulletID, out IBullet b)) {
+                        ArenaController.ArenaCanvas.Children.Remove(b.BulletShip.Shape.Polygon);
+                        //Debug.WriteLine($"Client - Removed Resource: {resourceID} from canvas");
+                    }
+                });
+            }
+        }
 
         public static void addBulletToCanvas(Bullet bullet) {
             bullet.BulletShip.Shape.Renderer.Render(bullet.BulletShip.Shape.Renderable, bullet.BulletShip.Shape.Ray);
