@@ -1,14 +1,11 @@
-﻿using PolyWars.API.Model.Interfaces;
+﻿using PolyWars.Api.Model;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
-using PolyWars.API.Strategies;
 using PolyWars.Logic;
 using PolyWars.Network;
-using PolyWars.Server.Model;
 using PolyWars.ServerClasses;
-using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows.Media;
 
@@ -22,7 +19,6 @@ namespace PolyWars.Adapters {
 
         public static ConcurrentDictionary<string, IBullet> BulletDTOtoIBullet(List<BulletDTO> bulletDTOs) {
             ConcurrentDictionary<string, IBullet> bullets = new ConcurrentDictionary<string, IBullet>();
-            // TODO Convert ResourceDTO to IResources and implement the call somewhere
             foreach(BulletDTO bullet in bulletDTOs) {
                 Bullet newBullet = renderBullet(bullet);
 
@@ -37,7 +33,7 @@ namespace PolyWars.Adapters {
             IRenderable renderable = new Renderable(Brushes.Black.Color, Brushes.DarkViolet.Color, 1, 4, 4, 40);
             IShape shape = new Shape(bullet.ID, bullet.Ray, renderable, new RenderStrategy());
             IMoveable bulletShip = new Moveable(18, 19, 0, 0, shape, new MoveStrategy());
-            return new Bullet(bullet.ID, bulletShip, bullet.Damage);
+            return new Bullet(bullet.ID, bulletShip, bullet.Damage, bullet.PlayerID);
         }
 
         public static void removeBulletFromCanvas(string bulletID) {
@@ -55,6 +51,16 @@ namespace PolyWars.Adapters {
             UIDispatcher.Invoke(() => {
                 ArenaController.ArenaCanvas.Children.Add(bullet.BulletShip.Shape.Polygon);
             });
+        }
+
+        public static BulletDTO bulletToDTO(IBullet bullet) {
+            BulletDTO bulletDTO = new BulletDTO() {
+                ID = bullet.ID,
+                PlayerID = bullet.PlayerID,
+                Ray = (Ray) bullet.BulletShip.Shape.Ray,
+                Damage = bullet.Damage
+            };
+            return bulletDTO;
         }
     }
 }

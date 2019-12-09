@@ -5,7 +5,6 @@ using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
 using PolyWars.ServerClasses;
 using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -37,9 +36,20 @@ namespace PolyWars.Network {
             GameService.opponentMoved += opponentMoved;
             GameService.updateWallet += updateWallet;
             GameService.opponentJoined += opponentJoined;
-            GameService.opponentShot += opponentShot;
+            GameService.opponentShoots += opponentShoots;
+            GameService.updateHealth += updateHealth;
+            GameService.playerDied += playerDied;
         }
-        private static void opponentShot(BulletDTO bullet) {
+
+        private static void playerDied(string killedBy) {
+            Debug.WriteLine("I Got killed by that bitch!: " + killedBy);
+        }
+
+        private static void updateHealth(int healthLeft) {
+            GameController.Player.Health = healthLeft;
+            Debug.WriteLine("Server - Recieved health update: " + healthLeft);
+        }
+        private static void opponentShoots(BulletDTO bullet) {
             Bullet newBullet = BulletAdapter.renderBullet(bullet);
             if(GameController.Bullets.TryAdd(newBullet.ID, newBullet)) {
                 BulletAdapter.addBulletToCanvas(newBullet);
@@ -50,7 +60,7 @@ namespace PolyWars.Network {
         }
         private static void opponentJoined(PlayerDTO dto) {
             if(!GameController.Opponents.ContainsKey(dto.Name)) {
-                IMoveable opponent = Adapters.PlayerAdapter.playerDTOToMoveable(dto);
+                IMoveable opponent = PlayerAdapter.playerDTOToMoveable(dto);
                 bool succeded = GameController.Opponents.TryAdd(dto.Name, opponent);
                 if(succeded) {
                     UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(opponent.Shape.Polygon));
@@ -105,11 +115,6 @@ namespace PolyWars.Network {
 
         public static void announceClientLoggedIn(string userName) {
             Debug.WriteLine($"Server - {userName} has joined the lobby");
-        }
-
-        private static void updateHealth(int healthLeft) {
-            GameController.Player.Health = healthLeft;
-            //Debug.WriteLine("Server - Recieved health update");
         }
     }
 }

@@ -1,9 +1,12 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
+using PolyWars.Adapters;
+using PolyWars.Api.Model;
 using PolyWars.API;
 using PolyWars.API.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
+using PolyWars.Logic;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -28,7 +31,9 @@ namespace PolyWars.Network {
         public event Action<PlayerDTO> opponentMoved;
         public event Action<double> updateWallet;
         public event Action<PlayerDTO> opponentJoined;
-        public event Action<BulletDTO> opponentShot;
+        public event Action<BulletDTO> opponentShoots;
+        public event Action<int> updateHealth;
+        public event Action<string> playerDied;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
@@ -67,13 +72,20 @@ namespace PolyWars.Network {
             hubProxy.On<PlayerDTO>("opponentMoved", (dto) => opponentMoved.Invoke(dto));
             hubProxy.On<double>("updateWallet", (wallet) => updateWallet.Invoke(wallet));
             hubProxy.On<PlayerDTO>("opponentJoined", (dto) => opponentJoined.Invoke(dto));
-            hubProxy.On<BulletDTO>("opponentShot", (dto) => opponentShot.Invoke(dto));
+            hubProxy.On<BulletDTO>("opponentShoots", (dto) => opponentShoots.Invoke(dto));
+            hubProxy.On<int>("updateHealth", (health) => updateHealth.Invoke(health));
+            hubProxy.On<string>("playerDied", (killedBy) => playerDied.Invoke(killedBy));
+
         }
-        public async Task<bool> playerShot(int amount) {
-            return await hubProxy.Invoke<bool>("playerShot", amount);
+
+        public async Task<bool> playerShoots(int damage) {
+            return await hubProxy.Invoke<bool>("playerShoots", damage);
+        }
+        public async Task<bool> playerGotShot(BulletDTO bullet) {
+            return await hubProxy.Invoke<bool>("playerGotShot", bullet);
         }
         public async Task<bool> PlayerMovedAsync(IMoveable playerIRay) {
-            PlayerDTO dto = Adapters.PlayerAdapter.MoveableToPlayerDTO(playerIRay);
+            PlayerDTO dto = PlayerAdapter.MoveableToPlayerDTO(playerIRay, GameController.Player.Health);
             return await hubProxy.Invoke<bool>("playerMoved", dto); ;
         }
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {

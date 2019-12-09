@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNet.SignalR;
-using PolyWars.Api.Model;
 using PolyWars.API;
-using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
 using PolyWars.Server.Factories;
@@ -10,9 +8,8 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Runtime.CompilerServices;
+using System.Runtime.CompilerServices;using System.Threading.Tasks;
+
 
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
@@ -26,28 +23,31 @@ namespace PolyWars.Server {
         private static Stopwatch statisticTimer;
         //private static ConcurrentDictionary<string, IUser> ActiveShot = new ConcurrentDictionary<string, IUser>();
         private void methodCallCounter([CallerMemberName] string method = "") {
-            if(!string.IsNullOrWhiteSpace(method)) {
-                if(statistics.ContainsKey(method)) {
-                    statistics[method]++;
-                } else {
-                    statistics.TryAdd(method, 1);
-                }
-            }
-            if(statisticTimer.Elapsed.TotalSeconds > 9) {
-                int x = Console.CursorLeft;
-                int y = Console.CursorTop;
-                statisticTimer.Restart();
-                Console.SetCursorPosition(0, 1);
-                Console.WriteLine("****************************************************************************");
-                foreach(string key in statistics.Keys) {
-                    Console.WriteLine($"{key,-30} was called {statistics[key],-6} times");
-                }
-                Console.WriteLine("****************************************************************************");
-                Console.SetCursorPosition(x, statistics.Count + 3);
-            }
+            //if(!string.IsNullOrWhiteSpace(method)) {
+            //    if(statistics.ContainsKey(method)) {
+            //        statistics[method]++;
+            //    } else {
+            //        statistics.TryAdd(method, 1);
+            //    }
+            //}
+            //if(statisticTimer.Elapsed.TotalSeconds > 9) {
+            //    int x = Console.CursorLeft;
+            //    int y = Console.CursorTop;
+            //    statisticTimer.Restart();
+            //    Console.SetCursorPosition(0, 1);
+            //    Console.WriteLine("****************************************************************************");
+            //    foreach(string key in statistics.Keys) {
+            //        Console.WriteLine($"{key,-30} was called {statistics[key],-6} times");
+            //    }
+            //    Console.WriteLine("****************************************************************************");
+            //    Console.SetCursorPosition(x, statistics.Count + 3);
+            //}
         }
+
+
+
         static MainHub() {
-            Console.SetCursorPosition(0, 10);
+            Console.SetCursorPosition(0, 2);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
@@ -63,15 +63,36 @@ namespace PolyWars.Server {
             }
         }
 
-        public bool playerShot(int amount) {
+        public bool playerGotShot(BulletDTO bullet) {
+            bool result = false;
+            PlayerDTO player = Opponents[Clients.CallerState.UserName];
+            if(Bullets.ContainsKey(bullet.ID)) {
+                Console.WriteLine(player.Name + " has " + player.Health + " hp left - BEFORE");
+                player.Health -= bullet.Damage;
+                Console.WriteLine(player.Name + " got hit with a bullet, dealing " + bullet.Damage + " damage");
+                Console.WriteLine(player.Name + " has " + player.Health + " hp left + AFTER");
+                Clients.Caller.updateHealth(player.Health);
+                result = true;
+                if(player.Health < 1) {
+                    bool couldRemove = Opponents.TryRemove(player.Name, out PlayerDTO playerRemoved);
+                    if(couldRemove) {
+                        Clients.Caller.playerDied(bullet.PlayerID);
+                    }
+                }
+            }
+            return result;
+        }
+
+        public bool playerShoots(int damage) {
             bool result = false;
             PlayerDTO shootingPlayer = Opponents[Clients.CallerState.UserName];
             if(shootingPlayer != null) {
-                BulletDTO bullet = BulletFactory.generateBullet(amount, shootingPlayer);
+                BulletDTO bullet = BulletFactory.generateBullet(damage, shootingPlayer);
                 bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
                 if(addBullet) {
                     result = true;
-                    Clients.All.opponentShot(bullet);
+                    Console.WriteLine(shootingPlayer.Name + " has fired a bullet, dealing " + bullet.Damage + " damage");
+                    Clients.All.opponentShoots(bullet);
                 }
             }
             return result;
@@ -164,8 +185,8 @@ namespace PolyWars.Server {
                             Vertices = 3,
                             Wallet = 0,
                             Width = 50,
-                            Height = 50
-
+                            Height = 50,
+                            Health = 100
                         };
                         if(Opponents.TryAdd(newPlayer.Name, newPlayer)) {
                             Clients.Others.opponentJoined(newPlayer);
@@ -183,7 +204,7 @@ namespace PolyWars.Server {
 
         public async Task<bool> playerMoved(PlayerDTO player) {
             lock(statisticsLock) {
-                statistics["moved stack"]++; 
+                statistics["moved stack"]++;
             }
 
             methodCallCounter();
@@ -195,7 +216,7 @@ namespace PolyWars.Server {
                         Task.Run(() => {
                             Clients.Others.opponentMoved(player);
                             lock(statisticsLock) {
-                                statistics["moved stack"]--; 
+                                statistics["moved stack"]--;
                             }
                         });
                         result = true;

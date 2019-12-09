@@ -81,36 +81,36 @@ namespace PolyWars.Logic {
             Task.WaitAll(taskPool);
 
             // create the player
-            IMoveable playerShip = Adapters.PlayerAdapter.playerDTOToMoveable(playerDTO);
+            IMoveable playerShip = PlayerAdapter.playerDTOToMoveable(playerDTO);
             playerShip.Shape.Renderable.BorderColor = Colors.Black;
             playerShip.Shape.Renderable.FillColor = Colors.Gray;
             playerShip.Mover = new MoveStrategy();
-            UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, playerDTO.Wallet, 100, playerShip); });
+            UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, playerDTO.Wallet, playerDTO.Health, playerShip); });
 
             // convert data transfer objects to their respective types and add them to list
             foreach(PlayerDTO opponent in opponentDTOs) {
-                IMoveable moveable = Adapters.PlayerAdapter.playerDTOToMoveable(playerDTO);
+                IMoveable moveable = PlayerAdapter.playerDTOToMoveable(playerDTO);
                 while(!Opponents.TryAdd(opponent.Name, moveable)) {
                     Task.Delay(1);
                 }
             }
             foreach(ResourceDTO resource in resourceDTOs) {
-                IResource r = Adapters.ResourceAdapter.DTOToResource(resource);
+                IResource r = ResourceAdapter.DTOToResource(resource);
                 while(!Resources.TryAdd(resource.ID, r)) {
                     Task.Delay(1);
                 }
             }
 
             // add objects to the canvas
+            UIDispatcher.Invoke(() => {
+                foreach(IResource resource in Resources.Values) {
+                    ArenaController.ArenaCanvas.Children.Add(resource.Shape.Polygon);
+                }
+            });
             UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(Player.PlayerShip.Shape.Polygon));
             UIDispatcher.Invoke(() => {
                 foreach(IMoveable opponent in Opponents.Values) {
                     ArenaController.ArenaCanvas.Children.Add(opponent.Shape.Polygon);
-                }
-            });
-            UIDispatcher.Invoke(() => {
-                foreach(IResource resource in Resources.Values) {
-                    ArenaController.ArenaCanvas.Children.Add(resource.Shape.Polygon);
                 }
             });
             isPrepared = true;
@@ -146,6 +146,8 @@ namespace PolyWars.Logic {
                         if(bulletOutOfBounds(p)) {
                             BulletAdapter.removeBulletFromCanvas(bullet.ID);
                             Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
+                            // TODO Remove this - causes player that shoots to loose health when bullet goes out of bounds
+                            NetworkController.GameService.playerGotShot(BulletAdapter.bulletToDTO(bullet));
                         } else {
                             bullet.BulletShip.Move(DeltaTime(tickTimer));
                         }

@@ -50,7 +50,7 @@ namespace PolyWars.Logic {
             }
             bool shootPressed = (int) (input & ButtonDown.SHOOT) >> 4 > 0;
             if(shootPressed && !shootFlag) {
-                Task.Run(() => NetworkController.GameService.playerShot(1)).Wait();
+                Task.Run(() => NetworkController.GameService.playerShoots(10)).Wait();
                 shootFlag = true;
             } else if(!shootPressed) {
                 shootFlag = false;

@@ -34,7 +34,7 @@ namespace PolyWars.UI.GameArena {
                 if(GameController.Player != null) {
                     return GameController.Player.Wallet.ToString();
                 }
-                return 0.ToString();
+                return "-1";
             }
         }
 
@@ -43,7 +43,7 @@ namespace PolyWars.UI.GameArena {
                 if(GameController.Player != null) {
                     return GameController.Player.Health.ToString();
                 }
-                return 100.ToString();
+                return "-1";
             }
         }
 

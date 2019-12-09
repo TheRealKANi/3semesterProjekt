@@ -16,5 +16,6 @@ namespace PolyWars.API.Network.DTO {
         public double Angle { get; set; }
         public int Width { get; set; }
         public int Height { get; set; }
+        public int Health { get; set; }
     }
 }

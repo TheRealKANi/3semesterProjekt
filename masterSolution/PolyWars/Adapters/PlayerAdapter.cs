@@ -29,7 +29,7 @@ namespace PolyWars.Adapters {
             IMoveable moveable = new Moveable(dto.Velocity, dto.MaxVelocity, dto.RPM, dto.MaxRPM, player.Shape, player.Mover);
             return moveable;
         }
-        public static PlayerDTO MoveableToPlayerDTO(IMoveable player) {
+        public static PlayerDTO MoveableToPlayerDTO(IMoveable player, int health) {
             return new PlayerDTO() {
                 Name = GameController.Username,
                 ID = player.Shape.Ray.ID,
@@ -42,7 +42,8 @@ namespace PolyWars.Adapters {
                 centerY = player.Shape.Ray.CenterPoint.Y,
                 Angle = player.Shape.Ray.Angle,
                 Height = player.Shape.Renderable.Height,
-                Width = player.Shape.Renderable.Width
+                Width = player.Shape.Renderable.Width,
+                Health = health // TODO This should really be in a better place and done much better TAG: Thure!
             };
         }
     }
