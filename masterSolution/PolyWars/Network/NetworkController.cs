@@ -46,8 +46,7 @@ namespace PolyWars.Network {
             }
         }
         private static void updateWallet(double walletAmount) {
-            GameController.Player.Wallet = walletAmount;
-            //Debug.WriteLine("Server - Recieved wallet update");
+            GameController.Player.Wallet += walletAmount;
         }
         private static void opponentJoined(PlayerDTO dto) {
             if(!GameController.Opponents.ContainsKey(dto.Name)) {

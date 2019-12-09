@@ -85,7 +85,7 @@ namespace PolyWars.Logic {
             playerShip.Shape.Renderable.BorderColor = Colors.Black;
             playerShip.Shape.Renderable.FillColor = Colors.Gray;
             playerShip.Mover = new MoveStrategy();
-            UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, 0, 100, playerShip); });
+            UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, playerDTO.Wallet, 100, playerShip); });
 
             // convert data transfer objects to their respective types and add them to list
             foreach(PlayerDTO opponent in opponentDTOs) {

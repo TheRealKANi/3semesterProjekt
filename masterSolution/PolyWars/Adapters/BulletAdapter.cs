@@ -36,7 +36,7 @@ namespace PolyWars.Adapters {
         public static Bullet renderBullet(BulletDTO bullet) {
             IRenderable renderable = new Renderable(Brushes.Black.Color, Brushes.DarkViolet.Color, 1, 4, 4, 40);
             IShape shape = new Shape(bullet.ID, bullet.Ray, renderable, new RenderStrategy());
-            IMoveable bulletShip = new Moveable(9, 9, 0, 0, shape, new MoveStrategy());
+            IMoveable bulletShip = new Moveable(18, 19, 0, 0, shape, new MoveStrategy());
             return new Bullet(bullet.ID, bulletShip, bullet.Damage);
         }
 
@@ -45,7 +45,6 @@ namespace PolyWars.Adapters {
                 UIDispatcher.Invoke(() => {
                     if(GameController.Bullets.TryRemove(bulletID, out IBullet b)) {
                         ArenaController.ArenaCanvas.Children.Remove(b.BulletShip.Shape.Polygon);
-                        //Debug.WriteLine($"Client - Removed Resource: {resourceID} from canvas");
                     }
                 });
             }
