@@ -1,5 +1,6 @@
 ﻿using PolyWars.Logic;
 using PolyWars.Model;
+using PolyWars.Network;
 using System;
 using System.Threading.Tasks;
 using System.Windows.Input;
@@ -31,7 +32,7 @@ namespace PolyWars.UI.MainMenu {
         public ICommand StartGame_Command {
             get {
                 if(startGame_Command == null) {
-                    startGame_Command = new RelayCommandAsync(() => startGame(), (o) => { return true; });
+                    startGame_Command = new RelayCommand((o) => { return NetworkController.IsConnected; }, startGame);
                 }
                 return startGame_Command;
             }
@@ -47,8 +48,9 @@ namespace PolyWars.UI.MainMenu {
         }        private ICommand login_Command;
         public ICommand Login_Command {
             get {
-                return login_Command ?? (new RelayCommand((o) => { return true; }, (o) => NavigationController.Instance.navigate(Pages.Login)));
+                return login_Command ?? (login_Command = new RelayCommand((o) => { return true; }, (o) => NavigationController.Instance.navigate(Pages.Login)));
             }
-        }        private async Task startGame() {            GameController gameController = new GameController();            await gameController.prepareGame();            NavigationController.Instance.navigate(Pages.Arena);            gameController.playGame();        }
+        }        private void startGame() {            GameController gameController = new GameController();            gameController.prepareGame();
+            NetworkController.GameService.initIngameBindings();            NavigationController.Instance.navigate(Pages.Arena);            gameController.playGame();        }
     }
 }

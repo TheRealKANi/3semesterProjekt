@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNet.SignalR;
 using PolyWars.Api.Model;
 using PolyWars.API;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
 using PolyWars.Server.Factories;
@@ -10,21 +11,51 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using System.Windows;
+using System.Windows;
+using System.Runtime.CompilerServices;
 
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
         private static ConcurrentDictionary<string, IUser> PlayerClients;
         private static ConcurrentDictionary<string, PlayerDTO> Opponents;
         private static ConcurrentDictionary<string, ResourceDTO> Resources;
-        //private static ConcurrentDictionary<string, IUser> ActiveShot = new ConcurrentDictionary<string, IUser>();
+        private static ConcurrentDictionary<string, BulletDTO> Bullets;
+        private static ConcurrentDictionary<string, int> statistics;
+        private static object statisticsLock = new object();
 
-        static Stopwatch s;
-        private static int count;
+        private static Stopwatch statisticTimer;
+        //private static ConcurrentDictionary<string, IUser> ActiveShot = new ConcurrentDictionary<string, IUser>();
+        private void methodCallCounter([CallerMemberName] string method = "") {
+            if(!string.IsNullOrWhiteSpace(method)) {
+                if(statistics.ContainsKey(method)) {
+                    statistics[method]++;
+                } else {
+                    statistics.TryAdd(method, 1);
+                }
+            }
+            if(statisticTimer.Elapsed.TotalSeconds > 9) {
+                int x = Console.CursorLeft;
+                int y = Console.CursorTop;
+                statisticTimer.Restart();
+                Console.SetCursorPosition(0, 1);
+                Console.WriteLine("****************************************************************************");
+                foreach(string key in statistics.Keys) {
+                    Console.WriteLine($"{key,-30} was called {statistics[key],-6} times");
+                }
+                Console.WriteLine("****************************************************************************");
+                Console.SetCursorPosition(x, statistics.Count + 3);
+            }
+        }
         static MainHub() {
+            Console.SetCursorPosition(0, 10);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
+            Bullets = new ConcurrentDictionary<string, BulletDTO>();
+            statistics = new ConcurrentDictionary<string, int>();
+            statisticTimer = new Stopwatch();
+            statistics.TryAdd("moved stack", 0);
+            statisticTimer.Start();
 
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(100, 1);
             foreach(ResourceDTO resource in resources) {
@@ -32,108 +63,175 @@ namespace PolyWars.Server {
             }
         }
 
-        // Called from client when they collide with a resource
-        public bool playerCollectedResource(string resourceId) {
-            bool removed = Resources.TryRemove(resourceId, out ResourceDTO r);
-            if(removed) {
-                Console.WriteLine($"Player Removed Resource: {resourceId}");
-                // Updates all other clients with new list of resources
-                Clients.Others.removeResource(resourceId);
-                string username = Clients.CallerState.UserName;
-                Opponents[username].Wallet += r.Value;
-                Clients.Caller.updateWallet(Opponents[username].Wallet);
-                return true;
-            }
-            return removed;
-        }
-
-        public List<ResourceDTO> getResources() {
-            List<ResourceDTO> resources = new List<ResourceDTO>(Resources.Values);
-            Console.WriteLine($"Client asked for resources: '{Context.ConnectionId}'");
-            return resources;
-        }
-        /// <summary>
-        /// Returns a list with opponents on the server AND containing the client's own object
-        /// </summary>
-        public List<PlayerDTO> getOpponents() {
-            List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
-            Console.WriteLine($"Client asked for opponents: '{Context.ConnectionId}'");
-            return opponents;
-        }
-
-        public override Task OnConnected() {
-            Console.WriteLine($"Client connected: '{Context.ConnectionId}'");
-            return base.OnConnected();
-        }
-        public User Login(string username, string hashedPassword) {
-            if(!PlayerClients.ContainsKey(username)) {
-
-                // TODO Verify user creds from DB here
-                if(true) {
-                    Console.WriteLine($"++ {username} logged in on connection id: '{Context.ConnectionId}', pass :'{hashedPassword}'");
-                    User newUser = new User(username, Context.ConnectionId, hashedPassword);
-                    bool added = PlayerClients.TryAdd(username, newUser);
-
-                    if(!added) {
-                        return null;
-                    }
-                    // Keeps username in shared state until client logs out
-                    Clients.CallerState.UserName = username;
-
-                    // Accounces to all other connected clients that *username* has joined
-                    Clients.Others.announceClientLoggedIn(username);
-                    Random r = new Random();
-                    // Creates the basic opponent layout
-                    Opponents.TryAdd(username, new PlayerDTO() {
-                        ID = newUser.ID,
-                        Name = newUser.Name,
-                        Ray = new Ray(newUser.ID, new Point(r.Next(50, 400), 300), 0),
-                        Vertices = 3,
-                        Wallet = 0
-                    });
-                    return newUser;
-                } /*else {
-                    // Handle what to send back to denied client
-                    Clients.Caller.AccessDenied("No way Jose!");
-                }*/
-            }
-            return null;
-        }
-
-
-        public bool PlayerMoved(Ray playerIRay) {
+        public bool playerShot(int amount) {
             bool result = false;
-            string username = Clients.CallerState.UserName;
-            // Move player in table and transmit new location to other clients
-            if(Opponents.TryRemove(username, out PlayerDTO playerDTO)) {
-                playerDTO.Ray = playerIRay;
-                if(Opponents.TryAdd(username, playerDTO)) {
-                    Clients.Others.opponentMoved(playerDTO);
+            PlayerDTO shootingPlayer = Opponents[Clients.CallerState.UserName];
+            if(shootingPlayer != null) {
+                BulletDTO bullet = BulletFactory.generateBullet(amount, shootingPlayer);
+                bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
+                if(addBullet) {
                     result = true;
+                    Clients.All.opponentShot(bullet);
                 }
             }
             return result;
         }
 
-        public void Logout() {
-            string username = Clients.CallerState.UserName;
-            if(!string.IsNullOrEmpty(username)) {
-                if(Opponents.TryRemove(username, out PlayerDTO player)) {
-                    PlayerClients.TryRemove(username, out IUser client);
-                    Clients.Others.clientLogout(username);
-                    Console.WriteLine($"-- {username} logged out");
+        // Called from client when they collide with a resource
+        public async Task<bool> playerCollectedResource(string resourceId) {
+            methodCallCounter();
+            bool removed = false;
+            await Task.Factory.StartNew(() => {
+                removed = Resources.TryRemove(resourceId, out ResourceDTO r);
+                if(removed) {
+                    //Console.WriteLine($"Player Removed Resource: {resourceId}");
+                    // Updates all other clients with new list of resources
+                    Clients.Others.removeResource(resourceId);
+                    string username = Clients.CallerState.UserName;
+                    Opponents[username].Wallet += r.Value;
+                    Clients.Caller.updateWallet(Opponents[username].Wallet);
+                    removed = true;
                 }
-            }
+            });
+            return removed;
         }
-        public override Task OnReconnected() {
+
+        public async Task<List<ResourceDTO>> getResources() {
+            methodCallCounter();
+            List<ResourceDTO> resources = await Task.Factory.StartNew(() => new List<ResourceDTO>(Resources.Values));
+            return resources;
+        }
+        /// <summary>
+        /// Returns a list with opponents on the server AND containing the client's own object
+        /// </summary>
+        public async Task<List<PlayerDTO>> getOpponents() {
+            methodCallCounter();
+            List<PlayerDTO> opponents = await Task.Factory.StartNew(() => new List<PlayerDTO>(Opponents.Values.Where(x => x.Name != Clients.CallerState.UserName)));
+            return opponents;
+        }        public async Task<PlayerDTO> getPlayerShip() {
+            methodCallCounter();
+            string userName = Clients.CallerState.UserName;
+            return await Task.Factory.StartNew<PlayerDTO>(() => {
+                if(Opponents.ContainsKey(userName)) {
+                    return Opponents[Clients.CallerState.UserName];
+                }
+                return null;
+            });
+        }
+
+        public List<BulletDTO> getBullets() {
+            List<BulletDTO> bullets = new List<BulletDTO>(Bullets.Values);
+            Console.WriteLine($"Client asked for bullets: '{Context.ConnectionId}'");
+            return bullets;
+        }
+
+        public override Task OnConnected() {
+            methodCallCounter();
+            Console.WriteLine($"Client connected: '{Context.ConnectionId}'");
+            return base.OnConnected();
+        }
+        public async Task<IUser> Login(string username, string hashedPassword) {
+            methodCallCounter();
+            return await Task.Factory.StartNew<IUser>(() => {
+                if(!PlayerClients.ContainsKey(username)) {
+                    // TODO Verify user creds from DB here
+                    if(true) {
+                        Console.WriteLine($"++ {username} logged in on connection id: '{Context.ConnectionId}', pass :'{hashedPassword}'");
+                        IUser newUser = new User(username, Context.ConnectionId, hashedPassword);
+                        bool added = PlayerClients.TryAdd(username, newUser);
+
+                        if(!added) {
+                            return null;
+                        }
+                        // Keeps username in shared state until client logs out
+                        Clients.CallerState.UserName = username;
+
+                        // Accounces to all other connected clients that *username* has joined
+                        Clients.Others.announceClientLoggedIn(username);
+                        Random r = new Random();
+
+                        // Creates the basic opponent layout
+                        PlayerDTO newPlayer = new PlayerDTO() {
+                            ID = newUser.ID,
+                            Name = newUser.Name,
+                            centerX = r.Next(50, 400),
+                            centerY = 300,
+                            Angle = 0,
+                            Velocity = 0,
+                            MaxVelocity = 50,
+                            RPM = 0,
+                            MaxRPM = 360,
+                            Vertices = 3,
+                            Wallet = 0,
+                            Width = 50,
+                            Height = 50
+
+                        };
+                        if(Opponents.TryAdd(newPlayer.Name, newPlayer)) {
+                            Clients.Others.opponentJoined(newPlayer);
+                            return newUser;
+                        }
+                    } /*else {
+                    // Handle what to send back to denied client
+                    Clients.Caller.AccessDenied("No way Jose!");
+                }*/
+                }
+                return null;
+            });
+        }
+
+
+        public async Task<bool> playerMoved(PlayerDTO player) {
+            lock(statisticsLock) {
+                statistics["moved stack"]++; 
+            }
+
+            methodCallCounter();
+            // Move player in table and transmit new location to other clients
+            bool result = false;
+            await Task.Factory.StartNew(() => {
+                if(Opponents.ContainsKey(player.Name)) {
+                    if(Opponents.TryUpdate(player.Name, player, Opponents[player.Name])) {
+                        Task.Run(() => {
+                            Clients.Others.opponentMoved(player);
+                            lock(statisticsLock) {
+                                statistics["moved stack"]--; 
+                            }
+                        });
+                        result = true;
+                    }
+                }
+            });
+
+            return result;
+        }
+
+        public async Task Logout() {
+            methodCallCounter();
+            string username = Clients.CallerState.UserName;
+            await Task.Factory.StartNew(() => {
+                if(!string.IsNullOrEmpty(username)) {
+                    if(Opponents.TryRemove(username, out PlayerDTO player)) {
+                        PlayerClients.TryRemove(username, out IUser client);
+                        Clients.Others.clientLogout(username);
+                        Console.WriteLine($"-- {username} logged out");
+                    }
+                }
+            });
+        }
+        public override async Task OnReconnected() {
+            methodCallCounter();
             string userName = PlayerClients.SingleOrDefault((c) => c.Value.ID == Context.ConnectionId).Key;
+
             if(userName != null) {
                 Clients.Others.ClientReconnected(userName);
                 Console.WriteLine($"== {userName} reconnected");
             }
-            return base.OnReconnected();
+
+            await base.OnReconnected();
         }
         public override Task OnDisconnected(bool stopCalled) {
+            methodCallCounter();
             string userName = PlayerClients.SingleOrDefault((c) => c.Value.ID == Context.ConnectionId).Key;
             if(userName != null) {
                 Clients.Others.ClientDisconnected(userName);

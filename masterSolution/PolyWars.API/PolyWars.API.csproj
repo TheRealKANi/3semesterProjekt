@@ -72,7 +72,10 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Constants.cs" />
+    <Compile Include="Model\Interfaces\IBullet.cs" />
     <Compile Include="Model\User.cs" />
+    <Compile Include="Network\DTO\BulletDTO.cs" />
     <Compile Include="Network\DTO\PlayerDTO.cs" />
     <Compile Include="Network\DTO\ResourceDTO.cs" />
     <Compile Include="Network\IClient.cs" />

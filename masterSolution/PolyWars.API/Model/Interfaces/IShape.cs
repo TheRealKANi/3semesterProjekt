@@ -1,4 +1,5 @@
 ﻿using PolyWars.API.Strategies;
+using System.Windows.Media;
 using System.Windows.Shapes;
 
 namespace PolyWars.API.Model.Interfaces {

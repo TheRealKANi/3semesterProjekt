@@ -1,15 +1,21 @@
 ﻿using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
+using PolyWars.Network;
 using PolyWars.ServerClasses;
+using System.Threading.Tasks;
 
 namespace PolyWars.Logic {
 
     public static class InputController {
-
-        static InputController() { Input = new Input(); }
+        private static bool shootFlag;
+        static InputController() { 
+            Input = new Input();
+            shootFlag = false;
+        }
 
         // Ensures that show tick average only runs once
         private static bool hasRun = false;
+        private static bool isShooting = false;
 
         
         /// <summary>
@@ -42,7 +48,13 @@ namespace PolyWars.Logic {
                 Utility.FrameDebugTimer.outpuCollisionTimerResults();
                 hasRun = true;
             }
-
+            bool shootPressed = (int) (input & ButtonDown.SHOOT) >> 4 > 0;
+            if(shootPressed && !shootFlag) {
+                Task.Run(() => NetworkController.GameService.playerShot(1)).Wait();
+                shootFlag = true;
+            } else if(!shootPressed) {
+                shootFlag = false;
+            }
         }
     }
 }

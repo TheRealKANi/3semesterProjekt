@@ -9,10 +9,12 @@ namespace PolyWars.API.Network {
         void clientLogout(string name);
         void BroadcastTextMessage(string sender, string message);
         void AccessDenied(string reason);
-        void updateOpponents(List<PlayerDTO> opponentDTOs);
-        void updateResources(List<ResourceDTO> resourcesDTOs);
-        void removeResource(string removedResourceID);
-        void opponentMoved(PlayerDTO playerDTO);
-        void updateWallet(double wallet);
+        void updateOpponents(List<PlayerDTO> opponentDTOs);
+        void updateResources(List<ResourceDTO> resourcesDTOs);
+        void removeResource(string removedResourceID);
+        void opponentMoved(PlayerDTO playerDTO);
+        void updateWallet(double wallet);
+        void opponentShot(BulletDTO bullet);
+        void opponentJoined(PlayerDTO dto);
     }
 }

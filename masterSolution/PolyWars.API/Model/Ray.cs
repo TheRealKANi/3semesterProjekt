@@ -19,7 +19,16 @@ namespace PolyWars.Api.Model {
         }
 
         public Ray Clone() {
-            return new Ray(ID + "", new Point(CenterPoint.X, CenterPoint.Y), Double.Parse(Angle.ToString()));
+            return new Ray(ID + "", new Point(CenterPoint.X, CenterPoint.Y), Angle);
+        }
+        public override bool Equals(object obj) {
+            if(obj is IRay ray) {
+                return CenterPoint.X.Equals(ray.CenterPoint.X) && CenterPoint.Y.Equals(ray.CenterPoint.Y) && Angle.Equals(ray.Angle);
+            }
+            return false;
+        }
+        public override int GetHashCode() {
+            return base.GetHashCode();
         }
 
         public bool IsEqual(IRay other) {

@@ -28,6 +28,11 @@
         <StackPanel Orientation="Horizontal" Grid.Row="2">
             <Label Content=" Current $: "/>
             <Label Content="{Binding PlayerCurrency}"/>
+
+        </StackPanel>
+        <StackPanel Orientation="Horizontal" Grid.Row="2" HorizontalAlignment="Center">
+            <Label Content=" Health: "/>
+            <Label Content="{Binding PlayerHealth}"/>
         </StackPanel>
     </Grid>
 </Page>

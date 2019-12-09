@@ -38,6 +38,15 @@ namespace PolyWars.UI.GameArena {
             }
         }
 
+        public string PlayerHealth {
+            get {
+                if(GameController.Player != null) {
+                    return GameController.Player.Health.ToString();
+                }
+                return 100.ToString();
+            }
+        }
+
         private Canvas arenaCanvas;
         public Canvas ArenaCanvas {
             get {
@@ -76,10 +85,11 @@ namespace PolyWars.UI.GameArena {
         /// When the game is started the Arena is associated with a thread
         /// </summary>
         public void onCanvasChanged(object Sender, EventArgs args) {
-            ThreadController.MainThreadDispatcher?.Invoke(() => {
+            UIDispatcher.Invoke(() => {
                 NotifyPropertyChanged("ArenaCanvas");
                 NotifyPropertyChanged("Fps");
                 NotifyPropertyChanged("PlayerCurrency");
+                NotifyPropertyChanged("PlayerHealth");
             });
         }
     }

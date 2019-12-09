@@ -2,6 +2,7 @@
 using Microsoft.Owin.Cors;
 using Microsoft.Owin.Hosting;
 using Owin;
+using PolyWars.API;
 using System;
 
 namespace PolyWars.Server {
@@ -9,7 +10,8 @@ namespace PolyWars.Server {
         class Program {
             public static IAppBuilder app;
             static void Main(string[] args) {
-                string url = "http://*:5700/";
+                
+                string url = $"http://*:{Constants.serverPort}/";
                 // netsh http add urlacl url=http://*:5700/ user=Alle // only if not started as an admin user
 
                 while(true) {
@@ -26,7 +28,7 @@ namespace PolyWars.Server {
             public void Configuration(IAppBuilder app) {
                 Program.app = app;
                 app.UseCors(CorsOptions.AllowAll);
-                app.MapSignalR("/Polywars", new HubConfiguration() { EnableDetailedErrors = true });
+                app.MapSignalR(Constants.serverEndPoint, new HubConfiguration() { EnableDetailedErrors = true });
 
 
 
