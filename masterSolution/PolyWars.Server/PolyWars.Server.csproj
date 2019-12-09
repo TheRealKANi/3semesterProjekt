@@ -171,6 +171,7 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Factories\BulletFactory.cs" />
     <Compile Include="Hubs\LobbyHub.cs" />
     <Compile Include="Hubs\MainHub.cs" />
     <Compile Include="Program.cs" />
