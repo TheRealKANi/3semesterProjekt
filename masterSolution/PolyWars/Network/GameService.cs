@@ -32,7 +32,8 @@ namespace PolyWars.Network {
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
         //private string url = "http://polywars.servegame.com:8080/Polywars";
-        private string url = "http://192.168.8.15:5700/Polywars"; // Lan k home        //private string url = "http://109.56.76.238:5700/Polywars"; // Wan k home
+        //private string url = "http://192.168.8.15:5700/Polywars"; // Lan k home        //private string url = "http://109.56.76.238:5700/Polywars"; // Wan k home
+        private string url = "http://localhost:8080/Polywars";
         public async Task<bool> ConnectAsync() {
             Connection = new HubConnection(url);
             hubProxy = Connection.CreateHubProxy("MainHub");
@@ -88,6 +89,11 @@ namespace PolyWars.Network {
         public async Task<List<ResourceDTO>> getResourcesAsync() {
             Debug.WriteLine("Client - Asks Server for resources");
             return await hubProxy.Invoke<List<ResourceDTO>>("getResources");
+        }
+
+        public async Task<List<BulletDTO>> getBulletsAsync() {
+            Debug.WriteLine("Client - Asks Server for bullets");
+            return await hubProxy.Invoke<List<BulletDTO>>("getBullets");
         }
 
         private void Disconnected() { ConnectionClosed?.Invoke(); }

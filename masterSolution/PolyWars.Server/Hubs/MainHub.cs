@@ -17,6 +17,7 @@ namespace PolyWars.Server {
         private static ConcurrentDictionary<string, IUser> PlayerClients;
         private static ConcurrentDictionary<string, PlayerDTO> Opponents;
         private static ConcurrentDictionary<string, ResourceDTO> Resources;
+        private static ConcurrentDictionary<string, BulletDTO> Bullets;
         //private static ConcurrentDictionary<string, IUser> ActiveShot = new ConcurrentDictionary<string, IUser>();
 
         static Stopwatch s;
@@ -59,6 +60,12 @@ namespace PolyWars.Server {
             List<PlayerDTO> opponents = new List<PlayerDTO>(Opponents.Values);
             Console.WriteLine($"Client asked for opponents: '{Context.ConnectionId}'");
             return opponents;
+        }
+
+        public List<BulletDTO> getBullets() {
+            List<BulletDTO> bullets = new List<BulletDTO>(Bullets.Values);
+            Console.WriteLine($"Client asked for bullets: '{Context.ConnectionId}'");
+            return bullets;
         }
 
         public override Task OnConnected() {

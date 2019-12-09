@@ -93,6 +93,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Adapters\BulletAdapter.cs" />
     <Compile Include="Adapters\PlayerAdapter.cs" />
     <Compile Include="Adapters\ResourceAdapter.cs" />
     <Compile Include="Logic\ArenaController.cs" />
@@ -103,6 +104,7 @@
     <Compile Include="Model\Input.cs" />
     <Compile Include="Network\NetworkController.cs" />
     <Compile Include="RelayCommandAsync.cs" />
+    <Compile Include="ServerClasses\Bullet.cs" />
     <Compile Include="ServerClasses\Player.cs" />
     <Compile Include="Logic\ThreadController.cs" />
     <Compile Include="Logic\InputController.cs" />

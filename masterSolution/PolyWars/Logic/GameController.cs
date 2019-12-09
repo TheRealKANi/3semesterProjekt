@@ -28,6 +28,7 @@ namespace PolyWars.Logic {
         public static string UserID { get; set; }
         public static ConcurrentDictionary<string, IShape> Opponents { get; set; }
         public static ConcurrentDictionary<string, IResource> Resources { get; set; }
+        public ConcurrentDictionary<string, IBullet> Bullets { get; private set; }
         public static int Fps { get; set; }
         public static Stopwatch tickTimer { get; private set; }
         private static Stopwatch ServerTimer { get; set; }
@@ -59,6 +60,7 @@ namespace PolyWars.Logic {
             ArenaController.generateCanvas();
             Opponents = await Adapters.PlayerAdapter.OpponentsDTOAdapter() ?? new ConcurrentDictionary<string, IShape>();
             Resources = await Adapters.ResourceAdapter.ResourceDTOAdapter() ?? new ConcurrentDictionary<string, IResource>();
+            Bullets = await Adapters.BulletAdapter.BulletDTOAdapter() ?? new ConcurrentDictionary<string, IBullet>();
             isPrepared = true;
         }
 
