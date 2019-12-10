@@ -1,10 +1,9 @@
 ﻿using PolyWars.Logic;
 using PolyWars.Model;
-using System.ComponentModel;
+using System;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Input;
-using System.Windows.Threading;
 
 namespace PolyWars.UI.GameArena {
 
@@ -13,25 +12,8 @@ namespace PolyWars.UI.GameArena {
     /// </summary>
     class GameArena_ViewModel : Observable {
         public GameController GameController { get; private set; }
-        public GameArena_ViewModel() {
-            FpsVisibility = Visibility.Visible;
-            GameController = new GameController();
-            ArenaCanvas = GameController.prepareGame();
-            GameController.Ticker.CanvasChangedEventHandler += onCanvasChanged;
-            GameController.playGame();
-        }
-
-        /// <summary>
-        /// When the game is started the Arena is associated with a thread
-        /// </summary>
-        public void onCanvasChanged( object Sender, PropertyChangedEventArgs args ) {
-            ThreadController.MainThreadDispatcher?.Invoke( () => {
-                NotifyPropertyChanged( "ArenaCanvas" );
-                NotifyPropertyChanged( "Fps" );
-                NotifyPropertyChanged( "PlayerCurrency" );
-            } );
-        }
-
+        public double ArenaHeight { get; set; }
+        public double ArenaWidth { get; set; }
         private Visibility fpsVisibility;
         public Visibility FpsVisibility {
             get {
@@ -49,16 +31,19 @@ namespace PolyWars.UI.GameArena {
         }
         public string PlayerCurrency {
             get {
-                return GameController.Player.CurrencyWallet.ToString();
+                if(GameController.Player != null) {
+                    return GameController.Player.Wallet.ToString();
+                }
+                return "-1";
             }
         }
-        private ICommand createResources;
-        public ICommand CreateResources {
+
+        public string PlayerHealth {
             get {
-                if(createResources == null ) {
-                    createResources = new RelayCommand( (o) => { return true; }, ( o ) => GameController.generateResources( 50 ) );
+                if(GameController.Player != null) {
+                    return GameController.Player.Health.ToString();
                 }
-                return createResources;
+                return "-1";
             }
         }
 
@@ -69,8 +54,43 @@ namespace PolyWars.UI.GameArena {
             }
             set {
                 arenaCanvas = value;
+
+                ArenaCanvas.Loaded += OnCanvasLoaded;
+                GameController.CanvasChangedEventHandler += onCanvasChanged;
+                ArenaCanvas.LayoutUpdated += updated;
+                ArenaCanvas.LayoutUpdated += GameController.Ticker.onFrameDisplayed;
+
                 NotifyPropertyChanged();
             }
+        }
+
+        private void OnCanvasLoaded(object sender, RoutedEventArgs e) {
+            if(sender is Canvas canvas) {
+                GameController.ArenaHeight = canvas.ActualHeight;
+                GameController.ArenaWidth = canvas.ActualWidth;
+                ArenaCanvas.UpdateLayout();
+            }
+        }
+
+        public GameArena_ViewModel() {
+            FpsVisibility = Visibility.Visible;
+            ArenaCanvas = ArenaController.ArenaCanvas;
+        }
+
+        private void updated(object sender, EventArgs e) {
+            GameController.calculateFps();
+        }
+
+        /// <summary>
+        /// When the game is started the Arena is associated with a thread
+        /// </summary>
+        public void onCanvasChanged(object Sender, EventArgs args) {
+            UIDispatcher.Invoke(() => {
+                NotifyPropertyChanged("ArenaCanvas");
+                NotifyPropertyChanged("Fps");
+                NotifyPropertyChanged("PlayerCurrency");
+                NotifyPropertyChanged("PlayerHealth");
+            });
         }
     }
 }

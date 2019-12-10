@@ -1,31 +1,28 @@
-﻿using PolyWars.API;
-using PolyWars.Logic;
-using PolyWars.Logic.Utility;
+﻿using PolyWars.Logic;
 using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
-using System.Text;
+using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
 namespace PolyWars.Model {
     class Ticker {
-        public EventHandler<PropertyChangedEventArgs> CanvasChangedEventHandler;
-        public EventHandler<TickEventArgs> TickerEventHandler;
         public static int Fps { get; set; }
         private bool stopTickerThread;
-        int ticks;
-        DateTime tickLast;
-        DateTime tickStart;
+        private const double baselineFps = 1000d / 60; // miliseconds per frame at 60 fps 
+        private double frameDeltaTime;
         Thread thread;
+        public static bool frameDisplayed { get; set; }
 
         public Ticker() {
-            thread = new Thread( Tick ) {
+            thread = new Thread(Tick) {
                 IsBackground = true
             };
-        }
+            frameDisplayed = false;
 
+        }
+        public double DeltaTime(double milliseconds) {
+            return milliseconds / baselineFps;
+        }
         public void Start() {
             stopTickerThread = false;
             thread.Start();
@@ -37,41 +34,40 @@ namespace PolyWars.Model {
         public void Stop() {
             stopTickerThread = true;
         }
+        public void onFrameDisplayed(object sender, EventArgs e) {
+            frameDisplayed = true;
+        }
 
         private void Tick() {
             // TODO Remove/Refactor try catch block
 
-            double DeltaTime( double tickTime2 ) {
-                return 1d + ( ( 600_000_000 - tickTime2 ) / 600_000_000 );
-            }
-            
 
-            while( !stopTickerThread ) {
-                tickStart = DateTime.Now;
-                double tickTime = ( tickStart - tickLast ).Ticks;
-                InputController.Instance.applyInput();
+            GameController.tickTimer.Restart();
+            while(!stopTickerThread) {
+                waitForNextFrame(GameController.tickTimer);
+                frameDeltaTime = DeltaTime(GameController.tickTimer.Elapsed.TotalMilliseconds);
+                // TODO DEBUG - Starts Frame Timer
+                Logic.Utility.FrameDebugTimer.startFrameTimer();
 
-                TickerEventHandler?.Invoke( this, new TickEventArgs( DeltaTime( tickTime ) ) );
-                waitForNextFrame( tickLast );            
+                frameDisplayed = false;
                 try {
-                    CanvasChangedEventHandler?.Invoke( this, new PropertyChangedEventArgs( "ArenaCanvas" ) );
-                    tickLast = DateTime.Now;
-                } catch( TaskCanceledException ) {
+                    InputController.applyInput();
+                    GameController.calculateFrame(frameDeltaTime);
+                } catch(TaskCanceledException) {
                     // TODO Do we need to handle this?
                 }
+                // TODO DEBUG - Stops Frame Timer
+                GameController.tickTimer.Restart();
+                Logic.Utility.FrameDebugTimer.stopFrameTimer();
             }
         }
 
-        private void waitForNextFrame( DateTime lastTick ) {
-            int msDelay = 2;
-            while( ( DateTime.Now.Ticks - lastTick.Ticks ) <= ( 10_000_000d / 60 ) ) {
-                ticks = ( int ) ( ( 1d / 60 ) - ( ( double ) ( DateTime.Now - lastTick ).Ticks / 2 ) );
-                if( ticks > msDelay * 10_000 ) {
-                    Thread.Sleep( ticks >= 0 ? ticks : 0 );
-                } else if( ticks > 0 ) {
-                    Thread.Sleep( 1 );
-                }
+        private void waitForNextFrame(Stopwatch tickTimer) {
+            Logic.Utility.FrameDebugTimer.startFpsLimitTimer();
+            while(!frameDisplayed || tickTimer.Elapsed.TotalMilliseconds <= (1000d / 480)) {
+                Thread.Sleep(1);
             }
+            Logic.Utility.FrameDebugTimer.stopFpsLimitTimer();
         }
     }
 }

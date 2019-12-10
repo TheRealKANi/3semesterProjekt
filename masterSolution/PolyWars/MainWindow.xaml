@@ -7,11 +7,15 @@
         xmlns:nav="clr-namespace:PolyWars"
         xmlns:local="clr-namespace:PolyWars"
         mc:Ignorable="d"
-        Title="PolyWars Ultimate Bloody MMO battle royal Gory War Simulator 9001!" WindowState="Maximized">
+        Focusable="True"
+        
+        Title="PolyWars Ultimate Bloody MMO battle royal Gory War Simulator 9001!" Height="600" Width="600" Top="0" Left="0" >
+    <!--WindowState="Maximized-->
     <Window.Resources>
         <nav:NavigationController x:Key="Nav"/>
     </Window.Resources>
+    
     <Grid>
-        <Frame Content="{Binding Source={x:Static nav:NavigationController.Instance}, Path=Frame}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" NavigationUIVisibility="Hidden"/>
+        <Frame Name="Polywars" Content="{Binding Source={x:Static nav:NavigationController.Instance}, Path=Frame}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" NavigationUIVisibility="Hidden"/>
     </Grid>
 </Window>

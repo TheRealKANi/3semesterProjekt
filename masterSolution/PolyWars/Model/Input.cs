@@ -1,20 +1,23 @@
 ﻿using System.Collections.Generic;
 using System.Threading.Tasks;
+using System.Windows;
+using System.Windows.Controls;
 using System.Windows.Input;
+using System.Linq;
+using System;
 
 namespace PolyWars.Logic {
-
     public enum ButtonDown {
-        RIGHT = 1,
-        UP = 2,
-        LEFT = 4,
-        DOWN = 8,
-        SPACE = 16,
-        DEBUG = 32
+        RIGHT = 0b000001,
+        UP =    0b000010,
+        LEFT =  0b000100,
+        DOWN =  0b001000,
+        SHOOT = 0b010000,
+        DEBUG = 0b100000
     }
 
     public class Input {
-
+        
         private Key debugKey = Key.F3;
         Dictionary<Key, ButtonDown> keyBindings = new Dictionary<Key, ButtonDown>();
 
@@ -31,20 +34,27 @@ namespace PolyWars.Logic {
             keyBindings[Key.Left] = ButtonDown.LEFT;
             keyBindings[Key.Down] = ButtonDown.DOWN;
             keyBindings[Key.Right] = ButtonDown.RIGHT;
-            keyBindings[Key.Space] = ButtonDown.SPACE;
+            keyBindings[Key.Space] = ButtonDown.SHOOT;
             keyBindings[debugKey] = ButtonDown.DEBUG;
         }
 
         public ButtonDown queryInput() {
             try {
-                ThreadController.MainThreadDispatcher.Invoke( () => {
+                UIDispatcher.Invoke(() => {
                     PressedKeys &= 0;
-                    foreach( KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings ) {
-                        PressedKeys |= Keyboard.IsKeyDown( keyBinding.Key ) ? keyBinding.Value : 0;
+
+                    try {
+                        if(Application.Current != null && Application.Current.MainWindow.IsKeyboardFocused) {
+                            foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
+                                PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
+                            }
+                        }
+                    } catch(NullReferenceException) {
                     }
-                } );
+                    
+                });
                 return PressedKeys;
-            } catch( TaskCanceledException ) {
+            } catch(TaskCanceledException) {
 
             }
             return PressedKeys;
