@@ -35,6 +35,7 @@ namespace PolyWars.Network {
         public event Action<int> updateHealth;
         public event Action<string> playerDied;
         public event Action<BulletDTO> removeBullet;
+        public event Action<string> removeDeadOpponent;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
@@ -81,6 +82,7 @@ namespace PolyWars.Network {
             hubProxy.On<int>("updateHealth", (health) => updateHealth.Invoke(health));
             hubProxy.On<string>("playerDied", (killedBy) => playerDied.Invoke(killedBy));
             hubProxy.On<BulletDTO>("removeBullet", (bullet) => removeBullet.Invoke(bullet));
+            hubProxy.On<string>("removeDeadOpponent", (username) => removeDeadOpponent.Invoke(username));
 
         }
 

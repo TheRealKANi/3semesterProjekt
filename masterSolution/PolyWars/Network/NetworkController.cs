@@ -40,11 +40,19 @@ namespace PolyWars.Network {
             GameService.updateHealth += updateHealth;
             GameService.playerDied += playerDied;
             GameService.removeBullet += removeBullet;
+            GameService.removeDeadOpponent += removeDeadOpponent;
+        }
+
+        private static void removeDeadOpponent(string username) {
+            if(GameController.Opponents != null && GameController.Opponents.TryRemove(username, out IMoveable deadPlayer)) {
+                UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(deadPlayer.Shape.Polygon));
+                Debug.WriteLine($"Removed dead opponent {username} on canvas");
+            }
         }
 
         private static void removeBullet(BulletDTO bullet) {
             BulletAdapter.removeBulletFromCanvas(bullet.ID);
-            Debug.WriteLine($"Removed bullet from {bullet.PlayerID} on client");
+            Debug.WriteLine($"Removed bullet from {bullet.PlayerID} on canvas");
         }
 
         private static void playerDied(string killedBy) {

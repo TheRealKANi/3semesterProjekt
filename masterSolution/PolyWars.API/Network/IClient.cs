@@ -19,5 +19,6 @@ namespace PolyWars.API.Network {
         void updateHealth(int health);
         void playerDied(string playerID);
         void removeBullet(BulletDTO bulletDTO);
+        void removeDeadOpponent(string userName);
     }
 }

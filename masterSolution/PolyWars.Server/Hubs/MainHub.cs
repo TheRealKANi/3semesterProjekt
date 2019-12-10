@@ -67,7 +67,8 @@ namespace PolyWars.Server {
             if(Opponents.ContainsKey(userName)) {
                 bool couldRemove = Opponents.TryRemove(userName, out PlayerDTO playerRemoved);
                 if(couldRemove) {
-                    //Clients.Others.
+                    Clients.Others.removeDeadOpponent(userName);
+                    Console.WriteLine($"Removing dead player: {userName} from other clients");
                 }
             }
         }
@@ -77,16 +78,13 @@ namespace PolyWars.Server {
             if(Opponents.ContainsKey(Clients.CallerState.UserName)) {
                 PlayerDTO player = Opponents[Clients.CallerState.UserName];
                 if(Bullets.ContainsKey(bullet.ID) && Bullets.TryRemove(bullet.ID, out BulletDTO bulletDTO)) {
+                    Clients.Others.removeBullet(bulletDTO);
                     player.Health -= bulletDTO.Damage;
                     Console.WriteLine(player.Name + " got hit with a bullet, dealing " + bulletDTO.Damage + " damage");
-                    Clients.Others.removeBullet(bulletDTO);
                     Clients.Caller.updateHealth(player.Health);
                     result = true;
                     if(player.Health < 1) {
-                        bool couldRemove = Opponents.TryRemove(player.Name, out PlayerDTO playerRemoved);
-                        if(couldRemove) {
-                            Clients.Caller.playerDied(bulletDTO.PlayerID);
-                        }
+                        Clients.Caller.playerDied(bulletDTO.PlayerID);
                     }
                 }
             }
