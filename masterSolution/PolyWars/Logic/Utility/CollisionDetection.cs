@@ -1,6 +1,6 @@
-﻿using PolyWars.API.Model.Interfaces;
+﻿using PolyWars.Adapters;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.Network;
-using PolyWars.Server.Model;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -21,17 +21,27 @@ namespace PolyWars.Logic.Utility {
                 if(GameController.Resources != null) {
                     FrameDebugTimer.startCollisionTimer();
 
-                    ConcurrentBag<IResource> collidedWith = new ConcurrentBag<IResource>();
+                    ConcurrentBag<IResource> collidedWithResource = new ConcurrentBag<IResource>();
+                    ConcurrentBag<IBullet> collidedWithBullet = new ConcurrentBag<IBullet>();
 
                     foreach(IResource resource in GameController.Resources.Values) {
                         UIDispatcher.Invoke(() => {
                             if(resource.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(GameController.Player.PlayerShip.Shape.Polygon.RenderedGeometry.Bounds)) {
-                                collidedWith.Add(resource);
+                                collidedWithResource.Add(resource);
                             }
                         });
                     }
-                    while(!collidedWith.IsEmpty) {
-                        if(collidedWith.TryTake(out IResource resource)) {
+                    foreach(IBullet bullet in GameController.Bullets.Values) {
+                        foreach(IMoveable opponent in GameController.Opponents.Values) {
+                            UIDispatcher.Invoke(() => {
+                                if(bullet.PlayerID != GameController.Player.Name && bullet.BulletShip.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(GameController.Player.PlayerShip.Shape.Polygon.RenderedGeometry.Bounds)) {
+                                    collidedWithBullet.Add(bullet);
+                                }
+                            });
+                        }
+                    }
+                    while(!collidedWithResource.IsEmpty) {
+                        if(collidedWithResource.TryTake(out IResource resource)) {
                             taskList.Add(taskFactory.StartNew(async () => {
                                 bool result = await NetworkController.GameService.playerCollectedResource(resource);
                                 if(result) {
@@ -41,12 +51,26 @@ namespace PolyWars.Logic.Utility {
                                             ArenaController.ArenaCanvas.Children.Remove(p);
                                         });
                                         if(!GameController.Resources.TryRemove(resource.ID, out IResource res)) {
-                                            collidedWith.Add(resource);
+                                            collidedWithResource.Add(resource);
                                         }
 
                                     }
                                 }
                             }));
+                        }
+                    }
+                    while(!collidedWithBullet.IsEmpty) {
+                        if(collidedWithBullet.TryTake(out IBullet bullet)) {
+                            taskList.Add(taskFactory.StartNew(async () => {
+                                bool result = await NetworkController.GameService.playerGotShot(BulletAdapter.bulletToDTO(bullet));
+                                if(result) {
+                                    if(GameController.Bullets != null) {
+                                        BulletAdapter.removeBulletFromCanvas(bullet.ID);
+                                    }
+                                }
+                            }));
+                        } else {
+                            collidedWithBullet.Add(bullet);
                         }
                     }
                     // TODO DEBUG - Stops collision Timer

@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Diagnostics;
+using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Threading;
 
@@ -10,7 +12,11 @@ namespace PolyWars.Logic {
         private static Dispatcher UIThreadDispatcher;
 
         public static void Invoke(Action a) {
-            UIThreadDispatcher.Invoke( () => a.Invoke());
+            try {
+                UIThreadDispatcher.Invoke( () => a.Invoke());
+            } catch(TaskCanceledException e) {
+                Debug.WriteLine("Task got cancled in ThreadController");
+            }
         }
         public static T Invoke<T>(Func<T> a) {
             return UIThreadDispatcher.Invoke(() => { return a.Invoke(); });

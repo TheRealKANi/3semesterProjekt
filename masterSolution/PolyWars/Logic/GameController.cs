@@ -149,8 +149,6 @@ namespace PolyWars.Logic {
                         if(bulletOutOfBounds(p)) {
                             BulletAdapter.removeBulletFromCanvas(bullet.ID);
                             Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
-                            // TODO Remove this - causes player that shoots to loose health when bullet goes out of bounds
-                            NetworkController.GameService.playerGotShot(BulletAdapter.bulletToDTO(bullet));
                         } else {
                             bullet.BulletShip.Move(DeltaTime(tickTimer));
                         }

@@ -34,6 +34,7 @@ namespace PolyWars.Network {
         public event Action<BulletDTO> opponentShoots;
         public event Action<int> updateHealth;
         public event Action<string> playerDied;
+        public event Action<BulletDTO> removeBullet;
         //public event Action<string> OnConnected;
 
         private IHubProxy hubProxy;
@@ -64,7 +65,11 @@ namespace PolyWars.Network {
 
             NetworkController.IsConnected = connectionStatus;
             return connectionStatus;
-        }        public void initIngameBindings() {
+        }
+
+        
+
+        public void initIngameBindings() {
             hubProxy.On<string>("AccessDenied", (n) => accessDenied?.Invoke(n));
             hubProxy.On<List<PlayerDTO>>("updateOpponents", (lo) => updateOpponents?.Invoke(lo));
             hubProxy.On<List<ResourceDTO>>("updateResources", (lr) => updateResources.Invoke(lr));
@@ -75,7 +80,12 @@ namespace PolyWars.Network {
             hubProxy.On<BulletDTO>("opponentShoots", (dto) => opponentShoots.Invoke(dto));
             hubProxy.On<int>("updateHealth", (health) => updateHealth.Invoke(health));
             hubProxy.On<string>("playerDied", (killedBy) => playerDied.Invoke(killedBy));
+            hubProxy.On<BulletDTO>("removeBullet", (bullet) => removeBullet.Invoke(bullet));
 
+        }
+
+        public async void removeOpponent(string userName) {
+            await hubProxy.Invoke("removeOpponent", userName);
         }
 
         public async Task<bool> playerShoots(int damage) {

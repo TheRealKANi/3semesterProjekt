@@ -18,5 +18,6 @@ namespace PolyWars.API.Network {
         void opponentJoined(PlayerDTO dto);
         void updateHealth(int health);
         void playerDied(string playerID);
+        void removeBullet(BulletDTO bulletDTO);
     }
 }

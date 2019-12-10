@@ -39,6 +39,12 @@ namespace PolyWars.Network {
             GameService.opponentShoots += opponentShoots;
             GameService.updateHealth += updateHealth;
             GameService.playerDied += playerDied;
+            GameService.removeBullet += removeBullet;
+        }
+
+        private static void removeBullet(BulletDTO bullet) {
+            BulletAdapter.removeBulletFromCanvas(bullet.ID);
+            Debug.WriteLine($"Removed bullet from {bullet.PlayerID} on client");
         }
 
         private static void playerDied(string killedBy) {
@@ -46,6 +52,7 @@ namespace PolyWars.Network {
             GameController.IsPlayerDead = true;
             UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(GameController.Player.PlayerShip.Shape.Polygon));
             Debug.WriteLine(GameController.Player.Name + " got killed by " + killedBy);
+            NetworkController.GameService.removeOpponent(GameController.Player.Name);
         }
 
         private static void updateHealth(int healthLeft) {
