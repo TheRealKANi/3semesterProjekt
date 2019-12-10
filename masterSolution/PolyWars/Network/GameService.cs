@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.SignalR.Client;
+using Microsoft.AspNet.SignalR.Client;
 using PolyWars.Adapters;
 using PolyWars.Api.Model;
 using PolyWars.API;
@@ -88,10 +88,6 @@ namespace PolyWars.Network {
 
         public async void removeOpponent(string userName) {
             await hubProxy.Invoke("removeOpponent", userName);
-        }
-
-        public async Task<bool> playerShoots(int damage) {
-            return await hubProxy.Invoke<bool>("playerShoots", damage);
         }
         public async Task<bool> playerGotShot(BulletDTO bullet) {
             return await hubProxy.Invoke<bool>("playerGotShot", bullet);

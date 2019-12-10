@@ -9,8 +9,8 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;using System.Threading.Tasks;
+using System.Windows.Media;
 
-
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
         private static ConcurrentDictionary<string, IUser> PlayerClients;
@@ -20,28 +20,34 @@ namespace PolyWars.Server {
         private static ConcurrentDictionary<string, int> statistics;
         private static object statisticsLock = new object();
 
+        // System.Windows.Media.Colors.DarkSlateGray
+
         private static Stopwatch statisticTimer;
-        //private static ConcurrentDictionary<string, IUser> ActiveShot = new ConcurrentDictionary<string, IUser>();
+
         private void methodCallCounter([CallerMemberName] string method = "") {
-            //if(!string.IsNullOrWhiteSpace(method)) {
-            //    if(statistics.ContainsKey(method)) {
-            //        statistics[method]++;
-            //    } else {
-            //        statistics.TryAdd(method, 1);
-            //    }
-            //}
-            //if(statisticTimer.Elapsed.TotalSeconds > 9) {
-            //    int x = Console.CursorLeft;
-            //    int y = Console.CursorTop;
-            //    statisticTimer.Restart();
-            //    Console.SetCursorPosition(0, 1);
-            //    Console.WriteLine("****************************************************************************");
-            //    foreach(string key in statistics.Keys) {
-            //        Console.WriteLine($"{key,-30} was called {statistics[key],-6} times");
-            //    }
-            //    Console.WriteLine("****************************************************************************");
-            //    Console.SetCursorPosition(x, statistics.Count + 3);
-            //}
+            if(!string.IsNullOrWhiteSpace(method)) {
+                if(statistics.ContainsKey(method)) {
+                    statistics[method]++;
+                } else {
+                    try {
+                        statistics.TryAdd(method, 1);
+                    } catch(Exception e) {
+                        Console.WriteLine("Try add methodCallCounter execption: " + e.Message);
+                    }
+                }
+            }
+            if(statisticTimer.Elapsed.TotalSeconds > 9) {
+                int x = Console.CursorLeft;
+                int y = Console.CursorTop;
+                statisticTimer.Restart();
+                Console.SetCursorPosition(0, 1);
+                Console.WriteLine("****************************************************************************");
+                foreach(string key in statistics.Keys) {
+                    Console.WriteLine($"{key,-30} was called {statistics[key],-6} times");
+                }
+                Console.WriteLine("****************************************************************************");
+                Console.SetCursorPosition(x, statistics.Count + 3);
+            }
         }
 
 
@@ -63,28 +69,22 @@ namespace PolyWars.Server {
             }
         }
 
-        public void removeOpponent(string userName) {
-            if(Opponents.ContainsKey(userName)) {
-                bool couldRemove = Opponents.TryRemove(userName, out PlayerDTO playerRemoved);
-                if(couldRemove) {
-                    Clients.Others.removeDeadOpponent(userName);
-                    Console.WriteLine($"Removing dead player: {userName} from other clients");
-                }
-            }
-        }
-
         public bool playerGotShot(BulletDTO bullet) {
+            methodCallCounter();
             bool result = false;
             if(Opponents.ContainsKey(Clients.CallerState.UserName)) {
                 PlayerDTO player = Opponents[Clients.CallerState.UserName];
                 if(Bullets.ContainsKey(bullet.ID) && Bullets.TryRemove(bullet.ID, out BulletDTO bulletDTO)) {
                     Clients.Others.removeBullet(bulletDTO);
                     player.Health -= bulletDTO.Damage;
-                    Console.WriteLine(player.Name + " got hit with a bullet, dealing " + bulletDTO.Damage + " damage");
-                    Clients.Caller.updateHealth(player.Health);
+                    Console.WriteLine($"{player.Name} got hit with a bullet, dealing {bulletDTO.Damage} damage from {bullet.PlayerID}");
                     result = true;
                     if(player.Health < 1) {
                         Clients.Caller.playerDied(bulletDTO.PlayerID);
+                        Clients.Others.removeDeadOpponent(player.Name);
+                        Console.WriteLine($"Removing dead player: '{player.Name}' from other clients");
+                    } else {
+                        Clients.Caller.updateHealth(player.Health);
                     }
                 }
             }
@@ -92,6 +92,7 @@ namespace PolyWars.Server {
         }
 
         public bool playerShoots(int damage) {
+            methodCallCounter();
             bool result = false;
             PlayerDTO shootingPlayer = Opponents[Clients.CallerState.UserName];
             if(shootingPlayer != null) {
@@ -149,6 +150,7 @@ namespace PolyWars.Server {
         }
 
         public List<BulletDTO> getBullets() {
+            methodCallCounter();
             List<BulletDTO> bullets = new List<BulletDTO>(Bullets.Values);
             Console.WriteLine($"Client asked for bullets: '{Context.ConnectionId}'");
             return bullets;
@@ -194,7 +196,8 @@ namespace PolyWars.Server {
                             Wallet = 0,
                             Width = 50,
                             Height = 50,
-                            Health = 100
+                            Health = 100,
+                            FillColor = GetColor()
                         };
                         if(Opponents.TryAdd(newPlayer.Name, newPlayer)) {
                             Clients.Others.opponentJoined(newPlayer);
@@ -207,6 +210,12 @@ namespace PolyWars.Server {
                 }
                 return null;
             });
+        }
+
+        private static Color GetColor() {
+            Random rnd = new Random();
+            Color c = Color.FromArgb(255, (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256));
+            return c;
         }
 
 

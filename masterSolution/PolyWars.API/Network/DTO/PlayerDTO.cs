@@ -1,5 +1,6 @@
 ﻿using PolyWars.Api.Model;
 using System.Windows;
+using System.Windows.Media;
 
 namespace PolyWars.API.Network.DTO {
     public class PlayerDTO {
@@ -17,5 +18,6 @@ namespace PolyWars.API.Network.DTO {
         public int Width { get; set; }
         public int Height { get; set; }
         public int Health { get; set; }
+        public Color FillColor { get; set; }
     }
 }

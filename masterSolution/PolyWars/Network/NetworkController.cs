@@ -58,9 +58,9 @@ namespace PolyWars.Network {
         private static void playerDied(string killedBy) {
             // Remove player from canvas and disable input
             GameController.IsPlayerDead = true;
+            GameController.Player.Health = 0;
             UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(GameController.Player.PlayerShip.Shape.Polygon));
             Debug.WriteLine(GameController.Player.Name + " got killed by " + killedBy);
-            NetworkController.GameService.removeOpponent(GameController.Player.Name);
         }
 
         private static void updateHealth(int healthLeft) {
@@ -92,6 +92,7 @@ namespace PolyWars.Network {
                 opponent.MaxVelocity = dto.MaxVelocity;
                 opponent.RPM = dto.RPM;
                 opponent.MaxRPM = dto.MaxRPM;
+                opponent.Shape.Renderable.FillColor = dto.FillColor;
 
                 IRay ray = new Ray(opponent.Shape.Ray.ID, new Point(dto.centerX, dto.centerY), dto.Angle);
                 opponent.Shape.Ray = ray;
