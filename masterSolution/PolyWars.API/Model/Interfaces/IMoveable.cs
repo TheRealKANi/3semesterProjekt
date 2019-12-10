@@ -10,7 +10,7 @@ namespace PolyWars.API.Model.Interfaces {
         IShape Shape { get; set; }
         IMoveStrategy Mover { get; set; }
 
-        void Move(decimal deltaTime);
+        void Move(double deltaTime);
         //void MoveToNewRay();
     }
 }

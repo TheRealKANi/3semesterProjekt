@@ -24,7 +24,7 @@ namespace PolyWars.ServerClasses {
             Shape = shape;
             Mover = mover;
         }
-        public void Move(decimal deltaTime) {
+        public void Move(double deltaTime) {
             Mover.Move(this, deltaTime);
         }
         //public void MoveToNewRay() {

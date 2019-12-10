@@ -10,13 +10,14 @@ using System.Windows.Media;
 
 namespace PolyWars.ServerClasses {
     public class MoveStrategy : IMoveStrategy {
-        public void Move(IMoveable moveable, decimal deltaTime) {
+        public void Move(IMoveable moveable, double deltaTime) {
             FrameDebugTimer.startMoveShapeTimer();
             IShape shape = moveable.Shape;
-            shape.Ray.Angle += (double) ((decimal) (moveable.RPM * 360 / (60 * 60)) * deltaTime);
+            shape.Ray.Angle += (moveable.RPM * 360 / (60 * 60)) * deltaTime;
+            // (rpm * 360 degrees) / 60 seconds / 60 fps
 
-            double offsetX = (double) ((decimal) (moveable.Velocity * Math.Sin(shape.Ray.Angle * Math.PI / 180)) * deltaTime);
-            double offsetY = (double) ((decimal) (moveable.Velocity * Math.Cos(shape.Ray.Angle * Math.PI / 180)) * deltaTime);
+            double offsetX = moveable.Velocity * Math.Sin(shape.Ray.Angle * Math.PI / 180) * deltaTime;
+            double offsetY = moveable.Velocity * Math.Cos(shape.Ray.Angle * Math.PI / 180) * deltaTime;
 
             Point cp = shape.Ray.CenterPoint;
             cp.Offset(offsetX, offsetY);
@@ -32,11 +33,11 @@ namespace PolyWars.ServerClasses {
                 shape.Polygon.RenderTransform = new RotateTransform(-1 * shape.Ray.Angle, shape.Ray.CenterPoint.X, shape.Ray.CenterPoint.Y); //TODO only if it actually rotates?
             });
             FrameDebugTimer.stopMoveShapeTimer();
-            CollisionDetection.resourceCollisionDetection();
+            //CollisionDetection.resourceCollisionDetection();
         }
     }
     public class MoveOpponentStrategy : MoveStrategy, IMoveStrategy {
-        public new void Move(IMoveable moveable, decimal deltaTime) {
+        public new void Move(IMoveable moveable, double deltaTime) {
             UIDispatcher.Invoke(() => {
                 PointCollection pc = moveable.Shape.Polygon.Points;
                 Point currentCenter = pc[pc.Count - 2];
