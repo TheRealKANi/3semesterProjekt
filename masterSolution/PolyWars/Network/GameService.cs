@@ -1,4 +1,4 @@
-using Microsoft.AspNet.SignalR.Client;
+﻿using Microsoft.AspNet.SignalR.Client;
 using PolyWars.Adapters;
 using PolyWars.Api.Model;
 using PolyWars.API;
@@ -42,7 +42,7 @@ namespace PolyWars.Network {
         public HubConnection Connection { get; set; }
 
         private string serverIP = "localhost"; // Lan Client Test
-        //private string serverIP = "xxx.xxx.xxx.xxx"; // WAN Client Test
+        //private string serverIP = "109.57.212.47"; // WAN Client Test
 
         private string protocol = "http://";
 
@@ -86,8 +86,8 @@ namespace PolyWars.Network {
 
         }
 
-        public async void removeOpponent(string userName) {
-            await hubProxy.Invoke("removeOpponent", userName);
+        public async Task<bool> playerShoots(int damage) {
+            return await hubProxy.Invoke<bool>("playerShoots", damage);
         }
         public async Task<bool> playerGotShot(BulletDTO bullet) {
             return await hubProxy.Invoke<bool>("playerGotShot", bullet);

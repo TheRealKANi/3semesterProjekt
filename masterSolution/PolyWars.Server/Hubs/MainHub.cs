@@ -40,20 +40,21 @@ namespace PolyWars.Server {
                 int x = Console.CursorLeft;
                 int y = Console.CursorTop;
                 statisticTimer.Restart();
+                Console.Clear();
                 Console.SetCursorPosition(0, 1);
-                Console.WriteLine("****************************************************************************");
+                Console.WriteLine("****************************************************************************                                       ");
                 foreach(string key in statistics.Keys) {
-                    Console.WriteLine($"{key,-30} was called {statistics[key],-6} times");
+                    Console.WriteLine($"{key,-30} was called {statistics[key],-6} times                                                               ");
                 }
-                Console.WriteLine("****************************************************************************");
-                Console.SetCursorPosition(x, statistics.Count + 3);
+                Console.WriteLine("****************************************************************************                                        ");
+                Console.SetCursorPosition(x, 13);
             }
         }
 
 
 
         static MainHub() {
-            Console.SetCursorPosition(0, 2);
+            Console.SetCursorPosition(0, 1);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
@@ -100,7 +101,7 @@ namespace PolyWars.Server {
                 bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
                 if(addBullet) {
                     result = true;
-                    Console.WriteLine(shootingPlayer.Name + " has fired a bullet, dealing " + bullet.Damage + " damage");
+                    //Console.WriteLine(shootingPlayer.Name + " has fired a bullet, dealing " + bullet.Damage + " damage");
                     Clients.All.opponentShoots(bullet);
                 }
             }
@@ -220,27 +221,19 @@ namespace PolyWars.Server {
 
 
         public async Task<bool> playerMoved(PlayerDTO player) {
-            lock(statisticsLock) {
-                statistics["moved stack"]++;
-            }
-
+            statistics["moved stack"]++;
             methodCallCounter();
             // Move player in table and transmit new location to other clients
             bool result = false;
             await Task.Factory.StartNew(() => {
                 if(Opponents.ContainsKey(player.Name)) {
                     if(Opponents.TryUpdate(player.Name, player, Opponents[player.Name])) {
-                        Task.Run(() => {
-                            Clients.Others.opponentMoved(player);
-                            lock(statisticsLock) {
-                                statistics["moved stack"]--;
-                            }
-                        });
+                        Clients.Others.opponentMoved(player);
                         result = true;
                     }
                 }
             });
-
+            statistics["moved stack"]--;
             return result;
         }
 
