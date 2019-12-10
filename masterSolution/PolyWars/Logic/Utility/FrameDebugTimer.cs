@@ -14,6 +14,9 @@ namespace PolyWars.Logic.Utility {
         private static Stopwatch moveShapeTimer;
         private static List<double> moveShapeTicks;
 
+        private static Stopwatch fpsLimitTimer;
+        private static List<double> fpsLimitTicks;
+
         /// <summary>
         /// Initializes timer
         /// </summary>
@@ -26,6 +29,9 @@ namespace PolyWars.Logic.Utility {
 
             moveShapeTicks = new List<double>();
             moveShapeTimer = new Stopwatch();
+
+            fpsLimitTimer = new Stopwatch();
+            fpsLimitTicks = new List<double>();
         }
 
         /// <summary>
@@ -48,7 +54,9 @@ namespace PolyWars.Logic.Utility {
         public static void startFrameTimer() {
             frameTimer.Restart();
         }
-
+        public static void startFpsLimitTimer() {
+            fpsLimitTimer.Restart();
+        }
         /// <summary>
         /// Stops the internal moveShape timer and adds captured time to internal list
         /// </summary>
@@ -78,7 +86,12 @@ namespace PolyWars.Logic.Utility {
                 frameTicks.Add(frameTimer.Elapsed.TotalMilliseconds);
             }
         }
-
+        public static void stopFpsLimitTimer() {
+            if(fpsLimitTimer.IsRunning) {
+                fpsLimitTimer.Stop();
+                fpsLimitTicks.Add(fpsLimitTimer.Elapsed.TotalMilliseconds);
+            }
+        }
         /// <summary>
         /// Outputs Data from time readings.
         /// If we are using high or low resolution
@@ -114,7 +127,7 @@ namespace PolyWars.Logic.Utility {
         /// ms pr frame, how many % that is of 16.667 ms ( 60 FPS )
         /// and the number of resources on the Arena
         /// </summary>
-        public static void outpuCollisionTimerResults() {
+        public static void outputCollisionTimerResults() {
             double totalTickTime = 0;
             foreach(double tickTime in collisionTicks) {
                 totalTickTime += tickTime;
@@ -137,7 +150,7 @@ namespace PolyWars.Logic.Utility {
         /// ms pr frame, how many % that is of 16.667 ms ( 60 FPS )
         /// and the number of resources on the Arena
         /// </summary>
-        public static void outpuMoveShapeTimerResults() {
+        public static void outputMoveShapeTimerResults() {
             double totalTickTime = 0;
             foreach(double tickTime in moveShapeTicks) {
                 totalTickTime += tickTime;
@@ -152,6 +165,20 @@ namespace PolyWars.Logic.Utility {
             Debug.WriteLine("        Using " + (averageTickTime / maxFPSms * 100d).ToString("N2") + "% of " + maxFPSms.ToString("N2") + "ms");
             Debug.WriteLine("");
         }
+        public static void outputFpsLimitTimerResults() {
+            double totalTickTime = 0;
+            foreach(double tickTime in fpsLimitTicks) {
+                totalTickTime += tickTime;
+            }
+            double averageTickTime = totalTickTime / fpsLimitTicks.Count;
+            double totalRunTimeInMs = totalTickTime;
+            double maxFPSms = 1000d / 60d;
 
+            Debug.WriteLine("        RunTime       : " + (totalRunTimeInMs / 1000).ToString("N2") + " s");
+            Debug.WriteLine("        n waits       : " + fpsLimitTicks.Count.ToString("N0") + " waits");
+            Debug.WriteLine("        AVG wait time : " + averageTickTime.ToString("N3") + " ms");
+            Debug.WriteLine("        Using " + (averageTickTime / maxFPSms * 100d).ToString("N2") + "% of " + maxFPSms.ToString("N2") + "ms");
+            Debug.WriteLine("");
+        }
     }
 }

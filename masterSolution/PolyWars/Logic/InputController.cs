@@ -53,8 +53,9 @@ namespace PolyWars.Logic {
             // TODO Remove Debug Key
             if(((int) (input & ButtonDown.DEBUG) >> 5) > 0 && hasRun == false) {
                 Utility.FrameDebugTimer.outpuFrameTimerResults();
-                Utility.FrameDebugTimer.outpuMoveShapeTimerResults();
-                Utility.FrameDebugTimer.outpuCollisionTimerResults();
+                Utility.FrameDebugTimer.outputMoveShapeTimerResults();
+                Utility.FrameDebugTimer.outputCollisionTimerResults();
+                Utility.FrameDebugTimer.outputFpsLimitTimerResults();
                 hasRun = true;
             }
         }
