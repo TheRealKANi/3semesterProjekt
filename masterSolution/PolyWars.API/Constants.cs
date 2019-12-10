@@ -7,8 +7,8 @@ using System.Threading.Tasks;
 namespace PolyWars.API {
     public static class Constants {
 
-        public static string serverPort = "5700";
-        public static string serverEndPoint = "/Polywars";
-        public static int standardShotDamage = 20;
+        public static readonly string serverPort = "5700";
+        public static readonly string serverEndPoint = "/Polywars";
+        public static readonly int standardShotDamage = 20;
     }
 }
