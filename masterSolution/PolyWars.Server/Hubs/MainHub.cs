@@ -164,7 +164,7 @@ namespace PolyWars.Server {
         }
         public async Task<IUser> Login(string username, string hashedPassword) {
             methodCallCounter();
-            return await Task.Factory.StartNew<IUser>(() => {
+            return await Task.Factory.StartNew(() => {
                 if(!PlayerClients.ContainsKey(username)) {
                     // TODO Verify user creds from DB here
                     if(true) {
@@ -190,9 +190,9 @@ namespace PolyWars.Server {
                             centerY = 300,
                             Angle = 0,
                             Velocity = 0,
-                            MaxVelocity = 50,
+                            MaxVelocity = 5,
                             RPM = 0,
-                            MaxRPM = 360,
+                            MaxRPM = 15,
                             Vertices = 3,
                             Wallet = 0,
                             Width = 50,
@@ -212,20 +212,19 @@ namespace PolyWars.Server {
                 return null;
             });
         }
-
+            
+        private static Random rnd = new Random();
         private static Color GetColor() {
-            Random rnd = new Random();
             Color c = Color.FromArgb(255, (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256));
             return c;
         }
-
-
         public async Task<bool> playerMoved(PlayerDTO player) {
             statistics["moved stack"]++;
+            
             methodCallCounter();
             // Move player in table and transmit new location to other clients
             bool result = false;
-            await Task.Factory.StartNew(() => {
+            Task t = Task.Factory.StartNew(() => {
                 if(Opponents.ContainsKey(player.Name)) {
                     if(Opponents.TryUpdate(player.Name, player, Opponents[player.Name])) {
                         Clients.Others.opponentMoved(player);
@@ -233,6 +232,7 @@ namespace PolyWars.Server {
                     }
                 }
             });
+            await t;
             statistics["moved stack"]--;
             return result;
         }
