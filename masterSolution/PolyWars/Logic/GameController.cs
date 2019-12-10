@@ -37,23 +37,13 @@ namespace PolyWars.Logic {
         public static double ArenaWidth { get; set; }
         public static double ArenaHeight { get; set; }
         public static bool IsPlayerDead { get; set; }
-
-        private static long timeStamp;
-        private static long lastStamp;
-
-        private const decimal baselineFps = 1000m / 60; // miliseconds per frame at 60 fps 
-
         static public EventHandler<EventArgs> CanvasChangedEventHandler;
-        private static bool serverResponded;
-
 
 
         /// <summary>
         /// Default constructor of GameController Class
         /// </summary>
         static GameController() {
-            timeStamp = 0;
-            serverResponded = true;
             isPrepared = false;
             fpsTimer = new Stopwatch();
             fpsTimer.Reset();
@@ -131,31 +121,28 @@ namespace PolyWars.Logic {
             fpsTimer.Stop();
         }
 
-        public static decimal DeltaTime(Stopwatch _tickTimer) {
-            return (decimal) _tickTimer.Elapsed.TotalMilliseconds / baselineFps;
-        }
+        
 
-        static public void calculateFrame() {
+        static public void calculateFrame(double deltaTime) {
             try {
-                decimal deltaTime = DeltaTime(tickTimer);
                 Player.PlayerShip.Move(deltaTime);
-                UIDispatcher.Invoke(() => {
-                    Task.Run(() => notifyMoved());
-                    foreach(IMoveable opponent in Opponents.Values) {
-                        opponent.Move(deltaTime);
+                //UIDispatcher.Invoke(() => {
+                Task.Run(() => notifyMoved());
+                foreach(IMoveable opponent in Opponents.Values) {
+                    opponent.Move(deltaTime);
+                }
+                foreach(IBullet bullet in Bullets.Values) {
+                    Point p = bullet.BulletShip.Shape.Ray.CenterPoint;
+                    if(bulletOutOfBounds(p)) {
+                        BulletAdapter.removeBulletFromCanvas(bullet.ID);
+                        Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
+                    } else {
+                        bullet.BulletShip.Move(deltaTime);
                     }
-                    foreach(IBullet bullet in Bullets.Values) {
-                        Point p = bullet.BulletShip.Shape.Ray.CenterPoint;
-                        if(bulletOutOfBounds(p)) {
-                            BulletAdapter.removeBulletFromCanvas(bullet.ID);
-                            Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
-                        } else {
-                            bullet.BulletShip.Move(DeltaTime(tickTimer));
-                        }
-                    }
-                    tickTimer.Stop();
-                    CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
-                });
+                }
+                tickTimer.Stop();
+                CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
+                // }); 
             } catch(TaskCanceledException) {
                 // TODO Should we do something here
             }
@@ -182,13 +169,10 @@ namespace PolyWars.Logic {
 
         public static async void notifyMoved() {
 
-            if((timeStamp = Stopwatch.GetTimestamp()) - lastStamp > 70) { // ish 100 times a second
-                //serverResponded = false;
+            if(ServerTimer.Elapsed.TotalMilliseconds >= 10) { // ish 100 times a second
                 ServerTimer.Restart();
-                //serverResponded = await UIDispatcher.Invoke(() => NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip));
-                UIDispatcher.Invoke( () => NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip));
+                await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip);
                 lastRay = ((Ray) Player.PlayerShip.Shape.Ray).Clone();
-                lastStamp = timeStamp;
             }
         }
         static public void calculateFps() {

@@ -1,5 +1,4 @@
 ﻿using PolyWars.Logic;
-using PolyWars.Network;
 using System;
 using System.Diagnostics;
 using System.Threading;
@@ -9,8 +8,10 @@ namespace PolyWars.Model {
     class Ticker {
         public static int Fps { get; set; }
         private bool stopTickerThread;
+        private const double baselineFps = 1000d / 60; // miliseconds per frame at 60 fps 
+        private double frameDeltaTime;
         Thread thread;
-        public static bool frameDisplayed;
+        public static bool frameDisplayed { get; set; }
 
         public Ticker() {
             thread = new Thread(Tick) {
@@ -19,7 +20,9 @@ namespace PolyWars.Model {
             frameDisplayed = false;
 
         }
-
+        public double DeltaTime(double milliseconds) {
+            return milliseconds / baselineFps;
+        }
         public void Start() {
             stopTickerThread = false;
             thread.Start();
@@ -41,32 +44,30 @@ namespace PolyWars.Model {
 
             GameController.tickTimer.Restart();
             while(!stopTickerThread) {
-
+                waitForNextFrame(GameController.tickTimer);
+                frameDeltaTime = DeltaTime(GameController.tickTimer.Elapsed.TotalMilliseconds);
                 // TODO DEBUG - Starts Frame Timer
                 Logic.Utility.FrameDebugTimer.startFrameTimer();
 
-                waitForNextFrame( GameController.tickTimer );
                 frameDisplayed = false;
                 try {
                     InputController.applyInput();
-                    GameController.calculateFrame();
-                    //GameController.calculateFps();
-                    GameController.tickTimer.Restart();
+                    GameController.calculateFrame(frameDeltaTime);
                 } catch(TaskCanceledException) {
                     // TODO Do we need to handle this?
                 }
                 // TODO DEBUG - Stops Frame Timer
+                GameController.tickTimer.Restart();
                 Logic.Utility.FrameDebugTimer.stopFrameTimer();
             }
         }
 
         private void waitForNextFrame(Stopwatch tickTimer) {
-            TimeSpan sleepDuration = new TimeSpan(5);
-
-            while(!frameDisplayed /* && tickTimer.Elapsed.TotalMilliseconds <= (1000d / 120) */) {
-                Thread.Sleep(sleepDuration);
+            Logic.Utility.FrameDebugTimer.startFpsLimitTimer();
+            while(!frameDisplayed || tickTimer.Elapsed.TotalMilliseconds <= (1000d / 480)) {
+                Thread.Sleep(1);
             }
-            tickTimer.Restart();
+            Logic.Utility.FrameDebugTimer.stopFpsLimitTimer();
         }
     }
 }
