@@ -73,6 +73,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Constants.cs" />
+    <Compile Include="Model\Collision.cs" />
     <Compile Include="Model\Interfaces\IBullet.cs" />
     <Compile Include="Model\User.cs" />
     <Compile Include="Network\DTO\BulletDTO.cs" />
@@ -89,6 +90,7 @@
     <Compile Include="Network\IUser.cs" />
     <Compile Include="Model\Ray.cs" />
     <Compile Include="Strategies\IMoveStrategy.cs" />
+    <Compile Include="Strategies\ICollisionStrategy.cs" />
     <Compile Include="Strategies\IRenderStrategy.cs" />
     <Compile Include="Model\Interfaces\IResource.cs" />
     <Compile Include="Model\Interfaces\IShape.cs" />

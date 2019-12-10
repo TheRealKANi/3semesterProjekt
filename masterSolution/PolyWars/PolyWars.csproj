@@ -105,6 +105,7 @@
     <Compile Include="Network\NetworkController.cs" />
     <Compile Include="RelayCommandAsync.cs" />
     <Compile Include="ServerClasses\Bullet.cs" />
+    <Compile Include="ServerClasses\CollisionStrategy.cs" />
     <Compile Include="ServerClasses\Player.cs" />
     <Compile Include="Logic\ThreadController.cs" />
     <Compile Include="Logic\InputController.cs" />
