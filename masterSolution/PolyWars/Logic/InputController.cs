@@ -1,14 +1,17 @@
 ﻿using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.Network;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace PolyWars.Logic {
 
     public static class InputController {
         private static bool shootFlag;
+        private static Stopwatch shootTimer;
         static InputController() {
             Input = new Input();
+            shootTimer = new Stopwatch();
             shootFlag = false;
         }
 
@@ -41,8 +44,9 @@ namespace PolyWars.Logic {
 
 
                 bool shootPressed = (int) (input & ButtonDown.SHOOT) >> 4 > 0;
-                if(shootPressed && !shootFlag) {
-                    Task.Run(() => NetworkController.GameService.playerShoots(Constants.standardShotDamage)).Wait();
+                if(shootPressed && !shootFlag && (!shootTimer.IsRunning || shootTimer.Elapsed.TotalSeconds >= 1)) {
+                    shootTimer.Restart();
+                    Task.Run(() => NetworkController.GameService.playerShoots(Constants.standardShotDamage));
                     shootFlag = true;
                 } else if(!shootPressed) {
                     shootFlag = false;

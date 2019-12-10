@@ -37,7 +37,7 @@ namespace PolyWars.Logic {
         public static double ArenaWidth { get; set; }
         public static double ArenaHeight { get; set; }
         public static bool IsPlayerDead { get; set; }
-        static public EventHandler<EventArgs> CanvasChangedEventHandler;
+        static public EventHandler<EventArgs> CanvasChangedEventHandler { get; set; }
 
 
         /// <summary>

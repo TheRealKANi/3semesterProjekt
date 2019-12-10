@@ -62,9 +62,9 @@ namespace PolyWars.Server {
             statistics = new ConcurrentDictionary<string, int>();
             statisticTimer = new Stopwatch();
             statistics.TryAdd("moved stack", 0);
-            statisticTimer.Start();
+            //statisticTimer.Start();
 
-            IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(100, 1);
+            IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
@@ -92,19 +92,21 @@ namespace PolyWars.Server {
             return result;
         }
 
-        public bool playerShoots(int damage) {
+        public async Task<bool> playerShoots(int damage) {
             methodCallCounter();
             bool result = false;
             PlayerDTO shootingPlayer = Opponents[Clients.CallerState.UserName];
-            if(shootingPlayer != null) {
-                BulletDTO bullet = BulletFactory.generateBullet(damage, shootingPlayer);
-                bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
-                if(addBullet) {
-                    result = true;
-                    //Console.WriteLine(shootingPlayer.Name + " has fired a bullet, dealing " + bullet.Damage + " damage");
-                    Clients.All.opponentShoots(bullet);
+            await Task.Factory.StartNew(() => {
+                if(shootingPlayer != null) {
+                    BulletDTO bullet = BulletFactory.generateBullet(damage, shootingPlayer);
+                    bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
+                    if(addBullet) {
+                        result = true;
+                        //Console.WriteLine(shootingPlayer.Name + " has fired a bullet, dealing " + bullet.Damage + " damage");
+                        Clients.All.opponentShoots(bullet);
+                    }
                 }
-            }
+            });
             return result;
         }
 
@@ -186,13 +188,13 @@ namespace PolyWars.Server {
                         PlayerDTO newPlayer = new PlayerDTO() {
                             ID = newUser.ID,
                             Name = newUser.Name,
-                            centerX = r.Next(50, 400),
-                            centerY = 300,
+                            centerX = r.Next(50, 550),
+                            centerY = r.Next(50, 550),
                             Angle = 0,
                             Velocity = 0,
-                            MaxVelocity = 5,
+                            MaxVelocity = 15,
                             RPM = 0,
-                            MaxRPM = 15,
+                            MaxRPM = 60,
                             Vertices = 3,
                             Wallet = 0,
                             Width = 50,
@@ -212,7 +214,7 @@ namespace PolyWars.Server {
                 return null;
             });
         }
-            
+
         private static Random rnd = new Random();
         private static Color GetColor() {
             Color c = Color.FromArgb(255, (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256));
@@ -220,7 +222,7 @@ namespace PolyWars.Server {
         }
         public async Task<bool> playerMoved(PlayerDTO player) {
             statistics["moved stack"]++;
-            
+
             methodCallCounter();
             // Move player in table and transmit new location to other clients
             bool result = false;

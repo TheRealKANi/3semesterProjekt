@@ -100,6 +100,8 @@
     <Compile Include="Logic\GameController.cs" />
     <Compile Include="Logic\Utility\CollisionDetection.cs" />
     <Compile Include="Logic\Utility\FrameDebugTimer.cs" />
+    <Compile Include="Model\PolygonController.cs" />
+    <Compile Include="Model\RoughCollition.cs" />
     <Compile Include="Model\TickEventArgs.cs" />
     <Compile Include="Model\Input.cs" />
     <Compile Include="Network\NetworkController.cs" />

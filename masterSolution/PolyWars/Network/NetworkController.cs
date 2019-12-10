@@ -52,7 +52,7 @@ namespace PolyWars.Network {
 
         private static void removeBullet(BulletDTO bullet) {
             BulletAdapter.removeBulletFromCanvas(bullet.ID);
-            Debug.WriteLine($"Removed bullet from {bullet.PlayerID} on canvas");
+            Debug.WriteLine($"Removed bullet from user: '{bullet.PlayerID}' on canvas");
         }
 
         private static void playerDied(string killedBy) {

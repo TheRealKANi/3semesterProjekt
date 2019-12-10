@@ -4,6 +4,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using System.Linq;
+using System;
 
 namespace PolyWars.Logic {
     public enum ButtonDown {
@@ -42,10 +43,13 @@ namespace PolyWars.Logic {
                 UIDispatcher.Invoke(() => {
                     PressedKeys &= 0;
 
-                    if(Application.Current != null && Application.Current.MainWindow.IsKeyboardFocused) {
-                        foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
-                            PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
+                    try {
+                        if(Application.Current != null && Application.Current.MainWindow.IsKeyboardFocused) {
+                            foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
+                                PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
+                            }
                         }
+                    } catch(NullReferenceException) {
                     }
                     
                 });

@@ -33,7 +33,7 @@ namespace PolyWars.ServerClasses {
                 shape.Polygon.RenderTransform = new RotateTransform(-1 * shape.Ray.Angle, shape.Ray.CenterPoint.X, shape.Ray.CenterPoint.Y); //TODO only if it actually rotates?
             });
             FrameDebugTimer.stopMoveShapeTimer();
-            //CollisionDetection.resourceCollisionDetection();
+            CollisionDetection.resourceCollisionDetection();
         }
     }
     public class MoveOpponentStrategy : MoveStrategy, IMoveStrategy {

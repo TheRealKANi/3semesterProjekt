@@ -39,9 +39,11 @@ namespace PolyWars.Adapters {
         public static void removeBulletFromCanvas(string bulletID) {
             if(GameController.Bullets != null && GameController.Bullets.ContainsKey(bulletID)) {
                 UIDispatcher.Invoke(() => {
-                    if(GameController.Bullets.TryRemove(bulletID, out IBullet b)) {
-                        ArenaController.ArenaCanvas.Children.Remove(b.BulletShip.Shape.Polygon);
+                    IBullet b;
+                    while(!GameController.Bullets.TryRemove(bulletID, out b)) {
+                        Task.Delay(1);
                     }
+                    ArenaController.ArenaCanvas.Children.Remove(b.BulletShip.Shape.Polygon);
                 });
             }
         }
