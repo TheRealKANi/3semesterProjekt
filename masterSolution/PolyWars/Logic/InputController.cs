@@ -1,4 +1,5 @@
-﻿using PolyWars.API.Model.Interfaces;
+﻿using PolyWars.API;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.Network;
 using System.Threading.Tasks;
 
@@ -41,7 +42,7 @@ namespace PolyWars.Logic {
 
                 bool shootPressed = (int) (input & ButtonDown.SHOOT) >> 4 > 0;
                 if(shootPressed && !shootFlag) {
-                    Task.Run(() => NetworkController.GameService.playerShoots(1)).Wait();
+                    Task.Run(() => NetworkController.GameService.playerShoots(Constants.standardShotDamage)).Wait();
                     shootFlag = true;
                 } else if(!shootPressed) {
                     shootFlag = false;

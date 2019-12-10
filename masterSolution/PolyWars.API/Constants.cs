@@ -9,5 +9,6 @@ namespace PolyWars.API {
 
         public static string serverPort = "5700";
         public static string serverEndPoint = "/Polywars";
+        public static int standardShotDamage = 20;
     }
 }
