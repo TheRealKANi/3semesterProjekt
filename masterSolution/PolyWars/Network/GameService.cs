@@ -41,9 +41,9 @@ namespace PolyWars.Network {
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
 
-        private string serverIP = "localhost"; // Lan Client Test
+        //private string serverIP = "localhost"; // Lan Client Test
         //private string serverIP = "109.57.212.47"; // WAN Client Test
-        //private string serverIP = "polywars.servegame.com";
+        private string serverIP = "polywars.servegame.com";
         private string protocol = "http://";
 
 
