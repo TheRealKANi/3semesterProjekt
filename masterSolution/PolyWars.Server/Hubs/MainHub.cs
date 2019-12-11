@@ -188,8 +188,8 @@ namespace PolyWars.Server {
                         PlayerDTO newPlayer = new PlayerDTO() {
                             ID = newUser.ID,
                             Name = newUser.Name,
-                            centerX = r.Next(50, 550),
-                            centerY = r.Next(50, 550),
+                            centerX = r.Next(50, 500),
+                            centerY = r.Next(50, 500),
                             Angle = 0,
                             Velocity = 0,
                             MaxVelocity = 15,

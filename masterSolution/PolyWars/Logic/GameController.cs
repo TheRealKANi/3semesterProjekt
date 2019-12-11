@@ -128,18 +128,23 @@ namespace PolyWars.Logic {
                 Player.PlayerShip.Move(deltaTime);
                 //UIDispatcher.Invoke(() => {
                 Task.Run(() => notifyMoved());
+                List<Task> tasks = new List<Task>();
                 foreach(IMoveable opponent in Opponents.Values) {
-                    opponent.Move(deltaTime);
+                    tasks.Add(Task.Factory.StartNew( () => opponent.Move(deltaTime)));
                 }
                 foreach(IBullet bullet in Bullets.Values) {
-                    Point p = bullet.BulletShip.Shape.Ray.CenterPoint;
-                    if(bulletOutOfBounds(p)) {
-                        BulletAdapter.removeBulletFromCanvas(bullet.ID);
-                        Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
-                    } else {
-                        bullet.BulletShip.Move(deltaTime);
-                    }
+                    tasks.Add(Task.Factory.StartNew(() => {
+                        Point p = UIDispatcher.Invoke( () => { return bullet.BulletShip.Shape.Ray.CenterPoint; });
+                        if(bulletOutOfBounds(p)) {
+                            BulletAdapter.removeBulletFromCanvas(bullet.ID);
+                            Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
+                        } else {
+                            bullet.BulletShip.Move(deltaTime);
+                        }
+                    }));
                 }
+                
+                Task.WaitAll(tasks.ToArray());
                 tickTimer.Stop();
                 CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
                 // }); 

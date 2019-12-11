@@ -25,16 +25,20 @@ namespace PolyWars.Logic.Utility {
                 ConcurrentBag<IBullet> collidedWithBullet = new ConcurrentBag<IBullet>();
 
                 IShape player = GameController.Player.PlayerShip.Shape;
+                List<Task> tl = new List<Task>();
                 IEnumerable<IResource> roughResourceCollitions = rc.checkCollision(player, GameController.Resources.Values, (r) => { return r.Shape; });
                 foreach(IResource resource in roughResourceCollitions) {
-                    UIDispatcher.Invoke(() => {
-                        if(resource.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(player.Polygon.RenderedGeometry.Bounds)) {
-                            collidedWithResource.Add(resource);
-                        }
-                    });
+                    tl.Add(Task.Factory.StartNew(() => {
+                        UIDispatcher.Invoke(() => {
+                            if(resource.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(player.Polygon.RenderedGeometry.Bounds)) {
+                                collidedWithResource.Add(resource);
+                            }
+                        });
+                    }));
                 }
+                Task.WaitAll(tl.ToArray());
+                tl.Clear();
                 IEnumerable<IBullet> roughBulletCollitions = rc.checkCollision(player, GameController.Bullets.Values, (b) => { return b.BulletShip.Shape; });
-                List<Task> tl = new List<Task>();
                 foreach(IBullet bullet in roughBulletCollitions) {
                     tl.Add(Task.Factory.StartNew(() => {
                         UIDispatcher.Invoke(() => {
