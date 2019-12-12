@@ -13,24 +13,37 @@ namespace PolyWars.ServerClasses {
         public void Move(IMoveable moveable, double deltaTime) {
             FrameDebugTimer.startMoveShapeTimer();
             IShape shape = moveable.Shape;
-            shape.Ray.Angle += (moveable.RPM * 360 / (60 * 60)) * deltaTime;
-            // (rpm * 360 degrees) / 60 seconds / 60 fps
-
-            double offsetX = moveable.Velocity * Math.Sin(shape.Ray.Angle * Math.PI / 180) * deltaTime;
-            double offsetY = moveable.Velocity * Math.Cos(shape.Ray.Angle * Math.PI / 180) * deltaTime;
-
             Point cp = shape.Ray.CenterPoint;
+            PointCollection pc = null;
+            bool checkX = true;
+            bool checkY = true;
+
+            double xCalculation = moveable.Velocity * Math.Sin(shape.Ray.Angle * Math.PI / 180) * deltaTime;
+            double yCalculation = moveable.Velocity * Math.Cos(shape.Ray.Angle * Math.PI / 180) * deltaTime;
+            shape.Ray.Angle += moveable.RPM / 10  * deltaTime; // RPM * 360 / (60 * 60) = Rounds per Frame => RPM * 6 / 60 = RPM / 10
+            
+            UIDispatcher.Invoke(() => {
+                pc = shape.Polygon.Points;
+
+                for(int i = 0; pc != null && i < pc.Count - 3 && (checkX || checkY); i++) { // last 3 points of the polygon is the header
+                    if(!((xCalculation + pc[i].X) > 0 && (xCalculation + pc[i].X) < 1024)) { checkX = false; }
+                    if(!((yCalculation + pc[i].Y) > 0 && (yCalculation + pc[i].Y) < 768)) { checkY = false; }
+                }
+            });
+
+            double offsetX = checkX ? xCalculation : 0;
+            double offsetY = checkY ? yCalculation : 0;
+
             cp.Offset(offsetX, offsetY);
             shape.Ray.CenterPoint = cp;
 
             UIDispatcher.Invoke(() => {
-                PointCollection pc = shape.Polygon.Points;
                 for(int i = 0; i < pc.Count; i++) {
                     Point p = pc[i];
                     p.Offset(offsetX, offsetY);
                     pc[i] = p;
                 }
-                shape.Polygon.RenderTransform = new RotateTransform(-1 * shape.Ray.Angle, shape.Ray.CenterPoint.X, shape.Ray.CenterPoint.Y); //TODO only if it actually rotates?
+                shape.Polygon.RenderTransform = new RotateTransform(-1 * shape.Ray.Angle, shape.Ray.CenterPoint.X, shape.Ray.CenterPoint.Y);
             });
             FrameDebugTimer.stopMoveShapeTimer();
             CollisionDetection.resourceCollisionDetection();

@@ -22,9 +22,8 @@
         </Grid.RowDefinitions>
         <StackPanel Grid.Row="0" Orientation="Horizontal">
             <Label Content="{Binding Fps}" MinHeight="50" HorizontalAlignment="Left" VerticalAlignment="Center" VerticalContentAlignment="Center" />
-            <Button Content="Create Resources" Command="{Binding CreateResources}" MaxWidth="100" MaxHeight="25"/>
         </StackPanel>
-        <ContentPresenter Content="{Binding ArenaCanvas}" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch"/>
+        <ContentPresenter Content="{Binding ArenaCanvas}" Grid.Row="1" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" MaxHeight="768" MaxWidth="1024"/>
         <StackPanel Orientation="Horizontal" Grid.Row="2">
             <Label Content=" Current $: "/>
             <Label Content="{Binding PlayerCurrency}"/>

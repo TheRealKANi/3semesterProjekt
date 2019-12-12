@@ -14,20 +14,14 @@ using System.Windows.Media;
 
 namespace PolyWars.Adapters {
     class PlayerAdapter {
-        public static IMoveable playerDTOToMoveable(PlayerDTO dto) {
-            IRenderable renderable = new Renderable(Colors.Black, dto.FillColor, 1, dto.Width, dto.Height, dto.Vertices);
+        public static IMoveable playerDTOToMoveable(PlayerDTO dto, Color borderColor) {
+            IRenderable renderable = new Renderable(borderColor, dto.FillColor, 1, dto.Width, dto.Height, dto.Vertices);
             return playerDTOToMoveable(dto, renderable);
         }
         public static IMoveable playerDTOToMoveable(PlayerDTO dto, IRenderable renderable) {
             IRay ray = new Ray(dto.ID, new Point(dto.centerX, dto.centerY), dto.Angle);
             Shape shape = new Shape(dto.ID, ray, renderable, new RenderWithHeaderStrategy());
             return new Moveable(dto.Velocity, dto.MaxVelocity, dto.RPM, dto.MaxRPM, shape, new MoveOpponentStrategy());
-        }
-        public static IMoveable playerDTOToMoveable(PlayerDTO dto, IMoveable player) {
-            IRay ray = new Ray(dto.ID, new Point(dto.centerX, dto.centerY), dto.Angle);
-            player.Shape.Ray = ray;
-            IMoveable moveable = new Moveable(dto.Velocity, dto.MaxVelocity, dto.RPM, dto.MaxRPM, player.Shape, player.Mover);
-            return moveable;
         }
         public static PlayerDTO MoveableToPlayerDTO(IMoveable player) {
             return new PlayerDTO() {

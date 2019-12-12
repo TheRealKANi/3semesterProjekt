@@ -41,14 +41,9 @@ namespace PolyWars.Network {
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
 
-        private string serverIP = "localhost"; // Lan Client Test
-        //private string serverIP = "polywars.leetfix.dk"; // K WAN Client Test
-        //private string serverIP = "polywars.servegame.com"; // T WAN Client Test
-        private string protocol = "http://";
-
-
+        public string ServerIP { get; set; }
         public async Task<bool> ConnectAsync() {
-            Connection = new HubConnection(protocol + serverIP + ":" + Constants.serverPort + Constants.serverEndPoint);
+            Connection = new HubConnection(Constants.protocol + ServerIP + ":" + Constants.serverPort + Constants.serverEndPoint);
             hubProxy = Connection.CreateHubProxy("MainHub");
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
             hubProxy.On<string>("clientLogout", (n) => clientLoggedOut?.Invoke(n));

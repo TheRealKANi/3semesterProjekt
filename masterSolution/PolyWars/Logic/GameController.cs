@@ -11,6 +11,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Media;
 
 namespace PolyWars.Logic {
     class GameController {
@@ -68,13 +69,13 @@ namespace PolyWars.Logic {
             Task.WaitAll(taskPool);
 
             // create the player
-            IMoveable playerShip = PlayerAdapter.playerDTOToMoveable(playerDTO);
+            IMoveable playerShip = PlayerAdapter.playerDTOToMoveable(playerDTO, Colors.Black);
             playerShip.Mover = new MoveStrategy();
             UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, playerDTO.Wallet, playerDTO.Health, playerShip); });
 
             // convert data transfer objects to their respective types and add them to list
             foreach(PlayerDTO opponent in opponentDTOs) {
-                IMoveable moveable = PlayerAdapter.playerDTOToMoveable(opponent);
+                IMoveable moveable = PlayerAdapter.playerDTOToMoveable(opponent, Colors.Red);
                 while(!Opponents.TryAdd(opponent.Name, moveable)) {
                     Task.Delay(1);
                 }

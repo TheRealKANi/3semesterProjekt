@@ -15,9 +15,9 @@ namespace PolyWars.Server.Factories {
         static ResourceFactory() {
             id = 0;
             r = new Random();
-            margin = 25;
-            height = 500;
-            width = 500;
+            margin = 50;
+            height = 768;
+            width = 1024;
         }
         private static string getId() {
             return (id++).ToString();
@@ -38,8 +38,8 @@ namespace PolyWars.Server.Factories {
         public static ResourceDTO generateResource(int value) {
             return new ResourceDTO {
                 ID = getId(),
-                CenterX = r.Next(margin, width), 
-                CenterY = r.Next(margin, height), 
+                CenterX = r.Next(margin/2, width-margin), 
+                CenterY = r.Next(margin/2, height-(margin*3)), 
                 Angle = r.Next(0, 360),
                 Value = value
             };

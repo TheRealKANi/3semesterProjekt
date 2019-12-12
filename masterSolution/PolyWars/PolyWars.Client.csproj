@@ -125,6 +125,9 @@
       <DependentUpon>GameArenaPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\GameArena\GameArena_ViewModel.cs" />
+    <Compile Include="UI\Login\ConnectingDialog.xaml.cs">
+      <DependentUpon>ConnectingDialog.xaml</DependentUpon>
+    </Compile>
     <Compile Include="UI\Login\Login.xaml.cs">
       <DependentUpon>Login.xaml</DependentUpon>
     </Compile>
@@ -150,6 +153,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\GameArena\GameArenaPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Login\ConnectingDialog.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
