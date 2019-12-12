@@ -41,9 +41,9 @@ namespace PolyWars.Network {
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
 
-        //private string serverIP = "localhost"; // Lan Client Test
+        private string serverIP = "localhost"; // Lan Client Test
         //private string serverIP = "109.57.212.47"; // WAN Client Test
-        private string serverIP = "polywars.servegame.com";
+        //private string serverIP = "polywars.servegame.com";
         private string protocol = "http://";
 
 
@@ -94,6 +94,7 @@ namespace PolyWars.Network {
         }
         public async Task<bool> PlayerMovedAsync(IMoveable playerIRay) {
             PlayerDTO dto = PlayerAdapter.MoveableToPlayerDTO(playerIRay, GameController.Player.Health);
+            Debug.WriteLine($"PlayerMovedAsync: {dto.Name} has a FillColor of {dto.FillColor}");
             return await hubProxy.Invoke<bool>("playerMoved", dto); ;
         }
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {
