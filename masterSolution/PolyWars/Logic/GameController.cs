@@ -74,14 +74,14 @@ namespace PolyWars.Logic {
 
             // create the player
             IMoveable playerShip = PlayerAdapter.playerDTOToMoveable(playerDTO);
-            playerShip.Shape.Renderable.BorderColor = Colors.Black;
-            playerShip.Shape.Renderable.FillColor = Colors.Gray;
+            //playerShip.Shape.Renderable.BorderColor = Colors.Black;
+            //playerShip.Shape.Renderable.FillColor = Colors.Gray;
             playerShip.Mover = new MoveStrategy();
             UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, playerDTO.Wallet, playerDTO.Health, playerShip); });
 
             // convert data transfer objects to their respective types and add them to list
             foreach(PlayerDTO opponent in opponentDTOs) {
-                IMoveable moveable = PlayerAdapter.playerDTOToMoveable(playerDTO);
+                IMoveable moveable = PlayerAdapter.playerDTOToMoveable(opponent);
                 while(!Opponents.TryAdd(opponent.Name, moveable)) {
                     Task.Delay(1);
                 }
