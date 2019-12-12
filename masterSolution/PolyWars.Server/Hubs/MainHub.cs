@@ -18,7 +18,10 @@ namespace PolyWars.Server {
         private static ConcurrentDictionary<string, ResourceDTO> Resources;
         private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
-        private static object statisticsLock = new object();
+        private static object statisticsLock = new object(); 
+        private static Random rnd;
+
+
 
         // System.Windows.Media.Colors.DarkSlateGray
 
@@ -54,6 +57,7 @@ namespace PolyWars.Server {
 
 
         static MainHub() {
+            rnd = new Random((int)Stopwatch.GetTimestamp());
             Console.SetCursorPosition(0, 1);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
@@ -204,7 +208,7 @@ namespace PolyWars.Server {
                             Width = 50,
                             Height = 50,
                             Health = 100,
-                            FillColor = GetColor()
+                            FillColor = GetColor(newUser.Name)
                         };
                         if(Opponents.TryAdd(newPlayer.Name, newPlayer)) {
                             Clients.Others.opponentJoined(newPlayer);
@@ -218,10 +222,9 @@ namespace PolyWars.Server {
                 return null;
             });
         }
-
-        private static Random rnd = new Random();
-        private static Color GetColor() {
+        private static Color GetColor(string username) {
             Color c = Color.FromArgb(255, (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256));
+            Console.WriteLine($"Player '{username}' got a color '{c.ToString()}'");
             return c;
         }
         public async Task<bool> playerMoved(PlayerDTO player) {

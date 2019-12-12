@@ -1,4 +1,4 @@
-﻿using PolyWars.Adapters;
+using PolyWars.Adapters;
 using PolyWars.Api.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
@@ -84,8 +84,7 @@ namespace PolyWars.Network {
         private static void opponentJoined(PlayerDTO dto) {
             if(!GameController.Opponents.ContainsKey(dto.Name)) {
                 IMoveable opponent = PlayerAdapter.playerDTOToMoveable(dto);
-                bool succeded = GameController.Opponents.TryAdd(dto.Name, opponent);
-                if(succeded) {
+                if(GameController.Opponents.TryAdd(dto.Name, opponent)) {
                     UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(opponent.Shape.Polygon));
                 }
             }
@@ -97,7 +96,6 @@ namespace PolyWars.Network {
                 opponent.MaxVelocity = dto.MaxVelocity;
                 opponent.RPM = dto.RPM;
                 opponent.MaxRPM = dto.MaxRPM;
-                opponent.Shape.Renderable.FillColor = dto.FillColor;
 
                 IRay ray = new Ray(opponent.Shape.Ray.ID, new Point(dto.centerX, dto.centerY), dto.Angle);
                 opponent.Shape.Ray = ray;
@@ -122,20 +120,6 @@ namespace PolyWars.Network {
                 UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(resource.Shape.Polygon));
             }
         }
-
-        //public static void updateOpponents(List<PlayerDTO> opponentDTOs) {
-        //    //Debug.WriteLine("Server - Recived Opponents Update");
-        //    if(ArenaController.ArenaCanvas != null) {
-        //        GameController.Opponents = Adapters.PlayerAdapter.PlayerDTOtoIShape(opponentDTOs);
-        //    }
-        //}
-
-        //public static void updateResources(List<ResourceDTO> resourceDTOs) {
-        //    //Debug.WriteLine("Server - Recieved Resource Update");
-        //    if(ArenaController.ArenaCanvas != null) {
-        //        GameController.Resources = Adapters.ResourceAdapter.ResourceDTOtoIResource(resourceDTOs);
-        //    }
-        //}
 
         public static void announceClientLoggedIn(string userName) {
             Debug.WriteLine($"Server - {userName} has joined the lobby");

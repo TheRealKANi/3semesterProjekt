@@ -94,6 +94,7 @@ namespace PolyWars.Network {
         }
         public async Task<bool> PlayerMovedAsync(IMoveable playerIRay) {
             PlayerDTO dto = PlayerAdapter.MoveableToPlayerDTO(playerIRay, GameController.Player.Health);
+            Debug.WriteLine($"PlayerMovedAsync: {dto.Name} has a FillColor of {dto.FillColor}");
             return await hubProxy.Invoke<bool>("playerMoved", dto); ;
         }
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {
