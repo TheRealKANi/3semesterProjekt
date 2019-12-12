@@ -1,159 +1,188 @@
-using PolyWars.API;
-using PolyWars.Logic.Utility;
+using PolyWars.Adapters;
+using PolyWars.Api.Model;
+using PolyWars.API.Model.Interfaces;
+using PolyWars.API.Network.DTO;
 using PolyWars.Model;
+using PolyWars.Network;
+using PolyWars.ServerClasses;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Media;
 
 namespace PolyWars.Logic {
     class GameController {
-        private DateTime lastTick;
-        private bool isLoaded;
-        private DateTime fpsTimer;
-        private int frames = 0;
-        private Canvas canvas;
-        public static List<IShape> Shapes { get; set; }
-        public Ticker Ticker { get; private set; }
-        public static List<IResource> Resources { get; set; }
-        public static List<IShape> Opponents { get; set; }
+
+        private static bool isPrepared;
+        private static int frames = 0;
+        private static Stopwatch fpsTimer;
+        private static IRay lastRay;
+        public static Ticker Ticker { get; private set; }
         public static IPlayer Player { get; set; }
-        public int Fps { get; set; }
+        public static string Username { get; set; }
+        public static string UserID { get; set; }
+        public static ConcurrentDictionary<string, IMoveable> Opponents { get; set; }
+        public static ConcurrentDictionary<string, IResource> Resources { get; set; }
+        public static ConcurrentDictionary<string, IBullet> Bullets { get; set; }
+        public static int Fps { get; set; }
+        public static Stopwatch tickTimer { get; private set; }
+        private static Stopwatch ServerTimer { get; set; }
+        public static double ArenaWidth { get; set; }
+        public static double ArenaHeight { get; set; }
+        public static bool IsPlayerDead { get; set; }
+        static public EventHandler<EventArgs> CanvasChangedEventHandler { get; set; }
+
 
         /// <summary>
-        /// GameController constructor defines all parameter that this class needs to handle
+        /// Default constructor of GameController Class
         /// </summary>
-        public GameController() {
-
-            isLoaded = false;
-            fpsTimer = DateTime.Now;
-        }
-
-        /// <summary>
-        /// This method prepares the canvas with a color and adds triangle to it with given values
-        /// </summary>
-        /// <returns>
-        /// Returns canvas with background color and triangle
-        /// </returns>
-        public Canvas prepareGame() {
+        static GameController() {
+            isPrepared = false;
+            fpsTimer = new Stopwatch();
+            fpsTimer.Reset();
             Ticker = new Ticker();
-            Ticker.TickerEventHandler += calculateFps;
-            Ticker.TickerEventHandler += calculateFrame;
-            //Ticker.TickerEventHandler += CanvasUpdater;
+            tickTimer = new Stopwatch();
+            ServerTimer = new Stopwatch();
+            ServerTimer.Start();
+        }
 
+        public void prepareGame() {
+            // instanciate
+            ArenaController.generateCanvas();
+            Bullets = new ConcurrentDictionary<string, IBullet>();
+            Opponents = new ConcurrentDictionary<string, IMoveable>();
+            Resources = new ConcurrentDictionary<string, IResource>();
 
-            Shapes = new List<IShape>();
-            Resources = new List<IResource>();
-            Opponents = new List<IShape>(); // TODO What type is opponents? IShape? new IOpponents?
+            PlayerDTO playerDTO = null;
+            IList<PlayerDTO> opponentDTOs = new List<PlayerDTO>();
+            IList<ResourceDTO> resourceDTOs = new List<ResourceDTO>();
+            Task[] taskPool = new Task[3];
 
-            // TODO getOpponents();
+            // get game objects from the server
+            taskPool[0] = Task.Run(async () => playerDTO = await NetworkController.GameService.getPlayerShip());
+            taskPool[1] = Task.Run(async () => opponentDTOs = await NetworkController.GameService.getOpponentsAsync());
+            taskPool[2] = Task.Run(async () => resourceDTOs = await NetworkController.GameService.getResourcesAsync());
 
-            canvas = new Canvas {
-                Background = new SolidColorBrush( Colors.Aquamarine ),
-            };
-            
-            createPlayer();
-            generateResources( 1 );
-            
-            Shapes.AddRange( Resources );
-            Shapes.AddRange( Opponents );
-            Shapes.Add( Player.Shape );
+            Task.WaitAll(taskPool);
 
+            // create the player
+            IMoveable playerShip = PlayerAdapter.playerDTOToMoveable(playerDTO);
+            playerShip.Mover = new MoveStrategy();
+            UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, playerDTO.Wallet, playerDTO.Health, playerShip); });
 
-            foreach( IShape shape in Shapes ) {
-                canvas.Children.Add( shape.Polygon );
+            // convert data transfer objects to their respective types and add them to list
+            foreach(PlayerDTO opponent in opponentDTOs) {
+                IMoveable moveable = PlayerAdapter.playerDTOToMoveable(opponent);
+                while(!Opponents.TryAdd(opponent.Name, moveable)) {
+                    Task.Delay(1);
+                }
+            }
+            foreach(ResourceDTO resource in resourceDTOs) {
+                IResource r = ResourceAdapter.DTOToResource(resource);
+                while(!Resources.TryAdd(resource.ID, r)) {
+                    Task.Delay(1);
+                }
             }
 
-            isLoaded = true;
-
-            return canvas;
+            // add objects to the canvas
+            UIDispatcher.Invoke(() => {
+                foreach(IResource resource in Resources.Values) {
+                    ArenaController.ArenaCanvas.Children.Add(resource.Shape.Polygon);
+                }
+            });
+            UIDispatcher.Invoke(() => {
+                foreach(IMoveable opponent in Opponents.Values) {
+                    ArenaController.ArenaCanvas.Children.Add(opponent.Shape.Polygon);
+                }
+            });
+            UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(Player.PlayerShip.Shape.Polygon));
+            isPrepared = true;
         }
 
-        public void generateResources( int amount ) {
-            Random r = new Random();
-            Window w = Application.Current.MainWindow;
-            int margin = 50;
-            int width = ( int ) w.ActualWidth - margin;
-            int height = ( int ) w.ActualHeight - margin;
-            //int width =  (int)(hej as Grid).ActualWidth - margin;
-            //int height = ( int ) ( hej as Grid ).ActualHeight - margin;
-            //int width = ( int ) canvas.Width - margin;
-            //int height = ( int ) canvas.Height - margin;
-
-            //int resourceCount = Resources.Count;
-
-            for( int i = 0; i < amount; i++ ) {
-                Resources.Add( new Resource( new Point( r.Next( margin, width ), r.Next( margin, height - (margin * 2) ) ), r.Next( 0, 360 ), new ShapeSize( 15, 15 ), 5 ) ); //TODO make builder pattern
-            }
-
-            //Shapes.AddRange( Resources.GetRange( resourceCount, Resources.Count ) );
-            //foreach( IShape shape in Shapes.GetRange(resourceCount, Resources.Count )) {
-            //    canvas.Children.Add( shape.Polygon );
-            //} //TODO
-        }
-
-        private void createPlayer() {
-            Player = new Player( new Point( 400, 400 ), 0, Colors.Black, Colors.Gray, new ShapeSize( 50, 50 ), 0, 5, 0, 15 );
-        }
-
-        /// <summary>
-        /// When PlayGame executes, it associates with a thread by using a dispatcher
-        /// and renders a canvas
-        /// </summary>
-        /// <param name="arenaCanvas">
-        /// Specified canvas that shapes are rendered on to
-        /// </param>
-        /// <param name="eventHandler">
-        /// ????
-        /// </param>
         public void playGame() {
-            if( isPrepared() ) {
+            IsPlayerDead = false;
+            if(isPrepared) {
+                fpsTimer.Start();
                 Ticker.Start();
             }
         }
+
         public void endGame() {
             Ticker.Stop();
+            fpsTimer.Stop();
+        }
+
+
+
+        static public void calculateFrame(double deltaTime) {
+            try {
+                Player.PlayerShip.Move(deltaTime);
+                Task.Run(() => notifyMoved());
+                List<Task> tasks = new List<Task>();
+                foreach(IMoveable opponent in Opponents.Values) {
+                    tasks.Add(Task.Factory.StartNew(() => opponent.Move(deltaTime)));
+                }
+                foreach(IBullet bullet in Bullets.Values) {
+                    tasks.Add(Task.Factory.StartNew(() => {
+                        Point p = UIDispatcher.Invoke(() => { return bullet.BulletShip.Shape.Ray.CenterPoint; });
+                        if(bulletOutOfBounds(p)) {
+                            BulletAdapter.removeBulletFromCanvas(bullet.ID);
+                            Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
+                        } else {
+                            bullet.BulletShip.Move(deltaTime);
+                        }
+                    }));
+                }
+
+                Task.WaitAll(tasks.ToArray());
+                tickTimer.Stop();
+                CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
+            } catch(TaskCanceledException e) {
+                // TODO Do we need to handle this?
+                Debug.WriteLine($"GameController - calculateFrame Error: Task got Cancled {e.Message}");
+            }
         }
 
         /// <summary>
-        /// This method is run to check if the game runs 
+        ///     Checks if a bullet is trying to go past the bounds
         /// </summary>
-        /// <returns>
-        /// Loads the game if not already running
-        /// </returns>
+        private static bool bulletOutOfBounds(Point p) {
+            bool result = true;
+            int upperWidthBound = 4000; // Ish 4k 
+            int upperHeightBound = 2200;
 
-        public bool isPrepared() {
-            return isLoaded;
+            int lowerHeightBound = 0;
+            int lowerWidthBound = 0;
+
+            if(p.X > lowerWidthBound && p.X <= upperWidthBound) {
+                if(p.Y > lowerHeightBound && p.Y <= upperHeightBound) {
+                    result = false;
+                }
+            }
+            return result;
         }
 
-        public void calculateFrame( object sender, TickEventArgs args ) {
-            try {
-                ThreadController.MainThreadDispatcher.Invoke( () => {
-                    foreach( IShape shape in Shapes ) {
-                        if( shape.GetType().Name.Equals( Player.PlayerShape ) ) {
-                            ShapeCalculations.moveShape( shape, args.deltaTime );
-                            CollisionDetection.resourceCollisionDetection();
-                        }
-                    }
-                } );
-            } catch( TaskCanceledException ) {
-                // TODO Should we do something here
+        public static async void notifyMoved() {
+            if(ServerTimer.Elapsed.TotalMilliseconds >= 10) { // ish 100 times a second
+                ServerTimer.Restart();
+                await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip);
+                lastRay = ((Ray) Player.PlayerShip.Shape.Ray).Clone();
             }
         }
-        public void calculateFps( object sender, TickEventArgs args ) {
+        static public void calculateFps() {
             try {
-                lastTick = DateTime.Now;
-                if( ( DateTime.Now - fpsTimer ).Ticks >= 10_100_000 ) {
-                    Fps = frames + 1;
+                frames++;
+                if(fpsTimer.Elapsed.TotalMilliseconds >= 1000) {
+                    Fps = frames;
                     frames = 0;
-                    fpsTimer = DateTime.Now;
-                } else {
-                    frames++;
+                    fpsTimer.Restart();
+
                 }
-            } catch( TaskCanceledException ) {
+            } catch(TaskCanceledException e) {
                 // TODO Do we need to handle this?
+                Debug.WriteLine($"GameController - CalculateFps Error: Task got Cancled {e.Message}");
             }
         }
     }

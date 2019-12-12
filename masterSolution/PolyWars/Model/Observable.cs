@@ -7,8 +7,8 @@ namespace PolyWars.Model {
     /// </summary>
     public class Observable : INotifyPropertyChanged {
         public event PropertyChangedEventHandler PropertyChanged;
-        public void NotifyPropertyChanged( [CallerMemberName] string propertyName = "" ) {
-            PropertyChanged?.Invoke( this, new PropertyChangedEventArgs( propertyName ) );
+        public void NotifyPropertyChanged([CallerMemberName] string propertyName = "") {
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
     }
 }

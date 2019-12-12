@@ -1,49 +1,67 @@
 ﻿using PolyWars.API;
-using PolyWars.Model;
+using PolyWars.API.Model.Interfaces;
+using PolyWars.Network;
+using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace PolyWars.Logic {
 
-    public class InputController {
-
-        private InputController() { }
-        private static InputController instance;
-
-        public static InputController Instance {
-            get {
-                if( instance == null ) {
-                    instance = new InputController();
-                }
-                return instance;
-            }
+    public static class InputController {
+        private static bool shootFlag;
+        private static Stopwatch shootTimer;
+        static InputController() {
+            Input = new Input();
+            shootTimer = new Stopwatch();
+            shootFlag = false;
         }
+
+        // Ensures that show tick average only runs once
+        private static bool hasRun = false;
+
+
         /// <summary>
         /// Grabs input from a player
         /// </summary>
-        public Input Input { get; private set; }
+        public static Input Input { get; private set; }
 
         /// <summary>
         /// Initializes input
         /// </summary>
 
-        public static Player Player { get; private set; }
+        //public static IPlayer Player { get; private set; }
 
-        public void initInput( Player player ) {
-            Input = new Input();
-            Player = player;
-        }
-
-
-        public void applyInput() {
+        public static void applyInput() {
             ButtonDown input = Input.queryInput();
-            IShape shape = Player.Shape;
-            shape.RPM =
-                ( ( ( int ) ( input & ButtonDown.LEFT ) >> 2 ) * shape.MaxRPM ) -
-                ( ( int ) ( input & ButtonDown.RIGHT ) * shape.MaxRPM );
+            if(!GameController.IsPlayerDead) {
+                IMoveable shape = GameController.Player.PlayerShip;
+                shape.RPM =
+                    (((int) (input & ButtonDown.LEFT) >> 2) * shape.MaxRPM) -
+                    ((int) (input & ButtonDown.RIGHT) * shape.MaxRPM);
 
-            shape.Velocity =
-                ( ( ( int ) ( input & ButtonDown.UP ) >> 1 ) * shape.MaxVelocity ) -
-                ( ( ( int ) ( input & ButtonDown.DOWN ) >> 3 ) * shape.MaxVelocity );
+                shape.Velocity =
+                    (((int) (input & ButtonDown.UP) >> 1) * shape.MaxVelocity) -
+                    (((int) (input & ButtonDown.DOWN) >> 3) * shape.MaxVelocity);
 
+
+                bool shootPressed = (int) (input & ButtonDown.SHOOT) >> 4 > 0;
+                if(shootPressed && !shootFlag && (!shootTimer.IsRunning || shootTimer.Elapsed.TotalSeconds >= 1)) {
+                    shootTimer.Restart();
+                    Task.Run(() => NetworkController.GameService.playerShoots(Constants.standardShotDamage));
+                    shootFlag = true;
+                } else if(!shootPressed) {
+                    shootFlag = false;
+                }
+            }
+
+
+            // TODO Remove Debug Key
+            if(((int) (input & ButtonDown.DEBUG) >> 5) > 0 && hasRun == false) {
+                Utility.FrameDebugTimer.outpuFrameTimerResults();
+                Utility.FrameDebugTimer.outputMoveShapeTimerResults();
+                Utility.FrameDebugTimer.outputCollisionTimerResults();
+                Utility.FrameDebugTimer.outputFpsLimitTimerResults();
+                hasRun = true;
+            }
         }
     }
 }

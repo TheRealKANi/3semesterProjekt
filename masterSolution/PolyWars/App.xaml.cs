@@ -1,8 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Data;
-using System.Linq;
+﻿using PolyWars.Network;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 
@@ -11,5 +8,13 @@ namespace PolyWars {
     /// Interaction logic for App.xaml
     /// </summary>
     public partial class App : Application {
+
+        void App_Exit(object sender, ExitEventArgs e) {
+            // send server a logout signal
+            GameService gm = NetworkController.GameService;
+            Debug.WriteLine("App Closed - Logging out client");
+            Task.Factory.StartNew( () => gm.LogoutAsync()).Wait();
+        }
+
     }
 }

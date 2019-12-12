@@ -35,10 +35,46 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <NoWarn>CS0649; CS0067; CS8321; CS0168</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <Optimize>true</Optimize>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <LangVersion>7.3</LangVersion>
+    <ErrorReport>prompt</ErrorReport>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
+  </PropertyGroup>
   <ItemGroup>
+    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
+    </Reference>
+    <Reference Include="Microsoft.Expression.Interactions, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\Microsoft.Expression.Interactions.dll</HintPath>
+    </Reference>
+    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
+      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
+    <Reference Include="System.Net.Http.WebRequest" />
+    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
+      <HintPath>..\packages\System.Windows.Interactivity.WPF.2.0.20525\lib\net40\System.Windows.Interactivity.dll</HintPath>
+    </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -57,26 +93,42 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Adapters\BulletAdapter.cs" />
+    <Compile Include="Adapters\PlayerAdapter.cs" />
+    <Compile Include="Adapters\ResourceAdapter.cs" />
+    <Compile Include="Logic\ArenaController.cs" />
     <Compile Include="Logic\GameController.cs" />
-    <Compile Include="Model\TickEventArgs.cs" />
     <Compile Include="Logic\Utility\CollisionDetection.cs" />
-    <Compile Include="Logic\Utility\ShapeCalculations.cs" />
+    <Compile Include="Logic\Utility\FrameDebugTimer.cs" />
+    <Compile Include="Model\PolygonController.cs" />
+    <Compile Include="Model\RoughCollition.cs" />
+    <Compile Include="Model\TickEventArgs.cs" />
     <Compile Include="Model\Input.cs" />
-    <Compile Include="Model\Player.cs" />
-    <Compile Include="Model\Resource.cs" />
+    <Compile Include="Network\NetworkController.cs" />
+    <Compile Include="RelayCommandAsync.cs" />
+    <Compile Include="ServerClasses\Bullet.cs" />
+    <Compile Include="ServerClasses\Player.cs" />
     <Compile Include="Logic\ThreadController.cs" />
     <Compile Include="Logic\InputController.cs" />
     <Compile Include="Model\Observable.cs" />
     <Compile Include="Model\RelayCommand.cs" />
-    <Compile Include="Model\Shape.cs" />
-    <Compile Include="Model\ShapeSize.cs" />
+    <Compile Include="ServerClasses\Resource.cs" />
+    <Compile Include="ServerClasses\Shape.cs" />
     <Compile Include="Model\Ticker.cs" />
-    <Compile Include="Model\Triangle.cs" />
     <Compile Include="NavigationController.cs" />
+    <Compile Include="Network\GameService.cs" />
+    <Compile Include="ServerClasses\Moveable.cs" />
+    <Compile Include="ServerClasses\MoveStrategy.cs" />
+    <Compile Include="ServerClasses\Renderable.cs" />
+    <Compile Include="ServerClasses\RenderStrategy.cs" />
     <Compile Include="UI\GameArena\GameArenaPage.xaml.cs">
       <DependentUpon>GameArenaPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="UI\GameArena\GameArena_ViewModel.cs" />
+    <Compile Include="UI\Login\Login.xaml.cs">
+      <DependentUpon>Login.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UI\Login\Login_ViewModel.cs" />
     <Compile Include="UI\Settings\Settings_ViewModel.cs" />
     <Compile Include="UI\MainMenu\MainMenu.xaml.cs">
       <DependentUpon>MainMenu.xaml</DependentUpon>
@@ -98,6 +150,10 @@
       <SubType>Code</SubType>
     </Compile>
     <Page Include="UI\GameArena\GameArenaPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UI\Login\Login.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -128,6 +184,7 @@
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
     </EmbeddedResource>
+    <None Include="packages.config" />
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
       <LastGenOutput>Settings.Designer.cs</LastGenOutput>
@@ -142,5 +199,6 @@
       <Name>PolyWars.API</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
