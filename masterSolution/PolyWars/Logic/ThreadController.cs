@@ -15,7 +15,7 @@ namespace PolyWars.Logic {
             try {
                 UIThreadDispatcher.Invoke( () => a.Invoke());
             } catch(TaskCanceledException e) {
-                Debug.WriteLine("Task got cancled in ThreadController");
+                Debug.WriteLine("UIDispatcher: Task got canceled");
             }
         }
         public static T Invoke<T>(Func<T> a) {

@@ -1,10 +1,9 @@
-﻿using PolyWars.Adapters;
+using PolyWars.Adapters;
 using PolyWars.Api.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
 using PolyWars.ServerClasses;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -44,15 +43,17 @@ namespace PolyWars.Network {
         }
 
         private static void removeDeadOpponent(string username) {
-            if(GameController.Opponents != null && GameController.Opponents.TryRemove(username, out IMoveable deadPlayer)) {
+            IMoveable deadPlayer = null;
+            while(GameController.Opponents != null && !GameController.Opponents.TryRemove(username, out deadPlayer)) {
+                Task.Delay(1);
+            }
+            if(deadPlayer != null) {
                 UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(deadPlayer.Shape.Polygon));
-                Debug.WriteLine($"Removed dead opponent {username} on canvas");
             }
         }
 
         private static void removeBullet(BulletDTO bullet) {
             BulletAdapter.removeBulletFromCanvas(bullet.ID);
-            Debug.WriteLine($"Removed bullet from user: '{bullet.PlayerID}' on canvas");
         }
 
         private static void playerDied(string killedBy) {
@@ -60,12 +61,11 @@ namespace PolyWars.Network {
             GameController.IsPlayerDead = true;
             GameController.Player.Health = 0;
             UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(GameController.Player.PlayerShip.Shape.Polygon));
-            Debug.WriteLine(GameController.Player.Name + " got killed by " + killedBy);
+            Debug.WriteLine("Announce: " + GameController.Player.Name + " got killed by " + killedBy);
         }
 
         private static void updateHealth(int healthLeft) {
             GameController.Player.Health = healthLeft;
-            Debug.WriteLine("Server - Recieved health update: " + healthLeft);
         }
         private static void opponentShoots(BulletDTO bullet) {
             Bullet newBullet = BulletAdapter.renderBullet(bullet);
@@ -79,8 +79,7 @@ namespace PolyWars.Network {
         private static void opponentJoined(PlayerDTO dto) {
             if(!GameController.Opponents.ContainsKey(dto.Name)) {
                 IMoveable opponent = PlayerAdapter.playerDTOToMoveable(dto);
-                bool succeded = GameController.Opponents.TryAdd(dto.Name, opponent);
-                if(succeded) {
+                if(GameController.Opponents.TryAdd(dto.Name, opponent)) {
                     UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(opponent.Shape.Polygon));
                 }
             }
@@ -92,7 +91,6 @@ namespace PolyWars.Network {
                 opponent.MaxVelocity = dto.MaxVelocity;
                 opponent.RPM = dto.RPM;
                 opponent.MaxRPM = dto.MaxRPM;
-                opponent.Shape.Renderable.FillColor = dto.FillColor;
 
                 IRay ray = new Ray(opponent.Shape.Ray.ID, new Point(dto.centerX, dto.centerY), dto.Angle);
                 opponent.Shape.Ray = ray;
@@ -108,7 +106,6 @@ namespace PolyWars.Network {
             }
         }
         private static void removeResource(string id) {
-            //Debug.WriteLine("Server - Recieved Resource Removal");
             if(GameController.Resources.ContainsKey(id)) {
                 IResource resource;
                 while(!GameController.Resources.TryRemove(id, out resource)) {
@@ -118,22 +115,8 @@ namespace PolyWars.Network {
             }
         }
 
-        //public static void updateOpponents(List<PlayerDTO> opponentDTOs) {
-        //    //Debug.WriteLine("Server - Recived Opponents Update");
-        //    if(ArenaController.ArenaCanvas != null) {
-        //        GameController.Opponents = Adapters.PlayerAdapter.PlayerDTOtoIShape(opponentDTOs);
-        //    }
-        //}
-
-        //public static void updateResources(List<ResourceDTO> resourceDTOs) {
-        //    //Debug.WriteLine("Server - Recieved Resource Update");
-        //    if(ArenaController.ArenaCanvas != null) {
-        //        GameController.Resources = Adapters.ResourceAdapter.ResourceDTOtoIResource(resourceDTOs);
-        //    }
-        //}
-
         public static void announceClientLoggedIn(string userName) {
-            Debug.WriteLine($"Server - {userName} has joined the lobby");
+            Debug.WriteLine($"Announce: '{userName}' has joined the lobby");
         }
     }
 }

@@ -15,7 +15,7 @@ using System.Windows.Media;
 namespace PolyWars.Adapters {
     class PlayerAdapter {
         public static IMoveable playerDTOToMoveable(PlayerDTO dto) {
-            IRenderable renderable = new Renderable(Colors.Black, Colors.DarkSlateGray, 1, dto.Width, dto.Height, dto.Vertices);
+            IRenderable renderable = new Renderable(Colors.Black, dto.FillColor, 1, dto.Width, dto.Height, dto.Vertices);
             return playerDTOToMoveable(dto, renderable);
         }
         public static IMoveable playerDTOToMoveable(PlayerDTO dto, IRenderable renderable) {
@@ -29,7 +29,7 @@ namespace PolyWars.Adapters {
             IMoveable moveable = new Moveable(dto.Velocity, dto.MaxVelocity, dto.RPM, dto.MaxRPM, player.Shape, player.Mover);
             return moveable;
         }
-        public static PlayerDTO MoveableToPlayerDTO(IMoveable player, int health) {
+        public static PlayerDTO MoveableToPlayerDTO(IMoveable player) {
             return new PlayerDTO() {
                 Name = GameController.Username,
                 ID = player.Shape.Ray.ID,
@@ -43,7 +43,8 @@ namespace PolyWars.Adapters {
                 Angle = player.Shape.Ray.Angle,
                 Height = player.Shape.Renderable.Height,
                 Width = player.Shape.Renderable.Width,
-                Health = health // TODO This should really be in a better place and done much better TAG: Thure!
+                FillColor = player.Shape.Renderable.FillColor,
+                Health = GameController.Player.Health
             };
         }
     }

@@ -18,7 +18,10 @@ namespace PolyWars.Server {
         private static ConcurrentDictionary<string, ResourceDTO> Resources;
         private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
-        private static object statisticsLock = new object();
+        private static object statisticsLock = new object(); 
+        private static Random rnd;
+
+
 
         // System.Windows.Media.Colors.DarkSlateGray
 
@@ -54,6 +57,7 @@ namespace PolyWars.Server {
 
 
         static MainHub() {
+            rnd = new Random((int)Stopwatch.GetTimestamp());
             Console.SetCursorPosition(0, 1);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
@@ -78,12 +82,14 @@ namespace PolyWars.Server {
                 if(Bullets.ContainsKey(bullet.ID) && Bullets.TryRemove(bullet.ID, out BulletDTO bulletDTO)) {
                     Clients.Others.removeBullet(bulletDTO);
                     player.Health -= bulletDTO.Damage;
-                    Console.WriteLine($"{player.Name} got hit with a bullet, dealing {bulletDTO.Damage} damage from {bullet.PlayerID}");
                     result = true;
                     if(player.Health < 1) {
-                        Clients.Caller.playerDied(bulletDTO.PlayerID);
-                        Clients.Others.removeDeadOpponent(player.Name);
-                        Console.WriteLine($"Removing dead player: '{player.Name}' from other clients");
+                        if(Opponents.TryRemove(player.Name, out PlayerDTO deadPlayer)) {
+                            Clients.Caller.playerDied(bulletDTO.PlayerID);
+                            Clients.Others.removeDeadOpponent(deadPlayer.Name);
+                        } else {
+                            Console.WriteLine($"playerGotShot Error, Could not remove dead player '{deadPlayer.Name}' from List of Opponents");
+                        }
                     } else {
                         Clients.Caller.updateHealth(player.Health);
                     }
@@ -102,7 +108,6 @@ namespace PolyWars.Server {
                     bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
                     if(addBullet) {
                         result = true;
-                        //Console.WriteLine(shootingPlayer.Name + " has fired a bullet, dealing " + bullet.Damage + " damage");
                         Clients.All.opponentShoots(bullet);
                     }
                 }
@@ -117,8 +122,6 @@ namespace PolyWars.Server {
             await Task.Factory.StartNew(() => {
                 removed = Resources.TryRemove(resourceId, out ResourceDTO r);
                 if(removed) {
-                    //Console.WriteLine($"Player Removed Resource: {resourceId}");
-                    // Updates all other clients with new list of resources
                     Clients.Others.removeResource(resourceId);
                     string username = Clients.CallerState.UserName;
                     Opponents[username].Wallet += r.Value;
@@ -155,7 +158,6 @@ namespace PolyWars.Server {
         public List<BulletDTO> getBullets() {
             methodCallCounter();
             List<BulletDTO> bullets = new List<BulletDTO>(Bullets.Values);
-            Console.WriteLine($"Client asked for bullets: '{Context.ConnectionId}'");
             return bullets;
         }
 
@@ -170,7 +172,7 @@ namespace PolyWars.Server {
                 if(!PlayerClients.ContainsKey(username)) {
                     // TODO Verify user creds from DB here
                     if(true) {
-                        Console.WriteLine($"++ {username} logged in on connection id: '{Context.ConnectionId}', pass :'{hashedPassword}'");
+                        Console.WriteLine($"++ {username} logged in");
                         IUser newUser = new User(username, Context.ConnectionId, hashedPassword);
                         bool added = PlayerClients.TryAdd(username, newUser);
 
@@ -200,7 +202,7 @@ namespace PolyWars.Server {
                             Width = 50,
                             Height = 50,
                             Health = 100,
-                            FillColor = GetColor()
+                            FillColor = GetColor(newUser.Name)
                         };
                         if(Opponents.TryAdd(newPlayer.Name, newPlayer)) {
                             Clients.Others.opponentJoined(newPlayer);
@@ -214,9 +216,7 @@ namespace PolyWars.Server {
                 return null;
             });
         }
-
-        private static Random rnd = new Random();
-        private static Color GetColor() {
+        private static Color GetColor(string username) {
             Color c = Color.FromArgb(255, (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256));
             return c;
         }

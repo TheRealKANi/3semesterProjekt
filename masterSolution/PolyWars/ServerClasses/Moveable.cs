@@ -16,6 +16,10 @@ namespace PolyWars.ServerClasses {
         public IShape Shape { get; set; }
         public IMoveStrategy Mover { get; set; }
 
+        public Moveable() {
+
+        }
+
         public Moveable(double velocity, double maxVelocity, double rPM, double maxRPM, IShape shape, IMoveStrategy mover) {
             Velocity = velocity;
             MaxVelocity = maxVelocity;

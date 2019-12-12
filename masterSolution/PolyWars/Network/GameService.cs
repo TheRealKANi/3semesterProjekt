@@ -63,8 +63,6 @@ namespace PolyWars.Network {
             return connectionStatus;
         }
 
-        
-
         public void initIngameBindings() {
             hubProxy.On<string>("AccessDenied", (n) => accessDenied?.Invoke(n));
             hubProxy.On<List<PlayerDTO>>("updateOpponents", (lo) => updateOpponents?.Invoke(lo));
@@ -88,7 +86,7 @@ namespace PolyWars.Network {
             return await hubProxy.Invoke<bool>("playerGotShot", bullet);
         }
         public async Task<bool> PlayerMovedAsync(IMoveable playerIRay) {
-            PlayerDTO dto = PlayerAdapter.MoveableToPlayerDTO(playerIRay, GameController.Player.Health);
+            PlayerDTO dto = PlayerAdapter.MoveableToPlayerDTO(playerIRay);
             return await hubProxy.Invoke<bool>("playerMoved", dto); ;
         }
         public async Task<IUser> LoginAsync(string name, string hashedPassword) {
@@ -110,21 +108,18 @@ namespace PolyWars.Network {
         /// Grabs the current list of opponents from the server
         /// </summary>
         public async Task<List<PlayerDTO>> getOpponentsAsync() {
-            Debug.WriteLine("Client - Asks Server for opponents");
             return await hubProxy.Invoke<List<PlayerDTO>>("getOpponents");
         }
         /// <summary>
         /// Grabs the list of remaning resources from the server
         /// </summary>
         public async Task<List<ResourceDTO>> getResourcesAsync() {
-            Debug.WriteLine("Client - Asks Server for resources");
             return await hubProxy.Invoke<List<ResourceDTO>>("getResources");
         }
 
         public async Task<List<BulletDTO>> getBulletsAsync() {
-            Debug.WriteLine("Client - Asks Server for bullets");
             return await hubProxy.Invoke<List<BulletDTO>>("getBullets");
-        }
+        }
 
         private void Disconnected() { ConnectionClosed?.Invoke(); }
 
