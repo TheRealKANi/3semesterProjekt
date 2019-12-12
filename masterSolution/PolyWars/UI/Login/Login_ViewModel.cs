@@ -1,4 +1,4 @@
-using PolyWars.API.Network;
+﻿using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
 using PolyWars.Model;
@@ -63,6 +63,27 @@ namespace PolyWars.UI.Login {
                 NotifyPropertyChanged();
             }
         }
+        private string connectingDialogText;
+        public string ConnectingDialogText {
+            get {
+                return connectingDialogText;
+            }
+            set {
+                connectingDialogText = "Connecting to: " + value;
+                NotifyPropertyChanged();
+            }
+        }
+        private Visibility connectingDialogVisibility;
+        public Visibility ConnectingDialogVisibility {
+            get {
+                return connectingDialogVisibility;
+            }
+            set {
+                connectingDialogVisibility = value;
+                NotifyPropertyChanged();
+            }
+        }
+
 
         private ICommand loginCommand;
         public ICommand LoginCommand {
@@ -75,8 +96,20 @@ namespace PolyWars.UI.Login {
 
         private async Task<bool> Login(string username, string hashedPassword) {
             if(!string.IsNullOrWhiteSpace(username) && !string.IsNullOrWhiteSpace(hashedPassword)) {
+                await Task.Run(() => {
+                    ConnectingDialogText = "Connecting to: " + SelectedUrl;
+                    ConnectingDialogVisibility = Visibility.Visible;
+                    UIDispatcher.Invoke(() => NavigationController.Instance.Login.IsEnabled = false);
+                });
                 NetworkController.IsConnected = await NetworkController.GameService.ConnectAsync();
+
+                await Task.Run(() => {
+                    ConnectingDialogText = "Logging in";
+                    ConnectingDialogVisibility = Visibility.Collapsed;
+                    UIDispatcher.Invoke(() => NavigationController.Instance.Login.IsEnabled = true);
+                });
                 user = await NetworkController.GameService.LoginAsync(username, hashedPassword);
+
                 NavigationController.Instance.navigate(Pages.MainMenu);
                 GameController.Username = user.Name;
                 GameController.UserID = user.ID;
