@@ -14,8 +14,8 @@ using System.Windows.Media;
 
 namespace PolyWars.Adapters {
     class PlayerAdapter {
-        public static IMoveable playerDTOToMoveable(PlayerDTO dto) {
-            IRenderable renderable = new Renderable(Colors.Black, dto.FillColor, 1, dto.Width, dto.Height, dto.Vertices);
+        public static IMoveable playerDTOToMoveable(PlayerDTO dto, Color borderColor) {
+            IRenderable renderable = new Renderable(borderColor, dto.FillColor, 1, dto.Width, dto.Height, dto.Vertices);
             return playerDTOToMoveable(dto, renderable);
         }
         public static IMoveable playerDTOToMoveable(PlayerDTO dto, IRenderable renderable) {

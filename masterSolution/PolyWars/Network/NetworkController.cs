@@ -8,6 +8,7 @@ using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Input;
+using System.Windows.Media;
 
 namespace PolyWars.Network {
     static class NetworkController {
@@ -78,7 +79,7 @@ namespace PolyWars.Network {
         }
         private static void opponentJoined(PlayerDTO dto) {
             if(!GameController.Opponents.ContainsKey(dto.Name)) {
-                IMoveable opponent = PlayerAdapter.playerDTOToMoveable(dto);
+                IMoveable opponent = PlayerAdapter.playerDTOToMoveable(dto, Colors.Red);
                 if(GameController.Opponents.TryAdd(dto.Name, opponent)) {
                     UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(opponent.Shape.Polygon));
                 }
