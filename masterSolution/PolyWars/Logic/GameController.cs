@@ -77,12 +77,14 @@ namespace PolyWars.Logic {
             //playerShip.Shape.Renderable.BorderColor = Colors.Black;
             //playerShip.Shape.Renderable.FillColor = Colors.Gray;
             playerShip.Mover = new MoveStrategy();
+            Debug.WriteLine($"prepareGame: {playerDTO.Name} has a FillColor of {playerShip.Shape.Renderable.FillColor}");
             UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, playerDTO.Wallet, playerDTO.Health, playerShip); });
 
             // convert data transfer objects to their respective types and add them to list
             foreach(PlayerDTO opponent in opponentDTOs) {
                 IMoveable moveable = PlayerAdapter.playerDTOToMoveable(opponent);
                 while(!Opponents.TryAdd(opponent.Name, moveable)) {
+                    Debug.WriteLine($"prepareGame: {opponent.Name} has a FillColor of {moveable.Shape.Renderable.FillColor}");
                     Task.Delay(1);
                 }
             }
@@ -99,12 +101,12 @@ namespace PolyWars.Logic {
                     ArenaController.ArenaCanvas.Children.Add(resource.Shape.Polygon);
                 }
             });
-            UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(Player.PlayerShip.Shape.Polygon));
             UIDispatcher.Invoke(() => {
                 foreach(IMoveable opponent in Opponents.Values) {
                     ArenaController.ArenaCanvas.Children.Add(opponent.Shape.Polygon);
                 }
             });
+            UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(Player.PlayerShip.Shape.Polygon));
             isPrepared = true;
         }
 
