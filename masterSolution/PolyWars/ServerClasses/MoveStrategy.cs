@@ -15,9 +15,10 @@ namespace PolyWars.ServerClasses {
             IShape shape = moveable.Shape;
             shape.Ray.Angle += (moveable.RPM * 360 / (60 * 60)) * deltaTime;
             // (rpm * 360 degrees) / 60 seconds / 60 fps
-
-            double offsetX = moveable.Velocity * Math.Sin(shape.Ray.Angle * Math.PI / 180) * deltaTime;
-            double offsetY = moveable.Velocity * Math.Cos(shape.Ray.Angle * Math.PI / 180) * deltaTime;
+            double xCalculation = moveable.Velocity * Math.Sin(shape.Ray.Angle * Math.PI / 180) * deltaTime;
+            double yCalculation = moveable.Velocity * Math.Cos(shape.Ray.Angle * Math.PI / 180) * deltaTime;
+            double offsetX = xCalculation > 0 && xCalculation < 1024 ? xCalculation : shape.Ray.CenterPoint.X;
+            double offsetY = yCalculation > 0 && yCalculation < 768 ? yCalculation : shape.Ray.CenterPoint.Y; ;
 
             Point cp = shape.Ray.CenterPoint;
             cp.Offset(offsetX, offsetY);

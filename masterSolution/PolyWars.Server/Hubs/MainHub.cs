@@ -68,7 +68,7 @@ namespace PolyWars.Server {
             statistics.TryAdd("moved stack", 0);
             //statisticTimer.Start();
 
-            IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
+            IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(1000, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
