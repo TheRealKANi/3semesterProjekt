@@ -38,7 +38,7 @@ namespace PolyWars.Logic.Utility {
                 }
                 Task.WaitAll(tl.ToArray());
                 tl.Clear();
-                IEnumerable<IBullet> roughBulletCollitions = rc.checkCollision(player, GameController.Bullets.Values, (b) => { return b.BulletShip.Shape; });
+                IEnumerable<IBullet> roughBulletCollitions = rc.checkCollision(player, GameController.Bullets.Values/*.Where(x => x.ID == GameController.Username)*/, (b) => { return b.BulletShip.Shape; });
                 foreach(IBullet bullet in roughBulletCollitions) {
                     tl.Add(Task.Factory.StartNew(() => {
                         UIDispatcher.Invoke(() => {

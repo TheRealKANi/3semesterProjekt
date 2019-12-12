@@ -81,9 +81,13 @@ namespace PolyWars.Server {
                     Console.WriteLine($"{player.Name} got hit with a bullet, dealing {bulletDTO.Damage} damage from {bullet.PlayerID}");
                     result = true;
                     if(player.Health < 1) {
-                        Clients.Caller.playerDied(bulletDTO.PlayerID);
-                        Clients.Others.removeDeadOpponent(player.Name);
-                        Console.WriteLine($"Removing dead player: '{player.Name}' from other clients");
+                        if(Opponents.TryRemove(player.Name, out PlayerDTO deadPlayer)) {
+                            Clients.Caller.playerDied(bulletDTO.PlayerID);
+                            Clients.Others.removeDeadOpponent(deadPlayer.Name);
+                            Console.WriteLine($"Removing dead player: '{player.Name}' from other clients");
+                        } else {
+                            Console.WriteLine($"Error, Could not remove dead player '{deadPlayer.Name}' from List of Opponents");
+                        }
                     } else {
                         Clients.Caller.updateHealth(player.Health);
                     }

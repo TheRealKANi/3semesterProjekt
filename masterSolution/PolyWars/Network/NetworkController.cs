@@ -4,7 +4,6 @@ using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
 using PolyWars.ServerClasses;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -44,9 +43,15 @@ namespace PolyWars.Network {
         }
 
         private static void removeDeadOpponent(string username) {
-            if(GameController.Opponents != null && GameController.Opponents.TryRemove(username, out IMoveable deadPlayer)) {
+            IMoveable deadPlayer = null;
+            while(GameController.Opponents != null && !GameController.Opponents.TryRemove(username, out deadPlayer)) {
+                Task.Delay(1);
+            }
+            if(deadPlayer != null) {
                 UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(deadPlayer.Shape.Polygon));
-                Debug.WriteLine($"Removed dead opponent {username} on canvas");
+                Debug.WriteLine($"Removed dead opponent '{username}' from canvas");
+            } else {
+                Debug.WriteLine($"Could not remove dead opponent '{username}' from canvas");
             }
         }
 
