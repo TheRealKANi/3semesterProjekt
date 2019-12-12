@@ -1,4 +1,4 @@
-using Microsoft.AspNet.SignalR.Client;
+﻿using Microsoft.AspNet.SignalR.Client;
 using PolyWars.Adapters;
 using PolyWars.Api.Model;
 using PolyWars.API;
@@ -41,13 +41,9 @@ namespace PolyWars.Network {
         private IHubProxy hubProxy;
         public HubConnection Connection { get; set; }
 
-        //private string serverIP = "localhost"; // Lan Client Test
-        //private string serverIP = "109.57.212.47"; // WAN Client Test
-        private string serverIP = "polywars.servegame.com";
-        private string protocol = "http://";
-
-
-            Connection = new HubConnection(protocol + serverIP + ":" + Constants.serverPort + Constants.serverEndPoint);
+        public string ServerIP { get; set; }
+        public async Task<bool> ConnectAsync() {
+            Connection = new HubConnection(Constants.protocol + ServerIP + ":" + Constants.serverPort + Constants.serverEndPoint);
             hubProxy = Connection.CreateHubProxy("MainHub");
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
             hubProxy.On<string>("clientLogout", (n) => clientLoggedOut?.Invoke(n));

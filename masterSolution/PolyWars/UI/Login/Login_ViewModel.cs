@@ -1,4 +1,4 @@
-﻿using PolyWars.API.Network;
+using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
 using PolyWars.Logic;
 using PolyWars.Model;
@@ -7,10 +7,19 @@ using System.Collections.Generic;
 using System.Security;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Windows;
 using System.Windows.Input;
 
 namespace PolyWars.UI.Login {
     class Login_ViewModel : Observable {
+        public Login_ViewModel() {
+            Urls = new string[] {
+                "localhost", // Lan Client Test
+                "109.57.212.47", // WAN Client Test
+                "polywars.servegame.com"
+            };
+            ConnectingDialogVisibility = Visibility.Collapsed;
+        }
         private IUser user;
         private string name;
         public string Name {
@@ -29,6 +38,28 @@ namespace PolyWars.UI.Login {
             }
             set {
                 hashedPassword = value;
+                NotifyPropertyChanged();
+            }
+        }
+        private string[] urls;
+        public string[] Urls {
+            get {
+                return urls;
+            }
+            set {
+                urls = value;
+                SelectedUrl = urls[0];
+                NotifyPropertyChanged();
+            }
+        }
+        private string selectedUrl;
+        public string SelectedUrl {
+            get {
+                return selectedUrl;
+            }
+            set {
+                selectedUrl = value;
+                NetworkController.GameService.ServerIP = value;
                 NotifyPropertyChanged();
             }
         }
