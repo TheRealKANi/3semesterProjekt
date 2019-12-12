@@ -2,15 +2,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars", "PolyWars\PolyWars.csproj", "{5368CFB8-64D8-455A-B3FF-B55EAEDCC248}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Client", "PolyWars\PolyWars.Client.csproj", "{5368CFB8-64D8-455A-B3FF-B55EAEDCC248}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.API", "PolyWars.API\PolyWars.API.csproj", "{FA82403D-7983-4D13-8518-57C16F92D849}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.UnitTests", "PolyWars.UnitTests\PolyWars.UnitTests.csproj", "{703D79EC-CA06-4530-BC4A-33DC91BCDC9C}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Server", "PolyWars.Server\PolyWars.Server.csproj", "{253203B0-24EC-49FF-8094-C26740F06C79}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Server.TestClient", "PolyWars.Server.TestClient\PolyWars.Server.TestClient.csproj", "{C883293A-F6D6-4CBB-A757-8302F5C4968C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -52,14 +50,6 @@ Global
 		{253203B0-24EC-49FF-8094-C26740F06C79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{253203B0-24EC-49FF-8094-C26740F06C79}.Release|x64.ActiveCfg = Release|x64
 		{253203B0-24EC-49FF-8094-C26740F06C79}.Release|x64.Build.0 = Release|x64
-		{C883293A-F6D6-4CBB-A757-8302F5C4968C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{C883293A-F6D6-4CBB-A757-8302F5C4968C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{C883293A-F6D6-4CBB-A757-8302F5C4968C}.Debug|x64.ActiveCfg = Debug|x64
-		{C883293A-F6D6-4CBB-A757-8302F5C4968C}.Debug|x64.Build.0 = Debug|x64
-		{C883293A-F6D6-4CBB-A757-8302F5C4968C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{C883293A-F6D6-4CBB-A757-8302F5C4968C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{C883293A-F6D6-4CBB-A757-8302F5C4968C}.Release|x64.ActiveCfg = Release|Any CPU
-		{C883293A-F6D6-4CBB-A757-8302F5C4968C}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
