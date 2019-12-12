@@ -1,21 +1,16 @@
-using PolyWars.Api;
+using PolyWars.Adapters;
 using PolyWars.Api.Model;
-using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
-using PolyWars.API.Strategies;
-using PolyWars.Logic.Utility;
+using PolyWars.API.Network.DTO;
 using PolyWars.Model;
 using PolyWars.Network;
 using PolyWars.ServerClasses;
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Media;
-using System.Collections.Concurrent;
-using PolyWars.API.Network.DTO;
-using PolyWars.Adapters;
 
 namespace PolyWars.Logic {
     class GameController {
@@ -74,17 +69,13 @@ namespace PolyWars.Logic {
 
             // create the player
             IMoveable playerShip = PlayerAdapter.playerDTOToMoveable(playerDTO);
-            //playerShip.Shape.Renderable.BorderColor = Colors.Black;
-            //playerShip.Shape.Renderable.FillColor = Colors.Gray;
             playerShip.Mover = new MoveStrategy();
-            Debug.WriteLine($"prepareGame: {playerDTO.Name} has a FillColor of {playerShip.Shape.Renderable.FillColor}");
             UIDispatcher.Invoke(() => { Player = new Player(Username, UserID, playerDTO.Wallet, playerDTO.Health, playerShip); });
 
             // convert data transfer objects to their respective types and add them to list
             foreach(PlayerDTO opponent in opponentDTOs) {
                 IMoveable moveable = PlayerAdapter.playerDTOToMoveable(opponent);
                 while(!Opponents.TryAdd(opponent.Name, moveable)) {
-                    Debug.WriteLine($"prepareGame: {opponent.Name} has a FillColor of {moveable.Shape.Renderable.FillColor}");
                     Task.Delay(1);
                 }
             }
@@ -123,20 +114,19 @@ namespace PolyWars.Logic {
             fpsTimer.Stop();
         }
 
-        
+
 
         static public void calculateFrame(double deltaTime) {
             try {
                 Player.PlayerShip.Move(deltaTime);
-                //UIDispatcher.Invoke(() => {
                 Task.Run(() => notifyMoved());
                 List<Task> tasks = new List<Task>();
                 foreach(IMoveable opponent in Opponents.Values) {
-                    tasks.Add(Task.Factory.StartNew( () => opponent.Move(deltaTime)));
+                    tasks.Add(Task.Factory.StartNew(() => opponent.Move(deltaTime)));
                 }
                 foreach(IBullet bullet in Bullets.Values) {
                     tasks.Add(Task.Factory.StartNew(() => {
-                        Point p = UIDispatcher.Invoke( () => { return bullet.BulletShip.Shape.Ray.CenterPoint; });
+                        Point p = UIDispatcher.Invoke(() => { return bullet.BulletShip.Shape.Ray.CenterPoint; });
                         if(bulletOutOfBounds(p)) {
                             BulletAdapter.removeBulletFromCanvas(bullet.ID);
                             Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
@@ -145,13 +135,13 @@ namespace PolyWars.Logic {
                         }
                     }));
                 }
-                
+
                 Task.WaitAll(tasks.ToArray());
                 tickTimer.Stop();
                 CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
-                // }); 
-            } catch(TaskCanceledException) {
-                // TODO Should we do something here
+            } catch(TaskCanceledException e) {
+                // TODO Do we need to handle this?
+                Debug.WriteLine($"GameController - calculateFrame Error: Task got Cancled {e.Message}");
             }
         }
 
@@ -175,7 +165,6 @@ namespace PolyWars.Logic {
         }
 
         public static async void notifyMoved() {
-
             if(ServerTimer.Elapsed.TotalMilliseconds >= 10) { // ish 100 times a second
                 ServerTimer.Restart();
                 await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip);
@@ -191,8 +180,9 @@ namespace PolyWars.Logic {
                     fpsTimer.Restart();
 
                 }
-            } catch(TaskCanceledException) {
+            } catch(TaskCanceledException e) {
                 // TODO Do we need to handle this?
+                Debug.WriteLine($"GameController - CalculateFps Error: Task got Cancled {e.Message}");
             }
         }
     }

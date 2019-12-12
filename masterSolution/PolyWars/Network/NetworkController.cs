@@ -49,15 +49,11 @@ namespace PolyWars.Network {
             }
             if(deadPlayer != null) {
                 UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(deadPlayer.Shape.Polygon));
-                Debug.WriteLine($"Removed dead opponent '{username}' from canvas");
-            } else {
-                Debug.WriteLine($"Could not remove dead opponent '{username}' from canvas");
             }
         }
 
         private static void removeBullet(BulletDTO bullet) {
             BulletAdapter.removeBulletFromCanvas(bullet.ID);
-            Debug.WriteLine($"Removed bullet from user: '{bullet.PlayerID}' on canvas");
         }
 
         private static void playerDied(string killedBy) {
@@ -65,12 +61,11 @@ namespace PolyWars.Network {
             GameController.IsPlayerDead = true;
             GameController.Player.Health = 0;
             UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(GameController.Player.PlayerShip.Shape.Polygon));
-            Debug.WriteLine(GameController.Player.Name + " got killed by " + killedBy);
+            Debug.WriteLine("Announce: " + GameController.Player.Name + " got killed by " + killedBy);
         }
 
         private static void updateHealth(int healthLeft) {
             GameController.Player.Health = healthLeft;
-            Debug.WriteLine("Server - Recieved health update: " + healthLeft);
         }
         private static void opponentShoots(BulletDTO bullet) {
             Bullet newBullet = BulletAdapter.renderBullet(bullet);
@@ -111,7 +106,6 @@ namespace PolyWars.Network {
             }
         }
         private static void removeResource(string id) {
-            //Debug.WriteLine("Server - Recieved Resource Removal");
             if(GameController.Resources.ContainsKey(id)) {
                 IResource resource;
                 while(!GameController.Resources.TryRemove(id, out resource)) {
@@ -122,7 +116,7 @@ namespace PolyWars.Network {
         }
 
         public static void announceClientLoggedIn(string userName) {
-            Debug.WriteLine($"Server - {userName} has joined the lobby");
+            Debug.WriteLine($"Announce: '{userName}' has joined the lobby");
         }
     }
 }

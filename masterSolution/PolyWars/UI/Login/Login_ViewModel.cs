@@ -46,7 +46,6 @@ namespace PolyWars.UI.Login {
                     NavigationController.Instance.navigate(Pages.MainMenu);
                     GameController.Username = user.Name;
                     GameController.UserID = user.ID;
-                    //NetworkController.GameService.test();
                 }
             }
             return user != null ? true : false;

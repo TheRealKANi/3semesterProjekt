@@ -12,7 +12,7 @@ namespace PolyWars {
         void App_Exit(object sender, ExitEventArgs e) {
             // send server a logout signal
             GameService gm = NetworkController.GameService;
-            Debug.WriteLine("App Closed - Logging out");
+            Debug.WriteLine("App Closed - Logging out client");
             Task.Factory.StartNew( () => gm.LogoutAsync()).Wait();
         }
 
