@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNet.SignalR.Client;
+using Microsoft.AspNet.SignalR.Client;
 using PolyWars.Adapters;
 using PolyWars.Api.Model;
 using PolyWars.API;
@@ -47,7 +47,6 @@ namespace PolyWars.Network {
         private string protocol = "http://";
 
 
-        public async Task<bool> ConnectAsync() {
             Connection = new HubConnection(protocol + serverIP + ":" + Constants.serverPort + Constants.serverEndPoint);
             hubProxy = Connection.CreateHubProxy("MainHub");
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
