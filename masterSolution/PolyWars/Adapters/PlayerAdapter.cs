@@ -23,12 +23,6 @@ namespace PolyWars.Adapters {
             Shape shape = new Shape(dto.ID, ray, renderable, new RenderWithHeaderStrategy());
             return new Moveable(dto.Velocity, dto.MaxVelocity, dto.RPM, dto.MaxRPM, shape, new MoveOpponentStrategy());
         }
-        public static IMoveable playerDTOToMoveable(PlayerDTO dto, IMoveable player) {
-            IRay ray = new Ray(dto.ID, new Point(dto.centerX, dto.centerY), dto.Angle);
-            player.Shape.Ray = ray;
-            IMoveable moveable = new Moveable(dto.Velocity, dto.MaxVelocity, dto.RPM, dto.MaxRPM, player.Shape, player.Mover);
-            return moveable;
-        }
         public static PlayerDTO MoveableToPlayerDTO(IMoveable player) {
             return new PlayerDTO() {
                 Name = GameController.Username,

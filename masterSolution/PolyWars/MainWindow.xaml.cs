@@ -8,9 +8,5 @@ namespace PolyWars {
         public MainWindow() {
             InitializeComponent();
         }
-
-        //private void Window_KeyPress(object sender, KeyEventArgs e) {
-        //    Logic.EventController.KeyboardEvents.KeyPressedEventHandler?.Invoke(this, e);
-        //}
     }
 }
