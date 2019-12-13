@@ -18,6 +18,11 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Web.Client", "Poly
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Server.WebService", "PolyWars.Server.WebService\PolyWars.Server.WebService.csproj", "{42D95DBE-31CA-4686-B746-8C3B696766E2}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Server.WebService.ConsoleClient", "PolyWars.Server.WebService.ConsoleClient\PolyWars.Server.WebService.ConsoleClient.csproj", "{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}"
+	ProjectSection(ProjectDependencies) = postProject
+		{42D95DBE-31CA-4686-B746-8C3B696766E2} = {42D95DBE-31CA-4686-B746-8C3B696766E2}
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,6 +95,14 @@ Global
 		{42D95DBE-31CA-4686-B746-8C3B696766E2}.Release|Any CPU.Build.0 = Release|Any CPU
 		{42D95DBE-31CA-4686-B746-8C3B696766E2}.Release|x64.ActiveCfg = Release|Any CPU
 		{42D95DBE-31CA-4686-B746-8C3B696766E2}.Release|x64.Build.0 = Release|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|x64.Build.0 = Debug|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Release|x64.ActiveCfg = Release|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Release|x64.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

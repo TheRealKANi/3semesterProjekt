@@ -7,11 +7,12 @@ using System.Threading.Tasks;
 
 namespace PolyWars.Server.WebService {
 
-        [DataContract]
-        public class StringData {
-            [DataMember]
-            public string OriginalString;
-            [DataMember]
-            public string FlippedCaseString;
-        }
+    [DataContract]
+    public class StringData {
+        [DataMember]
+        public string OriginalString;
+
+        [DataMember]
+        public string FlippedCaseString;
+    }
 }
