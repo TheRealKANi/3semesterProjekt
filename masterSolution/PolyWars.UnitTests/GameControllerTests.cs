@@ -1,16 +1,13 @@
-﻿using System;
-using System.Diagnostics;
-using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PolyWars.Logic;
+﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
 using PolyWars.Model;
 
-namespace PolyWars.UnitTests {
+namespace PolyWars.Client.UnitTests {
     [TestClass]
     public class GameControllerTests {
         [TestMethod]
         public void TestDeltaTime() {
             Ticker t = new Ticker();
-            
+
             double dt5 = t.DeltaTime(1000d / 5);
             double dt10 = t.DeltaTime(1000d / 10);
             double dt15 = t.DeltaTime(1000d / 15);
