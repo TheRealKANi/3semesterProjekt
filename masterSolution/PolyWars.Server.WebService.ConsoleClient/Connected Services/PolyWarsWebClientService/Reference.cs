@@ -8,14 +8,15 @@
 // </auto-generated>
 //------------------------------------------------------------------------------
 
-namespace PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF {
+namespace PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService {
     using System.Runtime.Serialization;
     using System;
     
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="UserData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.Server.Services")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UserData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.API.Network.Services.DataContrac" +
+        "ts")]
     [System.SerializableAttribute()]
     public partial class UserData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -76,7 +77,8 @@ namespace PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="LeaderboardEntryData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.Server.Services")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="LeaderboardEntryData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.API.Network.Services.DataContrac" +
+        "ts")]
     [System.SerializableAttribute()]
     public partial class LeaderboardEntryData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -136,35 +138,35 @@ namespace PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF {
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="ServiceReferenceWCF.IWebClientService")]
+    [System.ServiceModel.ServiceContractAttribute(ConfigurationName="PolyWarsWebClientService.IWebClientService")]
     public interface IWebClientService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/login", ReplyAction="http://tempuri.org/IWebClientService/loginResponse")]
-        bool login(PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.UserData userData);
+        bool login(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/login", ReplyAction="http://tempuri.org/IWebClientService/loginResponse")]
-        System.Threading.Tasks.Task<bool> loginAsync(PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.UserData userData);
+        System.Threading.Tasks.Task<bool> loginAsync(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/register", ReplyAction="http://tempuri.org/IWebClientService/registerResponse")]
-        bool register(PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.UserData userData);
+        bool register(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/register", ReplyAction="http://tempuri.org/IWebClientService/registerResponse")]
-        System.Threading.Tasks.Task<bool> registerAsync(PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.UserData userData);
+        System.Threading.Tasks.Task<bool> registerAsync(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/GetLeaderBoard", ReplyAction="http://tempuri.org/IWebClientService/GetLeaderBoardResponse")]
-        PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.LeaderboardEntryData[] GetLeaderBoard();
+        PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData[] GetLeaderBoard();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/GetLeaderBoard", ReplyAction="http://tempuri.org/IWebClientService/GetLeaderBoardResponse")]
-        System.Threading.Tasks.Task<PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.LeaderboardEntryData[]> GetLeaderBoardAsync();
+        System.Threading.Tasks.Task<PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData[]> GetLeaderBoardAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public interface IWebClientServiceChannel : PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.IWebClientService, System.ServiceModel.IClientChannel {
+    public interface IWebClientServiceChannel : PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.IWebClientService, System.ServiceModel.IClientChannel {
     }
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
-    public partial class WebClientServiceClient : System.ServiceModel.ClientBase<PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.IWebClientService>, PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.IWebClientService {
+    public partial class WebClientServiceClient : System.ServiceModel.ClientBase<PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.IWebClientService>, PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.IWebClientService {
         
         public WebClientServiceClient() {
         }
@@ -185,27 +187,27 @@ namespace PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF {
                 base(binding, remoteAddress) {
         }
         
-        public bool login(PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.UserData userData) {
+        public bool login(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData) {
             return base.Channel.login(userData);
         }
         
-        public System.Threading.Tasks.Task<bool> loginAsync(PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.UserData userData) {
+        public System.Threading.Tasks.Task<bool> loginAsync(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData) {
             return base.Channel.loginAsync(userData);
         }
         
-        public bool register(PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.UserData userData) {
+        public bool register(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData) {
             return base.Channel.register(userData);
         }
         
-        public System.Threading.Tasks.Task<bool> registerAsync(PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.UserData userData) {
+        public System.Threading.Tasks.Task<bool> registerAsync(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData) {
             return base.Channel.registerAsync(userData);
         }
         
-        public PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.LeaderboardEntryData[] GetLeaderBoard() {
+        public PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData[] GetLeaderBoard() {
             return base.Channel.GetLeaderBoard();
         }
         
-        public System.Threading.Tasks.Task<PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.LeaderboardEntryData[]> GetLeaderBoardAsync() {
+        public System.Threading.Tasks.Task<PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData[]> GetLeaderBoardAsync() {
             return base.Channel.GetLeaderBoardAsync();
         }
     }

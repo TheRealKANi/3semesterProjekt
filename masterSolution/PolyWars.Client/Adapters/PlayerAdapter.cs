@@ -27,6 +27,7 @@ namespace PolyWars.Adapters {
             return new PlayerDTO() {
                 Name = GameController.Username,
                 ID = player.Shape.Ray.ID,
+                Wallet = GameController.Player.Wallet,
                 Velocity = player.Velocity,
                 MaxVelocity = player.MaxVelocity,
                 RPM = player.RPM,
@@ -35,10 +36,10 @@ namespace PolyWars.Adapters {
                 centerX = player.Shape.Ray.CenterPoint.X,
                 centerY = player.Shape.Ray.CenterPoint.Y,
                 Angle = player.Shape.Ray.Angle,
-                Height = player.Shape.Renderable.Height,
                 Width = player.Shape.Renderable.Width,
-                FillColor = player.Shape.Renderable.FillColor,
-                Health = GameController.Player.Health
+                Height = player.Shape.Renderable.Height,
+                Health = GameController.Player.Health,
+                FillColor = player.Shape.Renderable.FillColor
             };
         }
     }

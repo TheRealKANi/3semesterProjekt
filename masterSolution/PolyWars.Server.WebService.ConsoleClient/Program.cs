@@ -1,13 +1,9 @@
-﻿using PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF;
+﻿using PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
-namespace PolyWars.Server.WebService.ConsoleClient{
-    class Program{
-        static void Main(string[] args){
+namespace PolyWars.Server.WebService.ConsoleClient {
+    class Program {
+        static void Main(string[] args) {
             WebClientServiceClient client = new WebClientServiceClient();
 
             UserData user = new UserData() {

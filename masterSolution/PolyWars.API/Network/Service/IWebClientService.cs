@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.ServiceModel;
 
-namespace PolyWars.Server.Services {
+namespace PolyWars.API.Network.Services {
     [ServiceContract]
     public interface IWebClientService {
 
