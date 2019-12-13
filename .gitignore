@@ -360,5 +360,3 @@ masterSolution/.DS_Store
 *.xsd
 
 *.svcinfo
-
-masterSolution/PolyWars.Web.Client/Connected Services/PolyWarsWebClientService/Reference.cs
