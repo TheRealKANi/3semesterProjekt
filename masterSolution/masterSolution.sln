@@ -2,7 +2,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.29503.13
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Client", "PolyWars\PolyWars.Client.csproj", "{5368CFB8-64D8-455A-B3FF-B55EAEDCC248}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Client", "PolyWars.Client\PolyWars.Client.csproj", "{5368CFB8-64D8-455A-B3FF-B55EAEDCC248}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.API", "PolyWars.API\PolyWars.API.csproj", "{FA82403D-7983-4D13-8518-57C16F92D849}"
 EndProject
@@ -54,8 +54,8 @@ Global
 		{ABFB4B47-0905-4325-AEBF-D69CC1051790}.Release|x64.Build.0 = Release|Any CPU
 		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|x64.Build.0 = Debug|Any CPU
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|x64.ActiveCfg = Debug|x64
+		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|x64.Build.0 = Debug|x64
 		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Release|Any CPU.Build.0 = Release|Any CPU
 		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Release|x64.ActiveCfg = Release|Any CPU
