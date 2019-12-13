@@ -13,12 +13,12 @@ namespace PolyWars.Server.Services {
         }
 
         public bool login(UserData userData) {
-            Debug.WriteLine($"User: '{userData.userName}' tryed to login with password: '{userData.password}' - Returns True");
+            Debug.WriteLine($"User: '{userData.userName}' tried to login with password: '{userData.password}' - Returns True");
             return true;
         }
 
         public bool register(UserData userData) {
-            Debug.WriteLine($"User: '{userData.userName}' tryed to register with password: '{userData.password}' - Returns True");
+            Debug.WriteLine($"User: '{userData.userName}' tried to register with password: '{userData.password}' - Returns True");
             return true;
         }
     }
