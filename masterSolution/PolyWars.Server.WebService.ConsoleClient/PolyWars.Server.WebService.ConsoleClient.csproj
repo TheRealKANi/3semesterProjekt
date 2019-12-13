@@ -54,14 +54,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Connected Services\ServiceReferenceWCF\FlipCaseService.wsdl" />
-    <None Include="Connected Services\ServiceReferenceWCF\item.xsd">
+    <None Include="Connected Services\ServiceReferenceWCF\PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.LeaderboardEntryData.datasource">
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </None>
+    <None Include="Connected Services\ServiceReferenceWCF\WebClientService.wsdl" />
+    <None Include="Connected Services\ServiceReferenceWCF\WebClientService.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ServiceReferenceWCF\item1.xsd">
+    <None Include="Connected Services\ServiceReferenceWCF\WebClientService1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ServiceReferenceWCF\item2.xsd">
+    <None Include="Connected Services\ServiceReferenceWCF\WebClientService2.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\DataSources\PolyWars.Server.WebService.StringData.datasource" />
@@ -79,7 +82,7 @@
     <WCFMetadataStorage Include="Connected Services\ServiceReferenceWCF\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceReferenceWCF\item.disco" />
+    <None Include="Connected Services\ServiceReferenceWCF\WebClientService.disco" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Connected Services\ServiceReferenceWCF\configuration91.svcinfo" />

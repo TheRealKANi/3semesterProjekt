@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="55b0c3dd-9be3-47a4-8ecb-70eb37450734" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
+<ReferenceGroup xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" ID="b9fca2ae-3e45-4fae-936a-acde180306fa" xmlns="urn:schemas-microsoft-com:xml-wcfservicemap">
   <ClientOptions>
     <GenerateAsynchronousMethods>false</GenerateAsynchronousMethods>
     <GenerateTaskBasedAsynchronousMethod>true</GenerateTaskBasedAsynchronousMethod>
@@ -19,14 +19,14 @@
     <ServiceContractMappings />
   </ClientOptions>
   <MetadataSources>
-    <MetadataSource Address="http://localhost:8080/Design_Time_Addresses/FlipCaseService/Service1/" Protocol="http" SourceId="1" />
+    <MetadataSource Address="http://localhost:5701/WebClientService" Protocol="http" SourceId="1" />
   </MetadataSources>
   <Metadata>
-    <MetadataFile FileName="item.xsd" MetadataType="Schema" ID="c883ec08-ed3e-4309-8c64-03dbd114c97a" SourceId="1" SourceUrl="http://localhost:8080/Design_Time_Addresses/FlipCaseService/Service1/?xsd=xsd1" />
-    <MetadataFile FileName="FlipCaseService.wsdl" MetadataType="Wsdl" ID="c3424b5a-f715-4063-b6a1-47cab4be4a8a" SourceId="1" SourceUrl="http://localhost:8080/Design_Time_Addresses/FlipCaseService/Service1/?wsdl" />
-    <MetadataFile FileName="item.disco" MetadataType="Disco" ID="ff55b6c1-c4a7-43e3-9d4d-6276bea7fc78" SourceId="1" SourceUrl="http://localhost:8080/Design_Time_Addresses/FlipCaseService/Service1/?disco" />
-    <MetadataFile FileName="item1.xsd" MetadataType="Schema" ID="2968cfde-af3d-4b6e-b9a5-dce3435a20d0" SourceId="1" SourceUrl="http://localhost:8080/Design_Time_Addresses/FlipCaseService/Service1/?xsd=xsd2" />
-    <MetadataFile FileName="item2.xsd" MetadataType="Schema" ID="77f3db1d-805a-4ccd-9f9e-6623baf5b789" SourceId="1" SourceUrl="http://localhost:8080/Design_Time_Addresses/FlipCaseService/Service1/?xsd=xsd0" />
+    <MetadataFile FileName="WebClientService.xsd" MetadataType="Schema" ID="64ccf4eb-7127-4270-af38-b8d4a1953e4d" SourceId="1" SourceUrl="http://localhost:5701/WebClientService?xsd=xsd2" />
+    <MetadataFile FileName="WebClientService.disco" MetadataType="Disco" ID="7e492213-e77d-4717-b8d3-3ea69792b1d4" SourceId="1" SourceUrl="http://localhost:5701/WebClientService?disco" />
+    <MetadataFile FileName="WebClientService1.xsd" MetadataType="Schema" ID="1fa80c81-0c71-42ad-8b3a-3c75fcba0f86" SourceId="1" SourceUrl="http://localhost:5701/WebClientService?xsd=xsd1" />
+    <MetadataFile FileName="WebClientService2.xsd" MetadataType="Schema" ID="6f1609f7-c2ca-4f99-8880-2f70261fbd0c" SourceId="1" SourceUrl="http://localhost:5701/WebClientService?xsd=xsd0" />
+    <MetadataFile FileName="WebClientService.wsdl" MetadataType="Wsdl" ID="394f879b-dec3-4818-aae7-ed82da3471bd" SourceId="1" SourceUrl="http://localhost:5701/WebClientService?wsdl" />
   </Metadata>
   <Extensions>
     <ExtensionFile FileName="configuration91.svcinfo" Name="configuration91.svcinfo" />
