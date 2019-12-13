@@ -348,3 +348,17 @@ healthchecksdb
 # Backup folder for Package Reference Convert tool in Visual Studio 2017
 MigrationBackup/
 masterSolution/.DS_Store
+
+*.datasource
+
+*.svcmap
+
+*.disco
+
+*.wsdl
+
+*.xsd
+
+*.svcinfo
+
+masterSolution/PolyWars.Web.Client/Connected Services/PolyWarsWebClientService/Reference.cs
