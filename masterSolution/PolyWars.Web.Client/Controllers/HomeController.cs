@@ -13,9 +13,9 @@ namespace PolyWars.Web.Client.Controllers
             return View();
         }
 
-        public ActionResult About()
+        public ActionResult Leaderboard()
         {
-            ViewBag.Message = "Your application description page.";
+            ViewBag.Message = "Track your highscore, and compete with others!";
 
             return View();
         }
