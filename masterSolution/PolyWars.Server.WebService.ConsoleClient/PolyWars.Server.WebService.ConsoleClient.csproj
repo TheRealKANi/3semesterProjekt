@@ -76,9 +76,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Connected Services\PolyWarsWebClientService\PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData.datasource">
-      <DependentUpon>Reference.svcmap</DependentUpon>
-    </None>
     <None Include="Connected Services\PolyWarsWebClientService\WebClientService.wsdl" />
     <None Include="Connected Services\PolyWarsWebClientService\WebClientService.xsd">
       <SubType>Designer</SubType>
@@ -89,7 +86,7 @@
     <None Include="Connected Services\PolyWarsWebClientService\WebClientService2.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Properties\DataSources\PolyWars.Server.WebService.StringData.datasource" />
+    <None Include="Properties\DataSources\PolyWars.API.Network.Services.DataContracts.LeaderboardEntryData.datasource" />
   </ItemGroup>
   <ItemGroup>
     <WCFMetadata Include="Connected Services\" />

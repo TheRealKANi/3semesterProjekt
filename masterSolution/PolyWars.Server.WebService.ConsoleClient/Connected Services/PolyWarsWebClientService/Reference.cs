@@ -9,155 +9,29 @@
 //------------------------------------------------------------------------------
 
 namespace PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService {
-    using System.Runtime.Serialization;
-    using System;
     
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="UserData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.API.Network.Services.DataContrac" +
-        "ts")]
-    [System.SerializableAttribute()]
-    public partial class UserData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string passwordField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string userNameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string password {
-            get {
-                return this.passwordField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.passwordField, value) != true)) {
-                    this.passwordField = value;
-                    this.RaisePropertyChanged("password");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string userName {
-            get {
-                return this.userNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.userNameField, value) != true)) {
-                    this.userNameField = value;
-                    this.RaisePropertyChanged("userName");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
-    
-    [System.Diagnostics.DebuggerStepThroughAttribute()]
-    [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="LeaderboardEntryData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.API.Network.Services.DataContrac" +
-        "ts")]
-    [System.SerializableAttribute()]
-    public partial class LeaderboardEntryData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
-        
-        [System.NonSerializedAttribute()]
-        private System.Runtime.Serialization.ExtensionDataObject extensionDataField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string scoreField;
-        
-        [System.Runtime.Serialization.OptionalFieldAttribute()]
-        private string userNameField;
-        
-        [global::System.ComponentModel.BrowsableAttribute(false)]
-        public System.Runtime.Serialization.ExtensionDataObject ExtensionData {
-            get {
-                return this.extensionDataField;
-            }
-            set {
-                this.extensionDataField = value;
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string score {
-            get {
-                return this.scoreField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.scoreField, value) != true)) {
-                    this.scoreField = value;
-                    this.RaisePropertyChanged("score");
-                }
-            }
-        }
-        
-        [System.Runtime.Serialization.DataMemberAttribute()]
-        public string userName {
-            get {
-                return this.userNameField;
-            }
-            set {
-                if ((object.ReferenceEquals(this.userNameField, value) != true)) {
-                    this.userNameField = value;
-                    this.RaisePropertyChanged("userName");
-                }
-            }
-        }
-        
-        public event System.ComponentModel.PropertyChangedEventHandler PropertyChanged;
-        
-        protected void RaisePropertyChanged(string propertyName) {
-            System.ComponentModel.PropertyChangedEventHandler propertyChanged = this.PropertyChanged;
-            if ((propertyChanged != null)) {
-                propertyChanged(this, new System.ComponentModel.PropertyChangedEventArgs(propertyName));
-            }
-        }
-    }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
     [System.ServiceModel.ServiceContractAttribute(ConfigurationName="PolyWarsWebClientService.IWebClientService")]
     public interface IWebClientService {
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/login", ReplyAction="http://tempuri.org/IWebClientService/loginResponse")]
-        bool login(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData);
+        bool login(PolyWars.API.Network.Services.DataContracts.UserData userData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/login", ReplyAction="http://tempuri.org/IWebClientService/loginResponse")]
-        System.Threading.Tasks.Task<bool> loginAsync(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData);
+        System.Threading.Tasks.Task<bool> loginAsync(PolyWars.API.Network.Services.DataContracts.UserData userData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/register", ReplyAction="http://tempuri.org/IWebClientService/registerResponse")]
-        bool register(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData);
+        bool register(PolyWars.API.Network.Services.DataContracts.UserData userData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/register", ReplyAction="http://tempuri.org/IWebClientService/registerResponse")]
-        System.Threading.Tasks.Task<bool> registerAsync(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData);
+        System.Threading.Tasks.Task<bool> registerAsync(PolyWars.API.Network.Services.DataContracts.UserData userData);
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/GetLeaderBoard", ReplyAction="http://tempuri.org/IWebClientService/GetLeaderBoardResponse")]
-        PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData[] GetLeaderBoard();
+        PolyWars.API.Network.Services.DataContracts.LeaderboardEntryData[] GetLeaderBoard();
         
         [System.ServiceModel.OperationContractAttribute(Action="http://tempuri.org/IWebClientService/GetLeaderBoard", ReplyAction="http://tempuri.org/IWebClientService/GetLeaderBoardResponse")]
-        System.Threading.Tasks.Task<PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData[]> GetLeaderBoardAsync();
+        System.Threading.Tasks.Task<PolyWars.API.Network.Services.DataContracts.LeaderboardEntryData[]> GetLeaderBoardAsync();
     }
     
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.ServiceModel", "4.0.0.0")]
@@ -187,27 +61,27 @@ namespace PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService {
                 base(binding, remoteAddress) {
         }
         
-        public bool login(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData) {
+        public bool login(PolyWars.API.Network.Services.DataContracts.UserData userData) {
             return base.Channel.login(userData);
         }
         
-        public System.Threading.Tasks.Task<bool> loginAsync(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData) {
+        public System.Threading.Tasks.Task<bool> loginAsync(PolyWars.API.Network.Services.DataContracts.UserData userData) {
             return base.Channel.loginAsync(userData);
         }
         
-        public bool register(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData) {
+        public bool register(PolyWars.API.Network.Services.DataContracts.UserData userData) {
             return base.Channel.register(userData);
         }
         
-        public System.Threading.Tasks.Task<bool> registerAsync(PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.UserData userData) {
+        public System.Threading.Tasks.Task<bool> registerAsync(PolyWars.API.Network.Services.DataContracts.UserData userData) {
             return base.Channel.registerAsync(userData);
         }
         
-        public PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData[] GetLeaderBoard() {
+        public PolyWars.API.Network.Services.DataContracts.LeaderboardEntryData[] GetLeaderBoard() {
             return base.Channel.GetLeaderBoard();
         }
         
-        public System.Threading.Tasks.Task<PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData[]> GetLeaderBoardAsync() {
+        public System.Threading.Tasks.Task<PolyWars.API.Network.Services.DataContracts.LeaderboardEntryData[]> GetLeaderBoardAsync() {
             return base.Channel.GetLeaderBoardAsync();
         }
     }

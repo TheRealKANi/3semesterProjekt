@@ -126,7 +126,6 @@ namespace PolyWars.Server {
                     string username = Clients.CallerState.UserName;
                     Clients.Others.removeResource(resourceId);
                     Opponents[username].Wallet += r.Value;
-                    Console.WriteLine($"Player: {username}'s wallet: {Opponents[username].Wallet}");
                     Clients.Caller.updateWallet(Opponents[username].Wallet);
                     removed = true;
                 }

@@ -15,7 +15,8 @@ namespace PolyWars.Web.Client.PolyWarsWebClientService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="UserData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.Server.Services")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="UserData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.API.Network.Services.DataContrac" +
+        "ts")]
     [System.SerializableAttribute()]
     public partial class UserData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         
@@ -76,7 +77,8 @@ namespace PolyWars.Web.Client.PolyWarsWebClientService {
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("System.Runtime.Serialization", "4.0.0.0")]
-    [System.Runtime.Serialization.DataContractAttribute(Name="LeaderboardEntryData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.Server.Services")]
+    [System.Runtime.Serialization.DataContractAttribute(Name="LeaderboardEntryData", Namespace="http://schemas.datacontract.org/2004/07/PolyWars.API.Network.Services.DataContrac" +
+        "ts")]
     [System.SerializableAttribute()]
     public partial class LeaderboardEntryData : object, System.Runtime.Serialization.IExtensibleDataObject, System.ComponentModel.INotifyPropertyChanged {
         

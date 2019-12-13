@@ -1,4 +1,5 @@
-﻿using PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService;
+﻿using PolyWars.API.Network.Services.DataContracts;
+using PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService;
 using System;
 
 namespace PolyWars.Server.WebService.ConsoleClient {

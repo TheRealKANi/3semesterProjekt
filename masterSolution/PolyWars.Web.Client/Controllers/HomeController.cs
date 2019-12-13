@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PolyWars.Web.Client.PolyWarsWebClientService;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -15,7 +16,10 @@ namespace PolyWars.Web.Client.Controllers
 
         public ActionResult Leaderboard()
         {
+            WebClientServiceClient client = new WebClientServiceClient();
+
             ViewBag.Message = "Track your highscore, and compete with others!";
+            ViewBag.leaderboard = client.GetLeaderBoard();
 
             return View();
         }
