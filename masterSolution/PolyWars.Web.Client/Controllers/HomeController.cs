@@ -20,9 +20,9 @@ namespace PolyWars.Web.Client.Controllers
             return View();
         }
 
-        public ActionResult Contact()
+        public ActionResult TheTeam()
         {
-            ViewBag.Message = "Your contact page.";
+            ViewBag.Message = "Project made by";
 
             return View();
         }

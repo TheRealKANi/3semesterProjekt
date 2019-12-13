@@ -4,4 +4,101 @@
 <h2>@ViewBag.Title</h2>
 <h3>@ViewBag.Message</h3>
 
-@*<p>Track your highscore, and compete with others!</p>*@
+<style>
+    .scores {
+        background-color: white;
+        width: 600px;
+        height: 300px;
+        overflow-y: scroll;
+        position: center;
+        border: 5px solid black;
+        overflow-x: hidden;
+        margin-top: 5vh;
+    }
+</style>
+
+<style>
+    /*.container {
+        width: 600px;
+        height: auto;
+    }*/
+
+    .row {
+        position: relative;
+        display: block;
+        width: 55%;
+        height: 40px;
+        border-bottom: 2px solid #AFAFAF;
+    }
+
+    .name {
+        position: relative;
+        display: inline-block;
+        width: 75%;
+        line-height: 45px;
+    }
+
+    .score {
+        position: relative;
+        display: inline-block;
+        width: 25%;
+    }
+
+    .row:nth-child(1) {
+        background: gold;
+    }
+
+    .row:nth-child(2) {
+        background: #c0c0c0;
+    }
+
+    .row:nth-child(3) {
+        background: #cd7f32;
+    }
+</style>
+<div class="scores">
+    <div class=container>
+        <div class="row">
+            <div class="name">Player1</div><div class="score">430</div>
+        </div>
+
+        <div class="row">
+            <div class="name">Player2</div><div class="score">580</div>
+        </div>
+
+        <div class="row">
+            <div class="name">Player3</div><div class="score">310</div>
+        </div>
+
+        <div class="row">
+            <div class="name">Player4</div><div class="score">640</div>
+        </div>
+
+        <div class="row">
+            <div class="name">Player5</div><div class="score">495</div>
+        </div>
+        <div class="row">
+            <div class="name">Player5</div><div class="score">495</div>
+        </div>
+        <div class="row">
+            <div class="name">Player5</div><div class="score">495</div>
+        </div>
+        <div class="row">
+            <div class="name">Player5</div><div class="score">495</div>
+        </div>
+        <div class="row">
+            <div class="name">Player5</div><div class="score">495</div>
+        </div>
+        <div class="row">
+            <div class="name">Player5</div><div class="score">495</div>
+        </div>
+        <div class="row">
+            <div class="name">Player5</div><div class="score">495</div>
+        </div>
+        <div class="row">
+            <div class="name">Player5</div><div class="score">495</div>
+        </div>
+
+    </div>
+
+</div>
