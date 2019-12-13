@@ -8,24 +8,24 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;using System.Threading.Tasks;
+using System.Runtime.CompilerServices;using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
+        private static ConcurrentDictionary<string, IClient> staticClients;
         private static ConcurrentDictionary<string, IUser> PlayerClients;
         private static ConcurrentDictionary<string, PlayerDTO> Opponents;
         private static ConcurrentDictionary<string, ResourceDTO> Resources;
         private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
-        private static object statisticsLock = new object(); 
+        private static ConcurrentDictionary<string, ConcurrentBag<string>> resourceCollitions;
         private static Random rnd;
 
-
-
-        // System.Windows.Media.Colors.DarkSlateGray
-
         private static Stopwatch statisticTimer;
+        private static Stopwatch clientUpdateTimer;
+        private static Thread clientUpdater;
 
         private void methodCallCounter([CallerMemberName] string method = "") {
             if(!string.IsNullOrWhiteSpace(method)) {
@@ -57,21 +57,82 @@ namespace PolyWars.Server {
 
 
         static MainHub() {
-            rnd = new Random((int)Stopwatch.GetTimestamp());
+            rnd = new Random((int) Stopwatch.GetTimestamp());
             Console.SetCursorPosition(0, 1);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
             Bullets = new ConcurrentDictionary<string, BulletDTO>();
+            resourceCollitions = new ConcurrentDictionary<string, ConcurrentBag<string>>();
             statistics = new ConcurrentDictionary<string, int>();
             statisticTimer = new Stopwatch();
+            clientUpdateTimer = new Stopwatch();
             statistics.TryAdd("moved stack", 0);
             //statisticTimer.Start();
+            clientUpdater = new Thread(updateClientsTimer) { IsBackground = true };
+            clientUpdater.Start();
 
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
+        }
+        public static void updateClientsTimer() {
+
+        }
+        public static void updateClients() {
+            List<Task> tasks = new List<Task>();
+            foreach(string resourceID in resourceCollitions.Keys) {
+                tasks.Add(resourceConcurrencyHandling(resourceID));
+            }
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        private static Task resourceConcurrencyHandling(string resourceID) {
+            return Task.Factory.StartNew(() => {
+                ConcurrentBag<string> bag = resourceCollitions[resourceID];
+                if(!bag.IsEmpty) {
+                    List<string> userNames = new List<string>();
+                    string connectionID = string.Empty;
+                    ResourceDTO resourceDTO = null;
+
+                    while(bag.Count > 0) {
+                        string userName = string.Empty;
+                        while(!bag.TryTake(out userName)) { Task.Delay(1); }
+                        if(!string.IsNullOrWhiteSpace(userName)) {
+                            userNames.Add(userName);
+                        }
+                    }
+                    while(!Resources.TryGetValue(resourceID, out resourceDTO)) { Task.Delay(1); }
+
+                    string winner = GetRandomWinner(userNames);
+
+                    if(PlayerClients.ContainsKey(winner)) {
+                        connectionID = PlayerClients[winner].ID;
+                    }
+                    if(!string.IsNullOrWhiteSpace(connectionID)) {
+                        staticClients[connectionID].updateWallet(resourceDTO.Value);
+                    }
+                }
+            });
+        }
+
+        // trying to achieve a bit more randomness here
+        private static string GetRandomWinner(List<string> userNames) {
+            string winner = string.Empty;
+            if(userNames.Count > 1) {
+                int seed = 0xffff;
+                foreach(string userName in userNames) {
+                    seed &= userName.ToArray().Sum(x => x);
+                }
+                Random r = new Random(seed);
+                int winnerIndex = r.Next(0, int.MaxValue) % userNames.Count;
+                winner = userNames[winnerIndex];
+            } else {
+                winner = userNames[0];
+            }
+
+            return winner;
         }
 
         public bool playerGotShot(BulletDTO bullet) {
@@ -120,14 +181,16 @@ namespace PolyWars.Server {
             methodCallCounter();
             bool removed = false;
             await Task.Factory.StartNew(() => {
-                removed = Resources.TryRemove(resourceId, out ResourceDTO r);
-                if(removed) {
-                    Clients.Others.removeResource(resourceId);
-                    string username = Clients.CallerState.UserName;
-                    Opponents[username].Wallet += r.Value;
-                    Clients.Caller.updateWallet(Opponents[username].Wallet);
-                    removed = true;
-                }
+                //removed = Resources.TryRemove(resourceId, out ResourceDTO r);
+                //if(removed) {
+                //    Clients.Others.removeResource(resourceId);
+                //    string username = Clients.CallerState.UserName;
+                //    Opponents[username].Wallet += r.Value;
+                //    Clients.Caller.updateWallet(Opponents[username].Wallet);
+                //    removed = true;
+                //}
+                while(!resourceCollitions.ContainsKey(resourceId) && !resourceCollitions.TryAdd(resourceId, new ConcurrentBag<string>())) { Task.Delay(1); }
+                resourceCollitions[resourceId].Add((string) Clients.CallerState.UserName);
             });
             return removed;
         }
@@ -163,6 +226,7 @@ namespace PolyWars.Server {
 
         public override Task OnConnected() {
             methodCallCounter();
+            while(!staticClients.TryAdd(Context.ConnectionId, Clients.Caller)) { Task.Delay(1); }
             Console.WriteLine($"Client connected: '{Context.ConnectionId}'");
             return base.OnConnected();
         }
@@ -270,6 +334,7 @@ namespace PolyWars.Server {
                 Clients.Others.ClientDisconnected(userName);
                 Console.WriteLine($"<> {userName} disconnected");
             }
+            while(!staticClients.TryRemove(userName, out IClient discard)) { Task.Delay(1); };
             return base.OnDisconnected(stopCalled);
         }
     }
