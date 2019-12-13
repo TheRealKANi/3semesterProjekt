@@ -27,6 +27,8 @@ namespace PolyWars.Server {
         private static Stopwatch clientUpdateTimer;
         private static Thread clientUpdater;
 
+        private static readonly double updateRate = 1d / 60;
+
         private void methodCallCounter([CallerMemberName] string method = "") {
             if(!string.IsNullOrWhiteSpace(method)) {
                 if(statistics.ContainsKey(method)) {
@@ -65,10 +67,13 @@ namespace PolyWars.Server {
             Bullets = new ConcurrentDictionary<string, BulletDTO>();
             resourceCollitions = new ConcurrentDictionary<string, ConcurrentBag<string>>();
             statistics = new ConcurrentDictionary<string, int>();
-            statisticTimer = new Stopwatch();
-            clientUpdateTimer = new Stopwatch();
             statistics.TryAdd("moved stack", 0);
-            //statisticTimer.Start();
+            
+            statisticTimer = new Stopwatch();
+            statisticTimer.Start();
+            
+            clientUpdateTimer = new Stopwatch();
+            clientUpdateTimer.Start();
             clientUpdater = new Thread(updateClientsTimer) { IsBackground = true };
             clientUpdater.Start();
 
@@ -78,7 +83,10 @@ namespace PolyWars.Server {
             }
         }
         public static void updateClientsTimer() {
-
+            if(clientUpdateTimer.Elapsed.TotalMilliseconds >= updateRate) {
+                clientUpdateTimer.Restart();
+                updateClients();
+            }
         }
         public static void updateClients() {
             List<Task> tasks = new List<Task>();
