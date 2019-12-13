@@ -73,12 +73,6 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PolyWars.Server.WebService\PolyWars.Server.WebService.csproj">
-      <Project>{42d95dbe-31ca-4686-b746-8c3b696766e2}</Project>
-      <Name>PolyWars.Server.WebService</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <WCFMetadataStorage Include="Connected Services\ServiceReferenceWCF\" />
   </ItemGroup>
   <ItemGroup>
