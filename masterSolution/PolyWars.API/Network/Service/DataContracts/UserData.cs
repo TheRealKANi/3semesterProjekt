@@ -1,6 +1,6 @@
 ﻿using System.Runtime.Serialization;
 
-namespace PolyWars.Server.Services {
+namespace PolyWars.API.Network.Services.DataContracts {
     [DataContract]
     public class UserData {
         [DataMember]

@@ -66,7 +66,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Connected Services\ServiceReferenceWCF\Reference.cs">
+    <Compile Include="Connected Services\PolyWarsWebClientService\Reference.cs">
       <AutoGen>True</AutoGen>
       <DesignTime>True</DesignTime>
       <DependentUpon>Reference.svcmap</DependentUpon>
@@ -76,17 +76,17 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
-    <None Include="Connected Services\ServiceReferenceWCF\PolyWars.Server.WebService.ConsoleClient.ServiceReferenceWCF.LeaderboardEntryData.datasource">
+    <None Include="Connected Services\PolyWarsWebClientService\PolyWars.Server.WebService.ConsoleClient.PolyWarsWebClientService.LeaderboardEntryData.datasource">
       <DependentUpon>Reference.svcmap</DependentUpon>
     </None>
-    <None Include="Connected Services\ServiceReferenceWCF\WebClientService.wsdl" />
-    <None Include="Connected Services\ServiceReferenceWCF\WebClientService.xsd">
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService.wsdl" />
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ServiceReferenceWCF\WebClientService1.xsd">
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService1.xsd">
       <SubType>Designer</SubType>
     </None>
-    <None Include="Connected Services\ServiceReferenceWCF\WebClientService2.xsd">
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService2.xsd">
       <SubType>Designer</SubType>
     </None>
     <None Include="Properties\DataSources\PolyWars.Server.WebService.StringData.datasource" />
@@ -95,19 +95,25 @@
     <WCFMetadata Include="Connected Services\" />
   </ItemGroup>
   <ItemGroup>
-    <WCFMetadataStorage Include="Connected Services\ServiceReferenceWCF\" />
+    <ProjectReference Include="..\PolyWars.API\PolyWars.API.csproj">
+      <Project>{fa82403d-7983-4d13-8518-57c16f92d849}</Project>
+      <Name>PolyWars.API</Name>
+    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceReferenceWCF\WebClientService.disco" />
+    <WCFMetadataStorage Include="Connected Services\PolyWarsWebClientService\" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceReferenceWCF\configuration91.svcinfo" />
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService.disco" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceReferenceWCF\configuration.svcinfo" />
+    <None Include="Connected Services\PolyWarsWebClientService\configuration91.svcinfo" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Connected Services\ServiceReferenceWCF\Reference.svcmap">
+    <None Include="Connected Services\PolyWarsWebClientService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\PolyWarsWebClientService\Reference.svcmap">
       <Generator>WCF Proxy Generator</Generator>
       <LastGenOutput>Reference.cs</LastGenOutput>
     </None>

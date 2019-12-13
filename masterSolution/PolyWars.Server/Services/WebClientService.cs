@@ -1,15 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using PolyWars.API.Network.DTO;
+using PolyWars.API.Network.Services.DataContracts;
+using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 
 namespace PolyWars.Server.Services {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "WebClientService" in both code and config file together.
     public class WebClientService : IWebClientService {
         public List<LeaderboardEntryData> GetLeaderBoard() {
-            List<LeaderboardEntryData> lb = new List<LeaderboardEntryData>();
-            lb.Add(new LeaderboardEntryData() { score = "1337", userName = "Kani" });
-            lb.Add(new LeaderboardEntryData() { score = "1", userName = "Thure" });
-            lb.Add(new LeaderboardEntryData() { score = "To Emberrasing to show", userName = "Silas" });
-            return lb;
+            List<LeaderboardEntryData> leaderBoard = new List<LeaderboardEntryData>();
+            foreach(PlayerDTO currentPlayer in MainHub.getLeaderBoard()) {
+                leaderBoard.Add(new LeaderboardEntryData() { score = currentPlayer.Wallet.ToString(), userName = currentPlayer.Name });
+            }
+            return leaderBoard;
         }
 
         public bool login(UserData userData) {
