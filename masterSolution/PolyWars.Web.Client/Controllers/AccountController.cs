@@ -1,5 +1,5 @@
 ﻿using PolyWars.Web.Client.Models;
-using PolyWars.Web.Client.ServiceReferenceWCF;
+using PolyWars.Web.Client.PolyWarsWebClientService;
 using System.Threading.Tasks;
 using System.Web.Mvc;
 
