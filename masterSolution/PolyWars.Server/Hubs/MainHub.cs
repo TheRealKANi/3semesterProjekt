@@ -2,6 +2,8 @@
 using PolyWars.API;
 using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
+using PolyWars.API.Network.Services.DataContracts;
+using PolyWars.Server.AccessLayer;
 using PolyWars.Server.Factories;
 using System;
 using System.Collections.Concurrent;
@@ -9,23 +11,21 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Runtime.CompilerServices;using System.Threading.Tasks;
-using System.Windows.Media;
 
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
         private static ConcurrentDictionary<string, IUser> PlayerClients;
         private static ConcurrentDictionary<string, PlayerDTO> Opponents;
-        private static ConcurrentDictionary<string, ResourceDTO> Resources;
+        internal static ConcurrentDictionary<string, ResourceDTO> Resources;
         private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
-        private static object statisticsLock = new object(); 
+        private static object statisticsLock = new object();
         private static Random rnd;
-
-
-
-        // System.Windows.Media.Colors.DarkSlateGray
-
         private static Stopwatch statisticTimer;
+
+        public static List<PlayerDTO> getLeaderBoard() {
+            return new List<PlayerDTO>(Opponents.Values).OrderByDescending((x) => x.Wallet).ToList();
+        }
 
         private void methodCallCounter([CallerMemberName] string method = "") {
             if(!string.IsNullOrWhiteSpace(method)) {
@@ -57,21 +57,39 @@ namespace PolyWars.Server {
 
 
         static MainHub() {
-            rnd = new Random((int)Stopwatch.GetTimestamp());
+            rnd = new Random((int) Stopwatch.GetTimestamp());
             Console.SetCursorPosition(0, 1);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
             Bullets = new ConcurrentDictionary<string, BulletDTO>();
             statistics = new ConcurrentDictionary<string, int>();
-            statisticTimer = new Stopwatch();
             statistics.TryAdd("moved stack", 0);
-            //statisticTimer.Start();
+
+            statisticTimer = new Stopwatch();
+            statisticTimer.Start();
 
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
+        }
+        // trying to achieve a bit more randomness here
+        private static string GetRandomWinner(List<string> userNames) {
+            string winner = string.Empty;
+            if(userNames.Count > 1) {
+                int seed = 0xffff;
+                foreach(string userName in userNames) {
+                    seed &= userName.ToArray().Sum(x => x);
+                }
+                Random r = new Random(seed);
+                int winnerIndex = r.Next(0, int.MaxValue) % userNames.Count;
+                winner = userNames[winnerIndex];
+            } else {
+                winner = userNames[0];
+            }
+
+            return winner;
         }
 
         public bool playerGotShot(BulletDTO bullet) {
@@ -82,12 +100,14 @@ namespace PolyWars.Server {
                 if(Bullets.ContainsKey(bullet.ID) && Bullets.TryRemove(bullet.ID, out BulletDTO bulletDTO)) {
                     Clients.Others.removeBullet(bulletDTO);
                     player.Health -= bulletDTO.Damage;
-                    Console.WriteLine($"{player.Name} got hit with a bullet, dealing {bulletDTO.Damage} damage from {bullet.PlayerID}");
                     result = true;
                     if(player.Health < 1) {
-                        Clients.Caller.playerDied(bulletDTO.PlayerID);
-                        Clients.Others.removeDeadOpponent(player.Name);
-                        Console.WriteLine($"Removing dead player: '{player.Name}' from other clients");
+                        if(Opponents.TryRemove(player.Name, out PlayerDTO deadPlayer)) {
+                            Clients.Caller.playerDied(bulletDTO.PlayerID);
+                            Clients.Others.removeDeadOpponent(deadPlayer.Name);
+                        } else {
+                            Console.WriteLine($"playerGotShot Error, Could not remove dead player '{deadPlayer.Name}' from List of Opponents");
+                        }
                     } else {
                         Clients.Caller.updateHealth(player.Health);
                     }
@@ -106,25 +126,20 @@ namespace PolyWars.Server {
                     bool addBullet = Bullets.TryAdd(bullet.ID, bullet);
                     if(addBullet) {
                         result = true;
-                        //Console.WriteLine(shootingPlayer.Name + " has fired a bullet, dealing " + bullet.Damage + " damage");
                         Clients.All.opponentShoots(bullet);
                     }
                 }
             });
             return result;
         }
-
         // Called from client when they collide with a resource
         public async Task<bool> playerCollectedResource(string resourceId) {
             methodCallCounter();
             bool removed = false;
             await Task.Factory.StartNew(() => {
-                removed = Resources.TryRemove(resourceId, out ResourceDTO r);
-                if(removed) {
-                    //Console.WriteLine($"Player Removed Resource: {resourceId}");
-                    // Updates all other clients with new list of resources
-                    Clients.Others.removeResource(resourceId);
+                if(Resources.TryRemove(resourceId, out ResourceDTO r)) {
                     string username = Clients.CallerState.UserName;
+                    Clients.Others.removeResource(resourceId);
                     Opponents[username].Wallet += r.Value;
                     Clients.Caller.updateWallet(Opponents[username].Wallet);
                     removed = true;
@@ -132,12 +147,12 @@ namespace PolyWars.Server {
             });
             return removed;
         }
-
         public async Task<List<ResourceDTO>> getResources() {
             methodCallCounter();
             List<ResourceDTO> resources = await Task.Factory.StartNew(() => new List<ResourceDTO>(Resources.Values));
             return resources;
-        }
+        }
+
         /// <summary>
         /// Returns a list with opponents on the server AND containing the client's own object
         /// </summary>
@@ -145,7 +160,8 @@ namespace PolyWars.Server {
             methodCallCounter();
             List<PlayerDTO> opponents = await Task.Factory.StartNew(() => new List<PlayerDTO>(Opponents.Values.Where(x => x.Name != Clients.CallerState.UserName)));
             return opponents;
-        }        public async Task<PlayerDTO> getPlayerShip() {
+        }
+        public async Task<PlayerDTO> getPlayerShip() {
             methodCallCounter();
             string userName = Clients.CallerState.UserName;
             return await Task.Factory.StartNew<PlayerDTO>(() => {
@@ -155,14 +171,11 @@ namespace PolyWars.Server {
                 return null;
             });
         }
-
         public List<BulletDTO> getBullets() {
             methodCallCounter();
             List<BulletDTO> bullets = new List<BulletDTO>(Bullets.Values);
-            Console.WriteLine($"Client asked for bullets: '{Context.ConnectionId}'");
             return bullets;
-        }
-
+        }
         public override Task OnConnected() {
             methodCallCounter();
             Console.WriteLine($"Client connected: '{Context.ConnectionId}'");
@@ -173,8 +186,12 @@ namespace PolyWars.Server {
             return await Task.Factory.StartNew(() => {
                 if(!PlayerClients.ContainsKey(username)) {
                     // TODO Verify user creds from DB here
-                    if(true) {
-                        Console.WriteLine($"++ {username} logged in on connection id: '{Context.ConnectionId}', pass :'{hashedPassword}'");
+                    UserData userData = new UserData() {
+                        userName = username,
+                        password = hashedPassword
+                    };
+                    if(UserDB.loginUser(userData)) {
+                        Console.WriteLine($"++ {username} logged in");
                         IUser newUser = new User(username, Context.ConnectionId, hashedPassword);
                         bool added = PlayerClients.TryAdd(username, newUser);
 
@@ -186,26 +203,9 @@ namespace PolyWars.Server {
 
                         // Accounces to all other connected clients that *username* has joined
                         Clients.Others.announceClientLoggedIn(username);
-                        Random r = new Random();
 
                         // Creates the basic opponent layout
-                        PlayerDTO newPlayer = new PlayerDTO() {
-                            ID = newUser.ID,
-                            Name = newUser.Name,
-                            centerX = r.Next(50, 550),
-                            centerY = r.Next(50, 550),
-                            Angle = 0,
-                            Velocity = 0,
-                            MaxVelocity = 15,
-                            RPM = 0,
-                            MaxRPM = 60,
-                            Vertices = 3,
-                            Wallet = 0,
-                            Width = 50,
-                            Height = 50,
-                            Health = 100,
-                            FillColor = GetColor(newUser.Name)
-                        };
+                        PlayerDTO newPlayer = PlayerDTOFactory.GetPlayerDTO(newUser);
                         if(Opponents.TryAdd(newPlayer.Name, newPlayer)) {
                             Clients.Others.opponentJoined(newPlayer);
                             return newUser;
@@ -217,11 +217,6 @@ namespace PolyWars.Server {
                 }
                 return null;
             });
-        }
-        private static Color GetColor(string username) {
-            Color c = Color.FromArgb(255, (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256));
-            Console.WriteLine($"Player '{username}' got a color '{c.ToString()}'");
-            return c;
         }
         public async Task<bool> playerMoved(PlayerDTO player) {
             statistics["moved stack"]++;

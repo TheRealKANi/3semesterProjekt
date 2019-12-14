@@ -1,0 +1,21 @@
+﻿<Window x:Class="PolyWars.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:Views="clr-namespace:PolyWars.View"
+        xmlns:nav="clr-namespace:PolyWars"
+        xmlns:local="clr-namespace:PolyWars"
+        mc:Ignorable="d"
+        Focusable="True"
+        
+        Title="PolyWars Ultimate Bloody MMO battle royal Gory War Simulator 9001!" Height="900" Width="1050" Top="0" Left="0" >
+    <!--WindowState="Maximized-->
+    <Window.Resources>
+        <nav:NavigationController x:Key="Nav"/>
+    </Window.Resources>
+    
+    <Grid>
+        <Frame Name="Polywars" Content="{Binding Source={x:Static nav:NavigationController.Instance}, Path=Frame}" VerticalAlignment="Stretch" HorizontalAlignment="Stretch" NavigationUIVisibility="Hidden"/>
+    </Grid>
+</Window>
