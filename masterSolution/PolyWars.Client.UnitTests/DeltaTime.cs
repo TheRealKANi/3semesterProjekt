@@ -5,7 +5,7 @@ namespace PolyWars.Client.UnitTests {
     [TestClass]
     public class GameControllerTests {
         [TestMethod]
-        public void TestDeltaTime() {
+        public void testDeltaTime() {
             Ticker t = new Ticker();
 
             double dt5 = t.DeltaTime(1000d / 5);
