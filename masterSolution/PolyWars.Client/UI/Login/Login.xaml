@@ -21,10 +21,9 @@
             <ComboBox ItemsSource="{Binding Urls}" SelectedItem="{Binding SelectedUrl}"/>
             <Label>Username</Label>
             <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-            <!-- Should be password box in release version-->
             <Label>Password</Label>
-            <TextBox Name="pwBox" Text="{Binding HashedPassword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
-            <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}">Log In</Button>
+            <PasswordBox Name="pwBox" Password="123456"/>
+            <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=pwBox, Path=Password}">Log In</Button>
         </StackPanel>
     </Grid>
 </Page>
