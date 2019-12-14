@@ -6,6 +6,7 @@ using System.Web.Mvc;
 namespace PolyWars.Web.Client.Controllers {
     public class AccountController : Controller {
 
+        public static string UserName { get; set; }
         //URL: /Account/Register
         public ActionResult Register() {
             return View();
@@ -23,8 +24,13 @@ namespace PolyWars.Web.Client.Controllers {
                 };
                 if(client.register(userData)) {
                     if(client.login(userData)) {
+                        UserName = userData.userName;
                         return RedirectToAction("Index", "Home");
+                    } else {
+                        UserName = null;
                     }
+                } else {
+                    UserName = null;
                 }
             }
             // If we got this far, something failed, redisplay form
@@ -52,12 +58,20 @@ namespace PolyWars.Web.Client.Controllers {
             };
 
             if(client.login(userData)) {
-
+                UserName = userData.userName;
                 return RedirectToLocal(returnUrl);
             } else {
-
+                UserName = null;
                 return View(model);
             }
+        }
+
+        // POST: /Account/LogOff
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult LogOff() {
+            UserName = null;
+            return RedirectToAction("Index", "Home");
         }
 
         private ActionResult RedirectToLocal(string returnUrl) {
