@@ -11,8 +11,7 @@ namespace PolyWars.UI.Login {
     class Login_ViewModel : Observable {        public Login_ViewModel() {
             Urls = new string[] {                "localhost", // Lan Client Test                "109.57.212.47", // WAN Client Test                "polywars.servegame.com"            };            ConnectingDialogVisibility = Visibility.Collapsed;
             
-            Name = "test";
-            HashedPassword = "123456";        }
+            Name = "test";        }
         private IUser user;
         private string name;
         public string Name {
@@ -24,17 +23,7 @@ namespace PolyWars.UI.Login {
                 NotifyPropertyChanged();
             }
         }
-        private string hashedPassword;
-        public string HashedPassword {
-            get {
-                return hashedPassword;
-            }
-            set {
-                hashedPassword = value;
-                NotifyPropertyChanged();
-            }
-        }
-        private string[] urls;
+        private string[] urls;
         public string[] Urls {            get {                return urls;            }            set {                urls = value;                SelectedUrl = urls[0];                NotifyPropertyChanged();            }        }        private string selectedUrl;        public string SelectedUrl {            get {                return selectedUrl;            }            set {                selectedUrl = value;                NetworkController.GameService.ServerIP = value;                NotifyPropertyChanged();            }        }        private string connectingDialogText;        public string ConnectingDialogText {            get {                return connectingDialogText;            }            set {                connectingDialogText = "Connecting to: " + value;                NotifyPropertyChanged();            }        }        private Visibility connectingDialogVisibility;        public Visibility ConnectingDialogVisibility {            get {                return connectingDialogVisibility;            }            set {                connectingDialogVisibility = value;                NotifyPropertyChanged();            }        }        private ICommand loginCommand;
         public ICommand LoginCommand {
             get {
