@@ -153,16 +153,16 @@ namespace PolyWars.Logic {
         /// </summary>
         private static bool bulletOutOfBounds(Point p) {
             bool result = true;
-            int upperWidthBound = 4000; // Ish 4k 
-            int upperHeightBound = 2200;
+            int boundValue = 6;
+            int lowerHeightBound = boundValue;
+            int lowerWidthBound = boundValue;
+            // 0+3 , 1024-3   3-1024-6
+            int upperWidthBound = ArenaController.ArenaBoundWidth - boundValue;
+            int upperHeightBound = ArenaController.ArenaBoundHeight - boundValue;
 
-            int lowerHeightBound = 0;
-            int lowerWidthBound = 0;
 
-            if(p.X > lowerWidthBound && p.X <= upperWidthBound) {
-                if(p.Y > lowerHeightBound && p.Y <= upperHeightBound) {
-                    result = false;
-                }
+            if(p.X > lowerWidthBound && p.X < upperWidthBound && p.Y > lowerHeightBound && p.Y < upperHeightBound) {
+                result = false;
             }
             return result;
         }
