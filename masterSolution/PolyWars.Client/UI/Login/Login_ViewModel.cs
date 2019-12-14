@@ -9,9 +9,7 @@ using System.Windows.Input;
 
 namespace PolyWars.UI.Login {
     class Login_ViewModel : Observable {        public Login_ViewModel() {
-            Urls = new string[] {                "localhost", // Lan Client Test                "109.57.212.47", // WAN Client Test                "polywars.servegame.com"            };            ConnectingDialogVisibility = Visibility.Collapsed;
-            
-            Name = "test";        }
+            Urls = new string[] {                "PolyWars.LeetFix.dk",                "PolyWars.ServeGame.com"            };            ConnectingDialogVisibility = Visibility.Collapsed;        }
         private IUser user;
         private string name;
         public string Name {

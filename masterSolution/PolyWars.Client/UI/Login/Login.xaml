@@ -22,7 +22,7 @@
             <Label>Username</Label>
             <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <Label>Password</Label>
-            <PasswordBox Name="pwBox" Password="123456"/>
+            <PasswordBox Name="pwBox"/>
             <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=pwBox, Path=Password}">Log In</Button>
         </StackPanel>
     </Grid>
