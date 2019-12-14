@@ -1,4 +1,4 @@
-# Third Semester Project
+# 3. Semester Project - Group0 - DMAA0918
 
 #### We are a group of Computer Science Students From UCN Aalborg (Sofiendalsvej) in Denmark
 #### For our third semester project we chose to design a rudimentary Game and GameEngine from scratch.
