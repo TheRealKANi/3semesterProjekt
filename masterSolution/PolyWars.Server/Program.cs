@@ -4,36 +4,55 @@ using Microsoft.Owin.Hosting;
 using Owin;
 using PolyWars.API;
 using System;
+using System.Runtime.InteropServices;
+using System.Linq;
 
 namespace PolyWars.Server {
-    namespace ChatServerCS {
-        class Program {
-            public static IAppBuilder app;
-            static void Main(string[] args) {
-                
-                string url = $"http://*:{Constants.serverPort}/";
-                // netsh http add urlacl url=http://*:5700/ user=Alle // only if not started as an admin user
+    class Program {
+        internal static bool serverLoaded = false;
+        #region source https://stackoverflow.com/questions/3571627/show-hide-the-console-window-of-a-c-sharp-console-application
+        [DllImport("kernel32.dll")]
+        static extern IntPtr GetConsoleWindow();
 
-                while(true) {
-                    using(WebApp.Start<Startup>(url)) {
-                        Console.WriteLine($"Server running at {url}");
+        [DllImport("user32.dll")]
+        static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 
-                        Console.ReadLine();
-                    }
+        const int SW_HIDE = 0;
+        const int SW_SHOW = 5;
+        #endregion
+        public static IAppBuilder app;
+        internal static void Main(params string[] args) {
+            string url = string.Empty;
+            if(args.Length == 0 || args.Length > 0 && !args.Contains("unitTest")) {
+                url = $"http://*:{Constants.serverPort}/";
+            }else{
+                if(args.Contains("noConsole")) {
+                    IntPtr consoleHandle = GetConsoleWindow();
+                    ShowWindow(consoleHandle, SW_HIDE);
+                }
+                if(args.Contains("unitTest")) {
+                    url = $"http://127.0.0.1:{Constants.serverPort}/";
+                }
+            }
+            // netsh http add urlacl url=http://*:5700/ user=Alle // only if not started as an admin user
+
+            while(true) {
+                using(WebApp.Start<Startup>(url)) {
+                    Console.WriteLine($"Server running at {url}");
+                    serverLoaded = true;
+                    Console.ReadLine();
                 }
             }
         }
+    }
 
-        public class Startup {
-            public void Configuration(IAppBuilder app) {
-                Program.app = app;
-                app.UseCors(CorsOptions.AllowAll);
-                app.MapSignalR(Constants.serverEndPoint, new HubConfiguration() { EnableDetailedErrors = true });
-
-
-
-                GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = null;
-            }
+    public class Startup {
+        public void Configuration(IAppBuilder app) {
+            Program.app = app;
+            app.UseCors(CorsOptions.AllowAll);
+            app.MapSignalR(Constants.serverEndPoint, new HubConfiguration() { EnableDetailedErrors = true });
+            GlobalHost.Configuration.MaxIncomingWebSocketMessageSize = null;
         }
     }
 }
+

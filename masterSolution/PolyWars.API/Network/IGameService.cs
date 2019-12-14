@@ -20,7 +20,7 @@ namespace PolyWars.API.Network {
         event Action<PlayerDTO> opponentMoved;
 
         HubConnection Connection { get; set; }
-        Task<bool> ConnectAsync();
+        Task<bool> ConnectAsync(bool isUnitTesting);
         Task<IUser> LoginAsync(string name, string hashedPassword);
         Task LogoutAsync();
         Task<List<ResourceDTO>> getResourcesAsync();

@@ -15,8 +15,7 @@ using System.Windows;
 using System.Windows.Media;
 
 namespace PolyWars.Adapters {
-    class ResourceAdapter {
-
+    public class ResourceAdapter {
         public static IResource DTOToResource(ResourceDTO dto) {
             IRay ray = new Ray(dto.ID, new Point(dto.CenterX, dto.CenterY), dto.Angle);
             IRenderable renderable = new Renderable(Colors.Black, Colors.ForestGreen, 1, 15, 15, 4);

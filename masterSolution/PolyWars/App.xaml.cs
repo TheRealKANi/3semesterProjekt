@@ -1,4 +1,5 @@
 ﻿using PolyWars.Network;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -13,8 +14,9 @@ namespace PolyWars {
             // send server a logout signal
             GameService gm = NetworkController.GameService;
             Debug.WriteLine("App Closed - Logging out client");
-            Task.WaitAll(gm.LogoutAsync());
+            if(NetworkController.IsConnected) {
+                Task.Run(async () => await gm.LogoutAsync()).Wait();
+            }
         }
-
     }
 }

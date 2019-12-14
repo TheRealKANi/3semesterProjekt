@@ -14,20 +14,20 @@ using System.Windows.Media;
 
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
-        private static ConcurrentDictionary<string, IClient> staticClients;
-        private static ConcurrentDictionary<string, IUser> PlayerClients;
-        private static ConcurrentDictionary<string, PlayerDTO> Opponents;
-        private static ConcurrentDictionary<string, ResourceDTO> Resources;
-        private static ConcurrentDictionary<string, BulletDTO> Bullets;
-        private static ConcurrentDictionary<string, int> statistics;
-        private static ConcurrentDictionary<string, ConcurrentBag<string>> resourceCollitions;
+        internal static ConcurrentDictionary<string, IClient> staticClients;
+        internal static ConcurrentDictionary<string, IUser> PlayerClients;
+        internal static ConcurrentDictionary<string, PlayerDTO> Opponents;
+        internal static ConcurrentDictionary<string, ResourceDTO> Resources;
+        internal static ConcurrentDictionary<string, BulletDTO> Bullets;
+        internal static ConcurrentDictionary<string, int> statistics;
+        internal static ConcurrentDictionary<string, ConcurrentBag<string>> resourceCollitions;
         private static Random rnd;
 
         private static Stopwatch statisticTimer;
         private static Stopwatch clientUpdateTimer;
         private static Thread clientUpdater;
 
-        private static readonly double updateRate = 1d / 60;
+        private static readonly double updateRate = 1000d / 60;
 
         private void methodCallCounter([CallerMemberName] string method = "") {
             if(!string.IsNullOrWhiteSpace(method)) {
@@ -66,12 +66,13 @@ namespace PolyWars.Server {
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
             Bullets = new ConcurrentDictionary<string, BulletDTO>();
             resourceCollitions = new ConcurrentDictionary<string, ConcurrentBag<string>>();
+            staticClients = new ConcurrentDictionary<string, IClient>();
             statistics = new ConcurrentDictionary<string, int>();
             statistics.TryAdd("moved stack", 0);
-            
+
             statisticTimer = new Stopwatch();
             statisticTimer.Start();
-            
+
             clientUpdateTimer = new Stopwatch();
             clientUpdateTimer.Start();
             clientUpdater = new Thread(updateClientsTimer) { IsBackground = true };
@@ -83,22 +84,26 @@ namespace PolyWars.Server {
             }
         }
         public static void updateClientsTimer() {
-            if(clientUpdateTimer.Elapsed.TotalMilliseconds >= updateRate) {
+            while(true) {
+                while(clientUpdateTimer.Elapsed.TotalMilliseconds < updateRate) { Thread.Sleep((int)(updateRate - clientUpdateTimer.Elapsed.TotalMilliseconds)); }
                 clientUpdateTimer.Restart();
-                updateClients();
+                updateClients(); 
             }
         }
-        public static void updateClients() {
+
+        public static void updateClients([CallerMemberName] string s = "") {
             List<Task> tasks = new List<Task>();
+            
             foreach(string resourceID in resourceCollitions.Keys) {
-                tasks.Add(resourceConcurrencyHandling(resourceID));
+                tasks.Add(Task.Factory.StartNew( () => resourceConcurrencyHandling(resourceID)));
             }
             Task.WaitAll(tasks.ToArray());
         }
-
         private static Task resourceConcurrencyHandling(string resourceID) {
+            Debug.WriteLine($"{++i}");
             return Task.Factory.StartNew(() => {
-                ConcurrentBag<string> bag = resourceCollitions[resourceID];
+            ConcurrentBag<string> bag = null;
+                while(!resourceCollitions.TryGetValue(resourceID, out bag)) { Task.Delay(1); }
                 if(!bag.IsEmpty) {
                     List<string> userNames = new List<string>();
                     string connectionID = string.Empty;
@@ -183,22 +188,18 @@ namespace PolyWars.Server {
             });
             return result;
         }
-
+        private static int i = 0;
         // Called from client when they collide with a resource
         public async Task<bool> playerCollectedResource(string resourceId) {
             methodCallCounter();
+            //Debug.WriteLine($"called {++i} times");
             bool removed = false;
             await Task.Factory.StartNew(() => {
-                //removed = Resources.TryRemove(resourceId, out ResourceDTO r);
-                //if(removed) {
-                //    Clients.Others.removeResource(resourceId);
-                //    string username = Clients.CallerState.UserName;
-                //    Opponents[username].Wallet += r.Value;
-                //    Clients.Caller.updateWallet(Opponents[username].Wallet);
-                //    removed = true;
-                //}
-                while(!resourceCollitions.ContainsKey(resourceId) && !resourceCollitions.TryAdd(resourceId, new ConcurrentBag<string>())) { Task.Delay(1); }
+                if(!resourceCollitions.ContainsKey(resourceId)) {
+                    while(!resourceCollitions.TryAdd(resourceId, new ConcurrentBag<string>())) { Task.Delay(1); }
+                }
                 resourceCollitions[resourceId].Add((string) Clients.CallerState.UserName);
+                removed = true;
             });
             return removed;
         }
@@ -207,7 +208,8 @@ namespace PolyWars.Server {
             methodCallCounter();
             List<ResourceDTO> resources = await Task.Factory.StartNew(() => new List<ResourceDTO>(Resources.Values));
             return resources;
-        }
+        }
+
         /// <summary>
         /// Returns a list with opponents on the server AND containing the client's own object
         /// </summary>
@@ -215,7 +217,8 @@ namespace PolyWars.Server {
             methodCallCounter();
             List<PlayerDTO> opponents = await Task.Factory.StartNew(() => new List<PlayerDTO>(Opponents.Values.Where(x => x.Name != Clients.CallerState.UserName)));
             return opponents;
-        }        public async Task<PlayerDTO> getPlayerShip() {
+        }
+        public async Task<PlayerDTO> getPlayerShip() {
             methodCallCounter();
             string userName = Clients.CallerState.UserName;
             return await Task.Factory.StartNew<PlayerDTO>(() => {
@@ -225,13 +228,11 @@ namespace PolyWars.Server {
                 return null;
             });
         }
-
         public List<BulletDTO> getBullets() {
             methodCallCounter();
             List<BulletDTO> bullets = new List<BulletDTO>(Bullets.Values);
             return bullets;
-        }
-
+        }
         public override Task OnConnected() {
             methodCallCounter();
             while(!staticClients.TryAdd(Context.ConnectionId, Clients.Caller)) { Task.Delay(1); }
@@ -256,26 +257,9 @@ namespace PolyWars.Server {
 
                         // Accounces to all other connected clients that *username* has joined
                         Clients.Others.announceClientLoggedIn(username);
-                        Random r = new Random();
 
                         // Creates the basic opponent layout
-                        PlayerDTO newPlayer = new PlayerDTO() {
-                            ID = newUser.ID,
-                            Name = newUser.Name,
-                            centerX = r.Next(50, 500),
-                            centerY = r.Next(50, 500),
-                            Angle = 0,
-                            Velocity = 0,
-                            MaxVelocity = 15,
-                            RPM = 0,
-                            MaxRPM = 60,
-                            Vertices = 3,
-                            Wallet = 0,
-                            Width = 50,
-                            Height = 50,
-                            Health = 100,
-                            FillColor = GetColor(newUser.Name)
-                        };
+                        PlayerDTO newPlayer = PlayerDTOFactory.GetPlayerDTO(newUser);
                         if(Opponents.TryAdd(newPlayer.Name, newPlayer)) {
                             Clients.Others.opponentJoined(newPlayer);
                             return newUser;
@@ -287,10 +271,6 @@ namespace PolyWars.Server {
                 }
                 return null;
             });
-        }
-        private static Color GetColor(string username) {
-            Color c = Color.FromArgb(255, (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256), (byte) rnd.Next(64, 256));
-            return c;
         }
         public async Task<bool> playerMoved(PlayerDTO player) {
             statistics["moved stack"]++;
