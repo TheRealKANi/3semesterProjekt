@@ -34,7 +34,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <StartupObject>PolyWars.Server.ChatServerCS.Program</StartupObject>
+    <StartupObject>PolyWars.Server.Program</StartupObject>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -177,6 +177,7 @@
     <Compile Include="AccessLayer\IUserDB.cs" />
     <Compile Include="AccessLayer\UserDB.cs" />
     <Compile Include="Factories\BulletFactory.cs" />
+    <Compile Include="Factories\PlayerFactory.cs" />
     <Compile Include="Hubs\LobbyHub.cs" />
     <Compile Include="Hubs\MainHub.cs" />
     <Compile Include="Program.cs" />

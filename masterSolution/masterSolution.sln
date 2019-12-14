@@ -6,11 +6,15 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Client", "PolyWars
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.API", "PolyWars.API\PolyWars.API.csproj", "{FA82403D-7983-4D13-8518-57C16F92D849}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Client.UnitTests", "PolyWars.UnitTests\PolyWars.Client.UnitTests.csproj", "{703D79EC-CA06-4530-BC4A-33DC91BCDC9C}"
+EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Server", "PolyWars.Server\PolyWars.Server.csproj", "{253203B0-24EC-49FF-8094-C26740F06C79}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Server.WebService.ConsoleClient", "PolyWars.Server.WebService.ConsoleClient\PolyWars.Server.WebService.ConsoleClient.csproj", "{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PolyWars.Web.Client", "PolyWars.Web.Client\PolyWars.Web.Client.csproj", "{ABFB4B47-0905-4325-AEBF-D69CC1051790}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Polywars.Server.UnitTests", "Polywars.Server.UnitTests\Polywars.Server.UnitTests.csproj", "{9A7EC74D-A664-4270-A483-133B51E424D0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -44,6 +48,14 @@ Global
 		{253203B0-24EC-49FF-8094-C26740F06C79}.Release|Any CPU.Build.0 = Release|Any CPU
 		{253203B0-24EC-49FF-8094-C26740F06C79}.Release|x64.ActiveCfg = Release|x64
 		{253203B0-24EC-49FF-8094-C26740F06C79}.Release|x64.Build.0 = Release|x64
+		{9A7EC74D-A664-4270-A483-133B51E424D0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9A7EC74D-A664-4270-A483-133B51E424D0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9A7EC74D-A664-4270-A483-133B51E424D0}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{9A7EC74D-A664-4270-A483-133B51E424D0}.Debug|x64.Build.0 = Debug|Any CPU
+		{9A7EC74D-A664-4270-A483-133B51E424D0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9A7EC74D-A664-4270-A483-133B51E424D0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9A7EC74D-A664-4270-A483-133B51E424D0}.Release|x64.ActiveCfg = Release|Any CPU
+		{9A7EC74D-A664-4270-A483-133B51E424D0}.Release|x64.Build.0 = Release|Any CPU
 		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}.Debug|x64.ActiveCfg = Debug|x64

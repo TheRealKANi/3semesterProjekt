@@ -42,7 +42,7 @@ namespace PolyWars.Network {
         public HubConnection Connection { get; set; }
 
         public string ServerIP { get; set; }
-        public async Task<bool> ConnectAsync() {
+        public async Task<bool> ConnectAsync(bool isUnitTesting = false) {
             Connection = new HubConnection(Constants.protocol + ServerIP + ":" + Constants.serverPort + Constants.serverEndPoint);
             hubProxy = Connection.CreateHubProxy("MainHub");
             hubProxy.On<string>("announceClientLoggedIn", (u) => announceClientLoggedIn?.Invoke(u));
@@ -59,7 +59,9 @@ namespace PolyWars.Network {
             await Connection.Start();            
             bool connectionStatus = Connection.State == ConnectionState.Connected ? true : false;
 
-            NetworkController.IsConnected = connectionStatus;
+            if(!isUnitTesting) {
+                NetworkController.IsConnected = connectionStatus; 
+            }
             return connectionStatus;
         }
 
@@ -76,7 +78,6 @@ namespace PolyWars.Network {
             hubProxy.On<string>("playerDied", (killedBy) => playerDied.Invoke(killedBy));
             hubProxy.On<BulletDTO>("removeBullet", (bullet) => removeBullet.Invoke(bullet));
             hubProxy.On<string>("removeDeadOpponent", (username) => removeDeadOpponent.Invoke(username));
-
         }
 
         public async Task<bool> playerShoots(int damage) {
