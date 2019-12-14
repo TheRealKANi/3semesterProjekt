@@ -1,8 +1,10 @@
 ﻿
 @*ODO Make authentication check on user, if logged in show their user name, if not only show "register" and "login"*@
 
-@*@using Microsoft.AspNet.Identity
-@if (Request.IsAuthenticated)
+@using PolyWars.Web.Client.Models
+@model LoginViewModel
+
+@if (Session["UserName"]!=null)
 {
     using (Html.BeginForm("LogOff", "Account", FormMethod.Post, new { id = "logoutForm", @class = "navbar-right" }))
     {
@@ -10,12 +12,12 @@
 
         <ul class="nav navbar-nav navbar-right">
             <li>
-                @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                @Html.ActionLink("Hello " + Session["UserName"] + "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
             </li>
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
         </ul>
     }
-}*@
+}
 
 
 <ul class="nav navbar-nav navbar-right">
