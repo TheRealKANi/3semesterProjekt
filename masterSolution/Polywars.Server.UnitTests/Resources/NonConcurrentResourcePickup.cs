@@ -14,7 +14,6 @@ using System.Threading.Tasks;
 namespace Polywars.Server.UnitTests.Resources {
     [TestClass]
     public class NonConcurrentResourcePickup {
-        private static int i = 0;
         double wallet = 0;
         private void updateWallet(double amount) {
             wallet = amount;
