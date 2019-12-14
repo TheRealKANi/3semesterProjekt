@@ -1,31 +1,26 @@
 ﻿using PolyWars.Web.Client.PolyWarsWebClientService;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
 using System.Web.Mvc;
 
-namespace PolyWars.Web.Client.Controllers
-{
-    public class HomeController : Controller
-    {
-        public ActionResult Index()
-        {
+namespace PolyWars.Web.Client.Controllers {
+    public class HomeController : Controller {
+        public ActionResult Index() {
             return View();
         }
 
-        public ActionResult Leaderboard()
-        {
+        public ActionResult Leaderboard() {
             WebClientServiceClient client = new WebClientServiceClient();
 
-            ViewBag.Message = "Track your highscore, and compete with others!";
-            ViewBag.leaderboard = client.GetLeaderBoard();
+            if(AccountController.UserName != null) {
+                ViewBag.Message = "Track your highscore, and compete with others!";
+                ViewBag.leaderboard = client.GetLeaderBoard();
+            } else {
+                ViewBag.Message = "Your Are Not Allowed To See The LeaderBoard, Please Login First";
+            }
 
             return View();
         }
 
-        public ActionResult TheTeam()
-        {
+        public ActionResult TheTeam() {
             ViewBag.Message = "Project made by";
 
             return View();

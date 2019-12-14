@@ -1,4 +1,5 @@
-﻿@{
+﻿@using  PolyWars.Web.Client.Controllers
+@{
     ViewBag.Title = "Leaderboard";
 }
 <h2>@ViewBag.Title</h2>
@@ -71,11 +72,14 @@
         <div class="row">
             <div class="name">Username</div><div class="score">Score</div>
         </div>
-        @foreach (var player in ViewBag.leaderboard)
+        @if (AccountController.UserName != null)
         {
-            <div class="row">
-                <div class="name">@player.userName</div><div class="score">@player.score</div>
-            </div>
+            foreach (var player in ViewBag.leaderboard)
+            {
+                <div class="row">
+                    <div class="name">@player.userName</div><div class="score">@player.score</div>
+                </div>
+            }
         }
     </div>
 </div>
