@@ -13,5 +13,6 @@ namespace PolyWars.API {
 
         public static readonly string servicePort = "5701";
         public static readonly string serviceEndPoint = "/WebClientService";
+
     }
 }

@@ -2,6 +2,8 @@
 using PolyWars.API;
 using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
+using PolyWars.API.Network.Services.DataContracts;
+using PolyWars.Server.AccessLayer;
 using PolyWars.Server.Factories;
 using System;
 using System.Collections.Concurrent;
@@ -186,7 +188,10 @@ namespace PolyWars.Server {
             return await Task.Factory.StartNew(() => {
                 if(!PlayerClients.ContainsKey(username)) {
                     // TODO Verify user creds from DB here
-                    if(true) {
+                    if(UserDB.loginUser(new UserData() {
+                        userName = username,
+                        password = hashedPassword
+                    })) {
                         Console.WriteLine($"++ {username} logged in");
                         IUser newUser = new User(username, Context.ConnectionId, hashedPassword);
                         bool added = PlayerClients.TryAdd(username, newUser);
