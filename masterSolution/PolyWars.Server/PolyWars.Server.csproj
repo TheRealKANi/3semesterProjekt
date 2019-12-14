@@ -205,6 +205,7 @@
     <Compile Include="Services\IWebClientService.cs" />
     <Compile Include="Services\WebClientService.cs" />
     <Compile Include="User.cs" />
+    <Compile Include="Utility\Hashing\PasswordHashing.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
@@ -235,8 +236,6 @@
       <Install>false</Install>
     </BootstrapperPackage>
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Utility\Hashing\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

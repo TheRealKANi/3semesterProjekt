@@ -1,9 +1,11 @@
 ﻿using PolyWars.API.Network.DTO;
 using PolyWars.API.Network.Services.DataContracts;
 using PolyWars.Server.AccessLayer;
+using PolyWars.Server.Utility.Hashing;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Security.Cryptography;
 
 namespace PolyWars.Server.Services {
     // NOTE: You can use the "Rename" command on the "Refactor" menu to change the class name "WebClientService" in both code and config file together.

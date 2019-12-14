@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using Dapper;
 using System.Threading.Tasks;
+using PolyWars.Server.Utility.Hashing;
+using System.Security.Cryptography;
 
 namespace PolyWars.Server.AccessLayer {
     class UserDB {
@@ -17,10 +19,12 @@ namespace PolyWars.Server.AccessLayer {
             bool result = false;
             string SQLLoginUser = "SELECT Vertices FROM Users WHERE Username = @userName AND HashedPassword = @password";
 
+            PasswordHashing ph = new PasswordHashing();
+            HashWithSaltResult hashResult = ph.HashWithSalt(user.password, getUserSalt(user), SHA512.Create());
 
             // Get Salt and check agains server entry
             using(Con = new SqlConnection(DBConnection.DbConnectionString)) {
-                int vertices = Con.Query<int>(SQLLoginUser, new { userName = user.userName, password = user.password }).FirstOrDefault();
+                int vertices = Con.Query<int>(SQLLoginUser, new { userName = user.userName, password = hashResult.CipherText }).FirstOrDefault();
                 if(vertices >= 3) {
                     result = true;
                 };
@@ -28,13 +32,22 @@ namespace PolyWars.Server.AccessLayer {
             return result;
         }
 
+        private static string getUserSalt(UserData user) {
+            string SQLGetUserSalt = "Select salt from Users where Username = @userName";
+            using(Con = new SqlConnection(DBConnection.DbConnectionString)) {
+                return Con.Query<string>(SQLGetUserSalt, new { userName = user.userName}).FirstOrDefault();
+            }
+        }
+
         public static bool registerUser(UserData user) {
             string SQLRegisterUser = "insert into Users (Username, HashedPassword, Salt, Score, Vertices) values " +
-                                                    "(@userName, @hashedPassword, 0, 0, 3)";
+                                                    "(@userName, @cipherText, @salt, 0, 3)";
             // Generate salt for user to use on password
-            string hashedPassword = user.password;
+            PasswordHashing ph = new PasswordHashing();
+            HashWithSaltResult hashResult = ph.HashWithSalt(user.password, 64, SHA512.Create());
+
             using(Con = new SqlConnection(DBConnection.DbConnectionString)) {
-                return Con.Query<bool>(SQLRegisterUser, new { userName = user.userName, hashedPassword }).FirstOrDefault();
+                return Con.Query<bool>(SQLRegisterUser, new { userName = user.userName, cipherText = hashResult.CipherText, salt = hashResult.Salt  }).FirstOrDefault();
             }
         }
     }
