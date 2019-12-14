@@ -4,13 +4,18 @@ using System.Windows.Input;
 
 namespace PolyWars {
     class RelayCommandAsync : ICommand {
-        Func<Task> execute;
+        Func<object, Task> execute;
         Predicate<object> canExecute;
         bool isExecuting;
 
         public RelayCommandAsync(Func<Task> execute) : this(execute, null) { }
-        public RelayCommandAsync(Func<Task> execute, Predicate<object> canExecute) {
+        public RelayCommandAsync(Func<object, Task> execute) : this(execute, null) { }
+        public RelayCommandAsync(Func<object, Task> execute, Predicate<object> canExecute) {
             this.execute = execute;
+            this.canExecute = canExecute;
+        }
+        public RelayCommandAsync(Func<Task> execute, Predicate<object> canExecute) {
+            this.execute = (o) => { return execute.Invoke(); };
             this.canExecute = canExecute;
             isExecuting = false;
         }
@@ -30,7 +35,7 @@ namespace PolyWars {
         public async void Execute(object parameter) {
             isExecuting = true;
             try {
-                await execute.Invoke();
+                await execute.Invoke(parameter);
             } finally {
                 isExecuting = false;
             }
