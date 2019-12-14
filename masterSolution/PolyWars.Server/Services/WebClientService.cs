@@ -1,5 +1,6 @@
 ﻿using PolyWars.API.Network.DTO;
 using PolyWars.API.Network.Services.DataContracts;
+using PolyWars.Server.AccessLayer;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -16,13 +17,15 @@ namespace PolyWars.Server.Services {
         }
 
         public bool login(UserData userData) {
-            Debug.WriteLine($"User: '{userData.userName}' tried to login with password: '{userData.password}' - Returns True");
-            return true;
+            bool result = UserDB.loginUser(userData);
+            Debug.WriteLine($"User: '{userData.userName}' tried to login with password: '{userData.password}' - Returns {result}");
+            return result;
         }
 
         public bool register(UserData userData) {
-            Debug.WriteLine($"User: '{userData.userName}' tried to register with password: '{userData.password}' - Returns True");
-            return true;
+            bool result = UserDB.registerUser(userData);
+            Debug.WriteLine($"User: '{userData.userName}' tried to register with password: '{userData.password}' - Returns {result}");
+            return result;
         }
     }
 }

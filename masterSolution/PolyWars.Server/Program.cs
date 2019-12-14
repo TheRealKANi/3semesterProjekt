@@ -49,8 +49,21 @@ namespace PolyWars.Server {
             ServiceMetadataBehavior smb = new ServiceMetadataBehavior();
             smb.HttpGetEnabled = true;
             smb.MetadataExporter.PolicyVersion = PolicyVersion.Policy15;
-
             host.Description.Behaviors.Add(smb);
+
+            // Service Debug Info
+            ServiceDebugBehavior debug = host.Description.Behaviors.Find<ServiceDebugBehavior>();
+            if(debug == null) {
+                host.Description.Behaviors.Add(
+                     new ServiceDebugBehavior() { IncludeExceptionDetailInFaults = true });
+            } else {
+                // make sure setting is turned ON
+                if(!debug.IncludeExceptionDetailInFaults) {
+                    debug.IncludeExceptionDetailInFaults = true;
+                }
+            }
+
+
             // Since no endpoints are explicitly configured, the runtime will create 
             // one endpoint per base address for each service contract implemented 
             // by the service. 

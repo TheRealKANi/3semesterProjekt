@@ -104,12 +104,12 @@ namespace PolyWars.UI.Login {
                     ConnectingDialogVisibility = Visibility.Collapsed;
                     UIDispatcher.Invoke(() => NavigationController.Instance.Login.IsEnabled = true);
                 });
-                user = await NetworkController.GameService.LoginAsync(username, hashedPassword);
-
-                NavigationController.Instance.navigate(Pages.MainMenu);
-                GameController.Username = user.Name;
-                GameController.UserID = user.ID;
-                //NetworkController.GameService.test();
+                user = await NetworkController.GameService.LoginAsync(username, hashedPassword);
+                if(user != null) {
+                    NavigationController.Instance.navigate(Pages.MainMenu);
+                    GameController.Username = user.Name;
+                    GameController.UserID = user.ID;
+                }
             }
             return user != null ? true : false;
         }
