@@ -16,20 +16,16 @@ namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
         private static ConcurrentDictionary<string, IUser> PlayerClients;
         private static ConcurrentDictionary<string, PlayerDTO> Opponents;
-        private static ConcurrentDictionary<string, ResourceDTO> Resources;
+        internal static ConcurrentDictionary<string, ResourceDTO> Resources;
         private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
         private static object statisticsLock = new object();
         private static Random rnd;
+        private static Stopwatch statisticTimer;
 
         public static List<PlayerDTO> getLeaderBoard() {
             return new List<PlayerDTO>(Opponents.Values).OrderByDescending((x) => x.Wallet).ToList();
         }
-
-        // System.Windows.Media.Colors.DarkSlateGray
-        private static Stopwatch statisticTimer;
-
-        private static readonly double updateRate = 1000d / 60;
 
         private void methodCallCounter([CallerMemberName] string method = "") {
             if(!string.IsNullOrWhiteSpace(method)) {
@@ -67,7 +63,6 @@ namespace PolyWars.Server {
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
             Bullets = new ConcurrentDictionary<string, BulletDTO>();
-            staticClients = new ConcurrentDictionary<string, IClient>();
             statistics = new ConcurrentDictionary<string, int>();
             statistics.TryAdd("moved stack", 0);
 
@@ -137,7 +132,6 @@ namespace PolyWars.Server {
             });
             return result;
         }
-        private static int i = 0;
         // Called from client when they collide with a resource
         public async Task<bool> playerCollectedResource(string resourceId) {
             methodCallCounter();
@@ -184,7 +178,6 @@ namespace PolyWars.Server {
         }
         public override Task OnConnected() {
             methodCallCounter();
-            while(!staticClients.TryAdd(Context.ConnectionId, Clients.Caller)) { Task.Delay(1); }
             Console.WriteLine($"Client connected: '{Context.ConnectionId}'");
             return base.OnConnected();
         }
@@ -271,7 +264,6 @@ namespace PolyWars.Server {
                 Clients.Others.ClientDisconnected(userName);
                 Console.WriteLine($"<> {userName} disconnected");
             }
-            while(!staticClients.TryRemove(userName, out IClient discard)) { Task.Delay(1); };
             return base.OnDisconnected(stopCalled);
         }
     }
