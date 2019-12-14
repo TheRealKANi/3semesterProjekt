@@ -10,9 +10,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
-using System.Runtime.CompilerServices;using System.Threading;
-using System.Threading.Tasks;
-using System.Windows.Media;
+using System.Runtime.CompilerServices;using System.Threading.Tasks;
 
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
@@ -188,10 +186,11 @@ namespace PolyWars.Server {
             return await Task.Factory.StartNew(() => {
                 if(!PlayerClients.ContainsKey(username)) {
                     // TODO Verify user creds from DB here
-                    if(UserDB.loginUser(new UserData() {
+                    UserData userData = new UserData() {
                         userName = username,
                         password = hashedPassword
-                    })) {
+                    };
+                    if(UserDB.loginUser(userData)) {
                         Console.WriteLine($"++ {username} logged in");
                         IUser newUser = new User(username, Context.ConnectionId, hashedPassword);
                         bool added = PlayerClients.TryAdd(username, newUser);
