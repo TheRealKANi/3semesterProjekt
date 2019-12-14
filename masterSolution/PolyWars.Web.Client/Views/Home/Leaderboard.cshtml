@@ -1,0 +1,81 @@
+﻿@{
+    ViewBag.Title = "Leaderboard";
+}
+<h2>@ViewBag.Title</h2>
+<h3>@ViewBag.Message</h3>
+
+<style>
+    .scores {
+        background-color: white;
+        width: 600px;
+        height: 300px;
+        overflow-y: scroll;
+        position: center;
+        border: 5px solid black;
+        overflow-x: hidden;
+        margin-top: 5vh;
+    }
+</style>
+
+<style>
+    .scores{
+        margin: 3rem auto 0 auto;
+    }
+
+    .scores .container {
+        width: 100%;
+        height: auto;
+    }
+
+    .row {
+        position: relative;
+        display: block;
+        padding: 0 1rem;
+        height: 40px;
+        border-bottom: 2px solid #AFAFAF;
+    }
+
+    .name {
+        position: relative;
+        display: inline-block;
+        width: 60%;
+        line-height: 45px;
+    }
+
+    .score {
+        position: relative;
+        display: inline-block;
+        width: 40%;
+    }
+
+    .row:nth-child(1) {
+        background: gray;
+        font-weight: 800;
+        border-bottom: .25rem solid black;
+    }
+
+    .row:nth-child(2) {
+        background: gold;
+    }
+
+    .row:nth-child(3) {
+        background: #c0c0c0;
+    }
+
+    .row:nth-child(4) {
+        background: #cd7f32;
+    }
+</style>
+<div class="scores">
+    <div class="container">
+        <div class="row">
+            <div class="name">Username</div><div class="score">Score</div>
+        </div>
+        @foreach (var player in ViewBag.leaderboard)
+        {
+            <div class="row">
+                <div class="name">@player.userName</div><div class="score">@player.score</div>
+            </div>
+        }
+    </div>
+</div>

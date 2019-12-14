@@ -4,16 +4,17 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{FA82403D-7983-4D13-8518-57C16F92D849}</ProjectGuid>
-    <OutputType>Library</OutputType>
-    <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>PolyWars.API</RootNamespace>
-    <AssemblyName>PolyWars.API</AssemblyName>
+    <ProjectGuid>{995991B9-ECA5-49CA-87F2-8C1B7D18FDFE}</ProjectGuid>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>PolyWars.Server.WebService.ConsoleClient</RootNamespace>
+    <AssemblyName>PolyWars.Server.WebService.ConsoleClient</AssemblyName>
     <TargetFrameworkVersion>v4.8</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
+    <AutoGenerateBindingRedirects>true</AutoGenerateBindingRedirects>
     <Deterministic>true</Deterministic>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugSymbols>true</DebugSymbols>
     <DebugType>full</DebugType>
     <Optimize>false</Optimize>
@@ -23,6 +24,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <PlatformTarget>AnyCPU</PlatformTarget>
     <DebugType>pdbonly</DebugType>
     <Optimize>true</Optimize>
     <OutputPath>bin\Release\</OutputPath>
@@ -39,6 +41,7 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -49,60 +52,68 @@
     <LangVersion>7.3</LangVersion>
     <ErrorReport>prompt</ErrorReport>
     <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <Prefer32Bit>true</Prefer32Bit>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Microsoft.AspNet.SignalR.Client, Version=2.4.1.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <HintPath>..\packages\Microsoft.AspNet.SignalR.Client.2.4.1\lib\net45\Microsoft.AspNet.SignalR.Client.dll</HintPath>
-    </Reference>
-    <Reference Include="Newtonsoft.Json, Version=6.0.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
-      <HintPath>..\packages\Newtonsoft.Json.6.0.4\lib\net45\Newtonsoft.Json.dll</HintPath>
-    </Reference>
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
     <Reference Include="System.Core" />
-    <Reference Include="System.Drawing" />
-    <Reference Include="System.Net.Http.WebRequest" />
     <Reference Include="System.Runtime.Serialization" />
     <Reference Include="System.ServiceModel" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Data" />
-    <Reference Include="System.Net.Http" />
     <Reference Include="System.Xml" />
-    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="Constants.cs" />
-    <Compile Include="Model\Interfaces\IBullet.cs" />
-    <Compile Include="Model\User.cs" />
-    <Compile Include="Network\DTO\BulletDTO.cs" />
-    <Compile Include="Network\DTO\PlayerDTO.cs" />
-    <Compile Include="Network\DTO\ResourceDTO.cs" />
-    <Compile Include="Network\IClient.cs" />
-    <Compile Include="Network\IGameService.cs" />
-    <Compile Include="Model\Interfaces\IMoveable.cs" />
-    <Compile Include="Model\Interfaces\IPlayer.cs" />
-    <Compile Include="Model\Interfaces\IRay.cs" />
-    <Compile Include="Model\Interfaces\IRenderable.cs" />
-    <Compile Include="Model\Interfaces\IRenderer.cs" />
-    <Compile Include="Network\ILobby.cs" />
-    <Compile Include="Network\IUser.cs" />
-    <Compile Include="Model\Ray.cs" />
-    <Compile Include="Network\Service\DataContracts\LeaderboardEntryData.cs" />
-    <Compile Include="Network\Service\DataContracts\UserData.cs" />
-    <Compile Include="Network\Service\IWebClientService.cs" />
-    <Compile Include="Strategies\IMoveStrategy.cs" />
-    <Compile Include="Strategies\IRenderStrategy.cs" />
-    <Compile Include="Model\Interfaces\IResource.cs" />
-    <Compile Include="Model\Interfaces\IShape.cs" />
+    <Compile Include="Connected Services\PolyWarsWebClientService\Reference.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>Reference.svcmap</DependentUpon>
+    </Compile>
+    <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
-    <None Include="packages.config" />
+    <None Include="App.config" />
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService.wsdl" />
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService1.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService2.xsd">
+      <SubType>Designer</SubType>
+    </None>
+    <None Include="Properties\DataSources\PolyWars.API.Network.Services.DataContracts.LeaderboardEntryData.datasource" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <WCFMetadata Include="Connected Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\PolyWars.API\PolyWars.API.csproj">
+      <Project>{fa82403d-7983-4d13-8518-57c16f92d849}</Project>
+      <Name>PolyWars.API</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadataStorage Include="Connected Services\PolyWarsWebClientService\" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\PolyWarsWebClientService\WebClientService.disco" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\PolyWarsWebClientService\configuration91.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\PolyWarsWebClientService\configuration.svcinfo" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Connected Services\PolyWarsWebClientService\Reference.svcmap">
+      <Generator>WCF Proxy Generator</Generator>
+      <LastGenOutput>Reference.cs</LastGenOutput>
+    </None>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

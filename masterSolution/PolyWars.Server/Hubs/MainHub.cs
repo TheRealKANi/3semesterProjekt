@@ -18,10 +18,12 @@ namespace PolyWars.Server {
         private static ConcurrentDictionary<string, ResourceDTO> Resources;
         private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
-        private static object statisticsLock = new object(); 
+        private static object statisticsLock = new object();
         private static Random rnd;
 
-
+        public static List<PlayerDTO> getLeaderBoard() {
+            return new List<PlayerDTO>(Opponents.Values).OrderByDescending((x) => x.Wallet).ToList();
+        }
 
         // System.Windows.Media.Colors.DarkSlateGray
 
@@ -57,7 +59,7 @@ namespace PolyWars.Server {
 
 
         static MainHub() {
-            rnd = new Random((int)Stopwatch.GetTimestamp());
+            rnd = new Random((int) Stopwatch.GetTimestamp());
             Console.SetCursorPosition(0, 1);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
@@ -120,10 +122,9 @@ namespace PolyWars.Server {
             methodCallCounter();
             bool removed = false;
             await Task.Factory.StartNew(() => {
-                removed = Resources.TryRemove(resourceId, out ResourceDTO r);
-                if(removed) {
-                    Clients.Others.removeResource(resourceId);
+                if(Resources.TryRemove(resourceId, out ResourceDTO r)) {
                     string username = Clients.CallerState.UserName;
+                    Clients.Others.removeResource(resourceId);
                     Opponents[username].Wallet += r.Value;
                     Clients.Caller.updateWallet(Opponents[username].Wallet);
                     removed = true;
