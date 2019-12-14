@@ -51,6 +51,8 @@ namespace PolyWars.Logic {
 
         public void prepareGame() {
             // instanciate
+            ArenaController.ArenaBoundWidth = 1024;
+            ArenaController.ArenaBoundHeight = 768;
             ArenaController.generateCanvas();
             Bullets = new ConcurrentDictionary<string, IBullet>();
             Opponents = new ConcurrentDictionary<string, IMoveable>();

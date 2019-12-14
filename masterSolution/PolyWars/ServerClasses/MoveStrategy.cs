@@ -25,9 +25,9 @@ namespace PolyWars.ServerClasses {
             UIDispatcher.Invoke(() => {
                 pc = shape.Polygon.Points;
 
-                for(int i = 0; pc != null && i < pc.Count - 3 && (checkX || checkY); i++) { // last 3 points of the polygon is the header
-                    if(!((xCalculation + pc[i].X) > 0 && (xCalculation + pc[i].X) < 1024)) { checkX = false; }
-                    if(!((yCalculation + pc[i].Y) > 0 && (yCalculation + pc[i].Y) < 768)) { checkY = false; }
+                for(int i = 0; pc != null && i < pc.Count /*- 3*/ && (checkX || checkY); i++) { // last 3 points of the polygon is the header
+                    if(!((xCalculation + pc[i].X) >= 1 && (xCalculation + pc[i].X) <= ArenaController.ArenaBoundWidth-1)) { checkX = false; }
+                    if(!((yCalculation + pc[i].Y) >= 1 && (yCalculation + pc[i].Y) <= ArenaController.ArenaBoundHeight-1)) { checkY = false; }
                 }
             });
 
