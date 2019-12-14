@@ -173,6 +173,9 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessLayer\DBConnection.cs" />
+    <Compile Include="AccessLayer\IUserDB.cs" />
+    <Compile Include="AccessLayer\UserDB.cs" />
     <Compile Include="Factories\BulletFactory.cs" />
     <Compile Include="Hubs\LobbyHub.cs" />
     <Compile Include="Hubs\MainHub.cs" />
