@@ -20,9 +20,10 @@
         <StackPanel Panel.ZIndex="0" MaxWidth="250" VerticalAlignment="Center">
             <ComboBox ItemsSource="{Binding Urls}" SelectedItem="{Binding SelectedUrl}"/>
             <Label>Username</Label>
-            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
+            <!-- Should be password box in release version-->
             <Label>Password</Label>
-            <TextBox Name="pwBox" Text="{Binding HashedPassword, UpdateSourceTrigger=PropertyChanged}"/>
+            <TextBox Name="pwBox" Text="{Binding HashedPassword, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}">Log In</Button>
         </StackPanel>
     </Grid>

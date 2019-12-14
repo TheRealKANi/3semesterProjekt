@@ -9,7 +9,10 @@ using System.Windows.Input;
 
 namespace PolyWars.UI.Login {
     class Login_ViewModel : Observable {        public Login_ViewModel() {
-            Urls = new string[] {                "localhost", // Lan Client Test                "109.57.212.47", // WAN Client Test                "polywars.servegame.com"            };            ConnectingDialogVisibility = Visibility.Collapsed;        }
+            Urls = new string[] {                "localhost", // Lan Client Test                "109.57.212.47", // WAN Client Test                "polywars.servegame.com"            };            ConnectingDialogVisibility = Visibility.Collapsed;
+            
+            Name = "test";
+            HashedPassword = "123456";        }
         private IUser user;
         private string name;
         public string Name {
