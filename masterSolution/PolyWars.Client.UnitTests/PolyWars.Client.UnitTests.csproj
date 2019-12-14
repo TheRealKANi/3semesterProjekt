@@ -5,7 +5,7 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{703D79EC-CA06-4530-BC4A-33DC91BCDC9C}</ProjectGuid>
+    <ProjectGuid>{5E94E990-6BCF-41F6-A4EF-1A8733FFE1F4}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
     <RootNamespace>PolyWars.Client.UnitTests</RootNamespace>
@@ -29,7 +29,6 @@
     <DefineConstants>DEBUG;TRACE</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
-    <PlatformTarget>x64</PlatformTarget>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -70,17 +69,13 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="DeltaTime.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="GameControllerTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\PolyWars.API\PolyWars.API.csproj">
-      <Project>{fa82403d-7983-4d13-8518-57c16f92d849}</Project>
-      <Name>PolyWars.API</Name>
-    </ProjectReference>
     <ProjectReference Include="..\PolyWars.Client\PolyWars.Client.csproj">
       <Project>{5368cfb8-64d8-455a-b3ff-b55eaedcc248}</Project>
       <Name>PolyWars.Client</Name>

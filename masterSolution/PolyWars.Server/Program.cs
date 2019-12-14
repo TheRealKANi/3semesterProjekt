@@ -8,10 +8,13 @@ using System.Linq;
 using System.Runtime.InteropServices;
 using System.ServiceModel;
 using System.ServiceModel.Description;
+using System.Threading;
 
 namespace PolyWars.Server {
     class Program {
         internal static bool serverLoaded = false;
+        private static bool isUnitTesting = false;
+        private static bool showConsole = true;
         #region source https://stackoverflow.com/questions/3571627/show-hide-the-console-window-of-a-c-sharp-console-application
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
@@ -23,24 +26,51 @@ namespace PolyWars.Server {
         #endregion
         public static IAppBuilder app;
         private static ServiceHost host;
-
+        internal static bool shutdown;
         internal static void Main(params string[] args) {
             string url = string.Empty;
+            shutdown = false;
             if(args.Length == 0 || args.Length > 0 && !args.Contains("unitTest")) {
                 url = $"http://*:{Constants.serverPort}/";
             } else {
                 if(args.Contains("noConsole")) {
-                    IntPtr consoleHandle = GetConsoleWindow();
-                    ShowWindow(consoleHandle, SW_HIDE);
+                    showConsole = false;
+                    
                 }
                 if(args.Contains("unitTest")) {
-                    url = $"http://127.0.0.1:{Constants.serverPort}/";
+                    isUnitTesting = true;
+                    showConsole = false;
                 }
             }
-            // netsh http add urlacl url=http://*:5700/ user=Alle 
+            if(!showConsole) {
+                IntPtr consoleHandle = GetConsoleWindow();
+                ShowWindow(consoleHandle, SW_HIDE);
+            }
+            if(isUnitTesting) {
+                url = $"http://127.0.0.1:{Constants.serverPort}/";
+            }
+            string serviceUrl = $"{Constants.protocol}localhost:{Constants.servicePort}{Constants.serviceEndPoint}";
+
+            Thread gameServiceThread = new Thread(() => OpenGameServer(url)) { IsBackground = true };
+            Thread webServiceThread = new Thread(() => OpenWebService(serviceUrl)) { IsBackground = true };
+
+            gameServiceThread.Start();
+            webServiceThread.Start();
+
+            if(showConsole) {
+                Console.WriteLine("Press the anykey to shut down server");
+                Console.ReadLine();
+                shutdownServer();
+            }
+        }
+
+        public static void shutdownServer() {
+            shutdown = true;
+        }
+
+        private static void OpenWebService(string serviceUrl) {
 
             // ServiceBinding 
-            string serviceUrl = $"{Constants.protocol}localhost:{Constants.servicePort}{Constants.serviceEndPoint}";
             // netsh http add urlacl url=http://+:5701/ user=Alle 
             Console.WriteLine(serviceUrl);
             Uri baseAddress = new Uri(serviceUrl);
@@ -68,12 +98,17 @@ namespace PolyWars.Server {
             // one endpoint per base address for each service contract implemented 
             // by the service. 
             host.Open();
-            while(true) {
-                using(WebApp.Start<Startup>(url)) {
-                    Console.WriteLine($"Server running at {url}");
-                    serverLoaded = true;
-                    Console.ReadLine();
-                }
+
+            while(!shutdown) { Thread.Sleep(1000); }
+            host.Close();
+        }
+
+        private static void OpenGameServer(string url) {
+            // netsh http add urlacl url=http://*:5700/ user=Alle 
+            using(WebApp.Start<Startup>(url)) {
+                Console.WriteLine($"Server running at {url}");
+                serverLoaded = true;
+                while(!shutdown) { Thread.Sleep(5000); }
             }
         }
 

@@ -15,7 +15,7 @@ namespace PolyWars.Web.Client.Controllers {
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Register(RegisterViewModel model) {
+        public ActionResult Register(RegisterViewModel model) {
             if(ModelState.IsValid) {
                 WebClientServiceClient client = new WebClientServiceClient();
                 UserData userData = new UserData() {
@@ -47,7 +47,7 @@ namespace PolyWars.Web.Client.Controllers {
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<ActionResult> Login(LoginViewModel model, string returnUrl) {
+        public ActionResult Login(LoginViewModel model, string returnUrl) {
             if(!ModelState.IsValid) {
                 return View(model);
             }
