@@ -10,7 +10,7 @@
 
         <ul class="nav navbar-nav navbar-right">
             <li>
-                @Html.ActionLink("Logged in as " + AccountController.UserName, "Index", "Home", routeValues: null, htmlAttributes: new { title = "Home" })
+                @Html.ActionLink(AccountController.UserName, "Index", "Home", routeValues: null, htmlAttributes: new { title = "Home" })
             </li>
             <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
         </ul>
