@@ -15,19 +15,22 @@ namespace Polywars.Server.UnitTests.Resources {
     [TestClass]
     public class NonConcurrentResourcePickup {
         private static int i = 0;
+        double wallet = 0;
+        private void updateWallet(double amount) {
+            wallet = amount;
+        }
         [TestMethod]
         public void singlePickup() {
-            Debug.WriteLine($"{i++}");
+            //Debug.WriteLine($"{i++}");
             UnitTestUIDispatcher dispatcher = new UnitTestUIDispatcher();
             Task server = Task.Run(() => Program.Main("noConsole", "unitTest"));
 
             while(!PolyWars.Server.Program.serverLoaded) { Thread.Sleep(1); };
 
-            double wallet = 0;
             GameService gs = new GameService() {
                 ServerIP = $"127.0.0.1:{Constants.serverPort}/{Constants.serverEndPoint}/"
             };
-            gs.updateWallet += (w) => { wallet += w; };
+            gs.updateWallet += updateWallet;
 
             bool connected = false;
             Task.Run(async () => { connected = await gs.ConnectAsync(true); }).Wait();

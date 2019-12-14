@@ -20,12 +20,9 @@ namespace PolyWars.Server {
         internal static ConcurrentDictionary<string, ResourceDTO> Resources;
         internal static ConcurrentDictionary<string, BulletDTO> Bullets;
         internal static ConcurrentDictionary<string, int> statistics;
-        internal static ConcurrentDictionary<string, ConcurrentBag<string>> resourceCollitions;
         private static Random rnd;
 
         private static Stopwatch statisticTimer;
-        private static Stopwatch clientUpdateTimer;
-        private static Thread clientUpdater;
 
         private static readonly double updateRate = 1000d / 60;
 
@@ -65,7 +62,6 @@ namespace PolyWars.Server {
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
             Bullets = new ConcurrentDictionary<string, BulletDTO>();
-            resourceCollitions = new ConcurrentDictionary<string, ConcurrentBag<string>>();
             staticClients = new ConcurrentDictionary<string, IClient>();
             statistics = new ConcurrentDictionary<string, int>();
             statistics.TryAdd("moved stack", 0);
@@ -73,63 +69,11 @@ namespace PolyWars.Server {
             statisticTimer = new Stopwatch();
             statisticTimer.Start();
 
-            clientUpdateTimer = new Stopwatch();
-            clientUpdateTimer.Start();
-            clientUpdater = new Thread(updateClientsTimer) { IsBackground = true };
-            clientUpdater.Start();
-
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
         }
-        public static void updateClientsTimer() {
-            while(true) {
-                while(clientUpdateTimer.Elapsed.TotalMilliseconds < updateRate) { Thread.Sleep((int)(updateRate - clientUpdateTimer.Elapsed.TotalMilliseconds)); }
-                clientUpdateTimer.Restart();
-                updateClients(); 
-            }
-        }
-
-        public static void updateClients([CallerMemberName] string s = "") {
-            List<Task> tasks = new List<Task>();
-            
-            foreach(string resourceID in resourceCollitions.Keys) {
-                tasks.Add(Task.Factory.StartNew( () => resourceConcurrencyHandling(resourceID)));
-            }
-            Task.WaitAll(tasks.ToArray());
-        }
-        private static Task resourceConcurrencyHandling(string resourceID) {
-            Debug.WriteLine($"{++i}");
-            return Task.Factory.StartNew(() => {
-            ConcurrentBag<string> bag = null;
-                while(!resourceCollitions.TryGetValue(resourceID, out bag)) { Task.Delay(1); }
-                if(!bag.IsEmpty) {
-                    List<string> userNames = new List<string>();
-                    string connectionID = string.Empty;
-                    ResourceDTO resourceDTO = null;
-
-                    while(bag.Count > 0) {
-                        string userName = string.Empty;
-                        while(!bag.TryTake(out userName)) { Task.Delay(1); }
-                        if(!string.IsNullOrWhiteSpace(userName)) {
-                            userNames.Add(userName);
-                        }
-                    }
-                    while(!Resources.TryGetValue(resourceID, out resourceDTO)) { Task.Delay(1); }
-
-                    string winner = GetRandomWinner(userNames);
-
-                    if(PlayerClients.ContainsKey(winner)) {
-                        connectionID = PlayerClients[winner].ID;
-                    }
-                    if(!string.IsNullOrWhiteSpace(connectionID)) {
-                        staticClients[connectionID].updateWallet(resourceDTO.Value);
-                    }
-                }
-            });
-        }
-
         // trying to achieve a bit more randomness here
         private static string GetRandomWinner(List<string> userNames) {
             string winner = string.Empty;
@@ -192,18 +136,19 @@ namespace PolyWars.Server {
         // Called from client when they collide with a resource
         public async Task<bool> playerCollectedResource(string resourceId) {
             methodCallCounter();
-            //Debug.WriteLine($"called {++i} times");
             bool removed = false;
             await Task.Factory.StartNew(() => {
-                if(!resourceCollitions.ContainsKey(resourceId)) {
-                    while(!resourceCollitions.TryAdd(resourceId, new ConcurrentBag<string>())) { Task.Delay(1); }
+                removed = Resources.TryRemove(resourceId, out ResourceDTO r);
+                if(removed) {
+                    Clients.Others.removeResource(resourceId);
+                    string username = Clients.CallerState.UserName;
+                    Opponents[username].Wallet += r.Value;
+                    Clients.Caller.updateWallet(Opponents[username].Wallet);
+                    removed = true;
                 }
-                resourceCollitions[resourceId].Add((string) Clients.CallerState.UserName);
-                removed = true;
             });
             return removed;
         }
-
         public async Task<List<ResourceDTO>> getResources() {
             methodCallCounter();
             List<ResourceDTO> resources = await Task.Factory.StartNew(() => new List<ResourceDTO>(Resources.Values));
