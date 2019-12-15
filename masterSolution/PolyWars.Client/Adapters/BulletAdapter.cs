@@ -59,7 +59,7 @@ namespace PolyWars.Adapters {
         }
 
         public static void addBulletToCanvas(Bullet bullet) {
-            if(GameController.Bullets != null && !GameController.Bullets.ContainsKey(bullet.ID)) {
+            if(GameController.Bullets != null) {
                 bullet.BulletShip.Shape.Renderer.Render(bullet.BulletShip.Shape.Renderable, bullet.BulletShip.Shape.Ray);
                 UIDispatcher.Invoke(() => {
                     ArenaController.ArenaCanvas.Children.Add(bullet.BulletShip.Shape.Polygon);
