@@ -28,7 +28,7 @@ namespace PolyWars.Client.Model {
                 List<Point> pc = new List<Point>();
 
                 for(int i = 0; i < r.Vertices; i++) {
-                    double radians = Math.PI / 2 - (verticeAngle * i + ray.Angle) / 180 * Math.PI;
+                    double radians = Math.PI / 2 - ((verticeAngle * i + ray.Angle) / 180) * Math.PI;
                     pc.Add(new Point() {
                         X = ray.CenterPoint.X + Math.Cos(radians) * r.Width / 2,
                         Y = ray.CenterPoint.Y + Math.Sin(radians) * r.Height / 2
