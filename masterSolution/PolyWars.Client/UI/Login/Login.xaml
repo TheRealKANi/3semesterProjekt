@@ -7,7 +7,8 @@
       xmlns:local="clr-namespace:PolyWars.UI.Login"
       mc:Ignorable="d" 
       d:DesignHeight="450" d:DesignWidth="800"
-      Title="Login">
+      Title="Login"
+      Name="this">
     <Page.Resources>
         <local:Login_ViewModel x:Key="vm"/>
     </Page.Resources>
@@ -23,7 +24,7 @@
             <TextBox Text="{Binding Name, UpdateSourceTrigger=PropertyChanged, Mode=TwoWay}"/>
             <Label>Password</Label>
             <PasswordBox Name="pwBox"/>
-            <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=pwBox, Path=Password}">Log In</Button>
+            <Button Margin="5" MaxWidth="100" Command="{Binding LoginCommand}" CommandParameter="{Binding ElementName=pwBox}">Log In</Button>
         </StackPanel>
     </Grid>
 </Page>
