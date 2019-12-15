@@ -56,10 +56,9 @@ namespace PolyWars.Network {
             await Connection.Start();
 
             bool connectionStatus = Connection.State == ConnectionState.Connected ? true : false;
+            
+            NetworkController.IsConnected = connectionStatus; 
 
-            if(!isUnitTesting) {
-                NetworkController.IsConnected = connectionStatus;
-            }
             return connectionStatus;
         }
 

@@ -189,11 +189,9 @@ namespace PolyWars.Client.Logic {
         /// </summary>
         public static async void notifyMoved() {
             if(ServerTimer.Elapsed.TotalMilliseconds >= 10) { // ish 100 times a second
-                if(!Player.PlayerShip.Shape.Ray.Equals(lastPlayerRay)) {
-                    ServerTimer.Restart();
-                    await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip);
-                    lastPlayerRay = ((Ray) Player.PlayerShip.Shape.Ray).Clone();
-                }
+                ServerTimer.Restart();
+                await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip);
+                lastPlayerRay = ((Ray) Player.PlayerShip.Shape.Ray).Clone();
             }
         }
 

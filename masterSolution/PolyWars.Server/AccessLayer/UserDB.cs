@@ -7,7 +7,8 @@ using System.Linq;
 using System.Security.Cryptography;
 
 namespace PolyWars.Server.AccessLayer {
-    class UserDB {
+    public class UserDB {
+
         private static IDbConnection Con = null;
 
         /// <summary>

@@ -13,7 +13,7 @@ using System.Threading;
 namespace PolyWars.Server {
     class Program {
         internal static bool serverLoaded = false;
-        private static bool isUnitTesting = false;
+        internal static bool isUnitTesting = false;
         private static bool showConsole = true;
 
         #region show/hide console 

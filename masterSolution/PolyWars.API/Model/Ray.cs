@@ -33,7 +33,7 @@ namespace PolyWars.API.Model {
         /// <returns></returns>
         public override bool Equals(object obj) {
             if(obj is IRay ray) {
-                return (int) CenterPoint.X == (int) ray.CenterPoint.X && (int) CenterPoint.Y == (int) ray.CenterPoint.Y && (int) Angle == (int) ray.Angle && ID.Equals(ray.ID);
+                return CenterPoint.X.Equals(ray.CenterPoint.X) && CenterPoint.Y.Equals(ray.CenterPoint.Y) && Angle.Equals(ray.Angle);
             }
             return false;
         }

@@ -9,7 +9,7 @@ namespace PolyWars.Server.Factories {
 
         static PlayerDTOFactory() {
             r = new Random();
-        }
+        }
 
         public static PlayerDTO GetPlayerDTO(IUser newUser) {
             return new PlayerDTO() {
@@ -27,11 +27,10 @@ namespace PolyWars.Server.Factories {
                 Width = 50,
                 Height = 50,
                 Health = 100,
-                FillColor = GetColor(newUser.Name)
+                FillColor = GetColor()
             };
         }
-
-        private static Color GetColor(string username) {
+        private static Color GetColor() {
             Color c = Color.FromArgb(255, (byte) r.Next(64, 256), (byte) r.Next(64, 256), (byte) r.Next(64, 256));
             return c;
         }

@@ -97,7 +97,10 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="AccessLayer\UserDBTests.cs" />
+    <Compile Include="Factories\ResourceFactoryTests.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Utility\Hashing\PasswordHashingTests.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="app.config" />
