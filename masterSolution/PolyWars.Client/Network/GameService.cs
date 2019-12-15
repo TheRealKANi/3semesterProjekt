@@ -1,15 +1,12 @@
 ﻿using Microsoft.AspNet.SignalR.Client;
 using PolyWars.Adapters;
-using PolyWars.Api.Model;
 using PolyWars.API;
 using PolyWars.API.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
-using PolyWars.Logic;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Net;
 using System.Threading.Tasks;
 
@@ -56,11 +53,12 @@ namespace PolyWars.Network {
             Connection.Closed += Disconnected;
 
             ServicePointManager.DefaultConnectionLimit = 100;
-            await Connection.Start();            
+            await Connection.Start();
+
             bool connectionStatus = Connection.State == ConnectionState.Connected ? true : false;
 
             if(!isUnitTesting) {
-                NetworkController.IsConnected = connectionStatus; 
+                NetworkController.IsConnected = connectionStatus;
             }
             return connectionStatus;
         }
@@ -100,11 +98,14 @@ namespace PolyWars.Network {
 
         public async Task LogoutAsync() {
             await hubProxy.Invoke("Logout");
-        }        public async Task SendBroadcastMessageAsync(string msg) {
+        }
+        public async Task SendBroadcastMessageAsync(string msg) {
             await hubProxy.Invoke("BroadcastTextMessage", msg);
-        }        public async Task<PlayerDTO> getPlayerShip() {
+        }
+        public async Task<PlayerDTO> getPlayerShip() {
             return await hubProxy.Invoke<PlayerDTO>("getPlayerShip");
         }
+
         /// <summary>
         /// Grabs the current list of opponents from the server
         /// </summary>

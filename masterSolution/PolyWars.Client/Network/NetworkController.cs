@@ -4,7 +4,6 @@ using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
 using PolyWars.Client.Logic;
 using PolyWars.Client.Model;
-using PolyWars.ServerClasses;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -69,15 +68,18 @@ namespace PolyWars.Network {
         private static void updateHealth(int healthLeft) {
             GameController.Player.Health = healthLeft;
         }
+
         private static void opponentShoots(BulletDTO bullet) {
             Bullet newBullet = BulletAdapter.renderBullet(bullet);
             if(GameController.Bullets.TryAdd(newBullet.ID, newBullet)) {
                 BulletAdapter.addBulletToCanvas(newBullet);
             }
         }
+
         private static void updateWallet(double walletAmount) {
             GameController.Player.Wallet = walletAmount;
         }
+
         private static void opponentJoined(PlayerDTO dto) {
             if(!GameController.Opponents.ContainsKey(dto.Name)) {
                 IMoveable opponent = PlayerAdapter.playerDTOToMoveable(dto, Colors.Red);
@@ -86,6 +88,7 @@ namespace PolyWars.Network {
                 }
             }
         }
+
         private static void opponentMoved(PlayerDTO dto) {
             if(GameController.Opponents.ContainsKey(dto.Name)) {
                 IMoveable opponent = GameController.Opponents[dto.Name];
@@ -98,6 +101,7 @@ namespace PolyWars.Network {
                 opponent.Shape.Ray = ray;
             }
         }
+
         private static void clientLoggedOut(string id) {
             if(GameController.Opponents.ContainsKey(id)) {
                 IMoveable opponent;
@@ -107,6 +111,7 @@ namespace PolyWars.Network {
                 UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Remove(opponent.Shape.Polygon));
             }
         }
+
         private static void removeResource(string id) {
             if(GameController.Resources.ContainsKey(id)) {
                 IResource resource;

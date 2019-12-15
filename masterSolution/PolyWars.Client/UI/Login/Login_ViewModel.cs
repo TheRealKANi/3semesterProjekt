@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using System.Windows;using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace PolyWars.UI.Login {
+namespace PolyWars.Client.UI.Login {
     class Login_ViewModel : Observable {        public Login_ViewModel() {
             Urls = new string[] {                "PolyWars.LeetFix.dk",                "PolyWars.ServeGame.com"            };            ConnectingDialogVisibility = Visibility.Collapsed;        }
         private IUser user;
@@ -37,7 +37,7 @@ namespace PolyWars.UI.Login {
                     GameController.Username = user.Name;
                     GameController.UserID = user.ID;
                 } catch(NullReferenceException) {
-                    UIDispatcher.Invoke( () => MessageBox.Show("Invalid Login information"));
+                    UIDispatcher.Invoke(() => MessageBox.Show("Invalid Login information"));
                 }
             }
             return user != null ? true : false;

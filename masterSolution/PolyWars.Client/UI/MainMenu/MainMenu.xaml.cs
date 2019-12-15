@@ -1,7 +1,6 @@
-﻿using System;
-using System.Windows.Controls;
+﻿using System.Windows.Controls;
 
-namespace PolyWars.UI.MainMenu {
+namespace PolyWars.Client.UI.MainMenu {
     /// <summary>
     /// Interaction logic for MainMenu.xaml
     /// </summary>

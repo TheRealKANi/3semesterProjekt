@@ -49,7 +49,6 @@ namespace PolyWars.Client.Logic {
                 if(GameController.DebugFrameTimings) {
                     FrameDebugTimer.startFrameTimer();
                 }
-
                 frameDisplayed = false;
                 try {
                     InputController.applyInput();

@@ -4,7 +4,6 @@ using System.Diagnostics;
 namespace PolyWars.Client.Logic.Utility {
     public class FrameDebugTimer {
 
-
         private static Stopwatch frameTimer;
         private static List<double> frameTicks;
 
@@ -42,22 +41,6 @@ namespace PolyWars.Client.Logic.Utility {
         }
 
         /// <summary>
-        /// Starts the internal collisionTimer
-        /// </summary>
-        public static void startCollisionTimer() {
-            collisionTimer.Restart();
-        }
-
-        /// <summary>
-        /// Starts the internal frameTimer
-        /// </summary>
-        public static void startFrameTimer() {
-            frameTimer.Restart();
-        }
-        public static void startFpsLimitTimer() {
-            fpsLimitTimer.Restart();
-        }
-        /// <summary>
         /// Stops the internal moveShape timer and adds captured time to internal list
         /// </summary>
         public static void stopMoveShapeTimer() {
@@ -65,6 +48,14 @@ namespace PolyWars.Client.Logic.Utility {
                 moveShapeTimer.Stop();
                 moveShapeTicks.Add(moveShapeTimer.Elapsed.TotalMilliseconds);
             }
+        }
+
+
+        /// <summary>
+        /// Starts the internal collisionTimer
+        /// </summary>
+        public static void startCollisionTimer() {
+            collisionTimer.Restart();
         }
 
         /// <summary>
@@ -78,6 +69,13 @@ namespace PolyWars.Client.Logic.Utility {
         }
 
         /// <summary>
+        /// Starts the internal frameTimer
+        /// </summary>
+        public static void startFrameTimer() {
+            frameTimer.Restart();
+        }
+
+        /// <summary>
         /// Stops the internal frameTimer and adds captured time to internal list
         /// </summary>
         public static void stopFrameTimer() {
@@ -86,12 +84,25 @@ namespace PolyWars.Client.Logic.Utility {
                 frameTicks.Add(frameTimer.Elapsed.TotalMilliseconds);
             }
         }
+
+        /// <summary>
+        /// Starts the internal fpsLimiterTimer
+        /// </summary>
+        public static void startFpsLimitTimer() {
+            fpsLimitTimer.Restart();
+        }
+
+        /// <summary>
+        /// Stops the internal fpsLimiterTimer and adds captured time to internal list
+        /// </summary>
         public static void stopFpsLimitTimer() {
             if(fpsLimitTimer.IsRunning) {
                 fpsLimitTimer.Stop();
                 fpsLimitTicks.Add(fpsLimitTimer.Elapsed.TotalMilliseconds);
             }
         }
+
+
         /// <summary>
         /// Outputs Data from time readings.
         /// If we are using high or low resolution

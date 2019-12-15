@@ -52,7 +52,7 @@ namespace PolyWars.Client.Model {
             if(GameController.DebugFrameTimings) {
                 FrameDebugTimer.stopMoveShapeTimer();
             }
-            CollisionDetection.resourceCollisionDetection();
+            CollisionDetection.runCollisionDetection();
         }
     }
 

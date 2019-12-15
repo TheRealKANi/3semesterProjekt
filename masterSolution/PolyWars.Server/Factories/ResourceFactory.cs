@@ -1,8 +1,6 @@
-﻿using PolyWars.Api.Model;
-using PolyWars.API.Network.DTO;
+﻿using PolyWars.API.Network.DTO;
 using System;
 using System.Collections.Generic;
-using System.Windows;
 
 namespace PolyWars.Server.Factories {
     public static class ResourceFactory {
@@ -38,8 +36,8 @@ namespace PolyWars.Server.Factories {
         public static ResourceDTO generateResource(int value) {
             return new ResourceDTO {
                 ID = getId(),
-                CenterX = r.Next(margin/2, width-margin), 
-                CenterY = r.Next(margin/2, height-(margin*3)), 
+                CenterX = r.Next(margin / 2, width - margin),
+                CenterY = r.Next(margin / 2, height - (margin * 3)),
                 Angle = r.Next(0, 360),
                 Value = value
             };

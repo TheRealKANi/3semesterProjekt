@@ -1,6 +1,6 @@
 ﻿using System.Windows;
 
-namespace PolyWars {
+namespace PolyWars.Client {
     /// <summary>
     /// Interaction logic for MainWindow.xaml
     /// </summary>
