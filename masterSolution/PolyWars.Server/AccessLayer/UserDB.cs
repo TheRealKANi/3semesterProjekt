@@ -8,9 +8,13 @@ using System.Security.Cryptography;
 
 namespace PolyWars.Server.AccessLayer {
     class UserDB {
-
         private static IDbConnection Con = null;
 
+        /// <summary>
+        /// Verifies user password with salt on db 
+        /// </summary>
+        /// <param name="user">The user to try to login with</param>
+        /// <returns></returns>
         public static bool loginUser(UserData user) {
             bool result = false;
             string SQLLoginUser = "SELECT Vertices FROM Users WHERE Username = @userName AND HashedPassword = @password";
@@ -30,6 +34,11 @@ namespace PolyWars.Server.AccessLayer {
             return result;
         }
 
+        /// <summary>
+        /// Graps salt ( if any ) from db
+        /// </summary>
+        /// <param name="user">The user to grab salt from db</param>
+        /// <returns></returns>
         private static string getUserSalt(UserData user) {
             string SQLGetUserSalt = "Select salt from Users where Username = @userName";
             using(Con = new SqlConnection(DBConnection.DbConnectionString)) {
@@ -37,6 +46,11 @@ namespace PolyWars.Server.AccessLayer {
             }
         }
 
+        /// <summary>
+        /// Tries to register user on db
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public static bool registerUser(UserData user) {
             bool result = false;
             string SQLRegisterUser = "insert into Users (Username, HashedPassword, Salt, Score, Vertices) values " +

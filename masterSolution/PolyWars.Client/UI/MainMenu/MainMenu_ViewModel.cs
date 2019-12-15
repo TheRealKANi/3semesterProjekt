@@ -1,11 +1,10 @@
-﻿using PolyWars.Logic;
-using PolyWars.Model;
+﻿using PolyWars.Client.Logic;
+using PolyWars.Client.Model;
 using PolyWars.Network;
 using System;
-using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace PolyWars.UI.MainMenu {
+namespace PolyWars.Client.UI.MainMenu {
     /// <summary>
     /// This class provides navigation in the main menu.
     /// </summary>

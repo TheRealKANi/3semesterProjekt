@@ -87,7 +87,6 @@
     <Compile Include="Model\Interfaces\IRay.cs" />
     <Compile Include="Model\Interfaces\IRenderable.cs" />
     <Compile Include="Model\Interfaces\IRenderer.cs" />
-    <Compile Include="Network\ILobby.cs" />
     <Compile Include="Network\IUser.cs" />
     <Compile Include="Model\Ray.cs" />
     <Compile Include="Network\Service\DataContracts\LeaderboardEntryData.cs" />
@@ -100,7 +99,6 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="ClassDiagram1.cd" />
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup />

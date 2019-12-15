@@ -2,7 +2,10 @@
 using System.Windows;
 using System.Windows.Threading;
 
-namespace PolyWars.Logic {
+namespace PolyWars.Client.Logic {
+    /// <summary>
+    /// Creates a UIDispatcher for test scenarios
+    /// </summary>
     internal class UnitTestUIDispatcher : UIDispatcher {
         public UnitTestUIDispatcher() {
             uiDispatcher = this;
@@ -14,8 +17,14 @@ namespace PolyWars.Logic {
             return a.Invoke();
         }
     }
+
+    /// <summary>
+    /// Main UI thread used for controlling arena entities
+    /// </summary>
     class UIDispatcher {
         protected UIDispatcher() { }
+        protected static UIDispatcher uiDispatcher;
+        private static Dispatcher UIThreadDispatcher;
         static UIDispatcher() {
             uiDispatcher = new UIDispatcher();
             try {
@@ -23,8 +32,6 @@ namespace PolyWars.Logic {
             } catch(NullReferenceException) { // occurs when unittests are run, since the program isn't running, and as such, has no dispatcher
             }
         }
-        protected static UIDispatcher uiDispatcher;
-        private static Dispatcher UIThreadDispatcher;
 
         public static void Invoke(Action a) {
             uiDispatcher._Invoke(a);

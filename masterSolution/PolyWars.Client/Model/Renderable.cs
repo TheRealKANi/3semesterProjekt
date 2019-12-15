@@ -1,8 +1,10 @@
-﻿using PolyWars.API;
-using PolyWars.API.Model.Interfaces;
+﻿using PolyWars.API.Model.Interfaces;
 using System.Windows.Media;
 
-namespace PolyWars.ServerClasses {
+namespace PolyWars.Client.Model {
+    /// <summary>
+    /// Base class for a entity that can be shown on anrena
+    /// </summary>
     class Renderable : IRenderable {
         public double StrokeThickness { get; set; }
         public int Width { get; set; }

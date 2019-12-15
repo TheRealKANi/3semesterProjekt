@@ -1,6 +1,6 @@
 ﻿using System.Windows.Controls;
 
-namespace PolyWars.UI.Login {
+namespace PolyWars.Client.UI.Login {
     /// <summary>
     /// Interaction logic for Login.xaml
     /// </summary>

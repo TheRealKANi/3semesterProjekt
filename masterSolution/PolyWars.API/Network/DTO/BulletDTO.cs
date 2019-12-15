@@ -1,4 +1,4 @@
-﻿using PolyWars.Api.Model;
+﻿using PolyWars.API.Model;
 
 namespace PolyWars.API.Network.DTO {
     /// <summary>

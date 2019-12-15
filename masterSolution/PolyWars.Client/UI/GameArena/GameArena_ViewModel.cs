@@ -1,11 +1,10 @@
-﻿using PolyWars.Logic;
-using PolyWars.Model;
+﻿using PolyWars.Client.Logic;
+using PolyWars.Client.Model;
 using System;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
 
-namespace PolyWars.UI.GameArena {
+namespace PolyWars.Client.UI.GameArena {
 
     /// <summary>
     /// This class renders the Arena when the game is started 
@@ -15,6 +14,7 @@ namespace PolyWars.UI.GameArena {
         public double ArenaHeight { get; set; }
         public double ArenaWidth { get; set; }
         private Visibility fpsVisibility;
+
         public Visibility FpsVisibility {
             get {
                 return fpsVisibility;
@@ -24,11 +24,13 @@ namespace PolyWars.UI.GameArena {
                 NotifyPropertyChanged();
             }
         }
+
         public string Fps {
             get {
                 return GameController.Fps.ToString();
             }
         }
+
         public string PlayerCurrency {
             get {
                 if(GameController.Player != null) {
@@ -54,12 +56,10 @@ namespace PolyWars.UI.GameArena {
             }
             set {
                 arenaCanvas = value;
-
                 ArenaCanvas.Loaded += OnCanvasLoaded;
                 GameController.CanvasChangedEventHandler += onCanvasChanged;
                 ArenaCanvas.LayoutUpdated += updated;
                 ArenaCanvas.LayoutUpdated += GameController.Ticker.onFrameDisplayed;
-
                 NotifyPropertyChanged();
             }
         }

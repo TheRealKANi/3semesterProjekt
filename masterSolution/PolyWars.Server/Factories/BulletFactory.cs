@@ -1,9 +1,7 @@
-﻿using PolyWars.Api.Model;
+﻿using PolyWars.API.Model;
 using PolyWars.API.Network.DTO;
-using System;
 using System.Collections.Generic;
 using System.Windows;
-using System.Windows.Controls;
 
 namespace PolyWars.Server.Factories {
     public static class BulletFactory {
@@ -12,15 +10,19 @@ namespace PolyWars.Server.Factories {
         static BulletFactory() {
             id = 0;
         }
+
         private static string getId() {
             return (id++).ToString();
         }
+
         public static IEnumerable<BulletDTO> generateBullets(PlayerDTO playerDTO) {
             return generateBullets(5, playerDTO);
         }
+
         public static IEnumerable<BulletDTO> generateBullets(int amount, PlayerDTO playerDTO) {
             return generateBullets(amount, 5, playerDTO);
         }
+
         public static IEnumerable<BulletDTO> generateBullets(int amount, int damage, PlayerDTO playerDTO) {
             List<BulletDTO> list = new List<BulletDTO>();
             for(int i = 0; i < amount; i++) {
@@ -28,7 +30,7 @@ namespace PolyWars.Server.Factories {
             }
             return list;
         }
-       
+
         public static BulletDTO generateBullet(int damage, PlayerDTO playerDTO) {
             return new BulletDTO {
                 ID = getId(),
@@ -37,7 +39,6 @@ namespace PolyWars.Server.Factories {
                 Damage = damage,
                 PlayerID = playerDTO.Name
             };
-
         }
     }
 }

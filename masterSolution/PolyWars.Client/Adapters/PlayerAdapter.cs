@@ -1,8 +1,9 @@
-﻿using PolyWars.Api.Model;
+﻿using PolyWars.API.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
 using PolyWars.API.Strategies;
-using PolyWars.Logic;
+using PolyWars.Client.Logic;
+using PolyWars.Client.Model;
 using PolyWars.Network;
 using PolyWars.ServerClasses;
 using System.Collections.Concurrent;

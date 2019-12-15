@@ -1,11 +1,11 @@
-﻿using PolyWars.Model;
-using PolyWars.UI.GameArena;
-using PolyWars.UI.Login;
-using PolyWars.UI.MainMenu;
+﻿using PolyWars.Client.Model;
+using PolyWars.Client.UI.GameArena;
+using PolyWars.Client.UI.Login;
+using PolyWars.Client.UI.MainMenu;
 using System;
 using System.Windows.Controls;
 
-namespace PolyWars {
+namespace PolyWars.Client {
     enum Pages {
         MainMenu,
         Arena,

@@ -1,21 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Linq;
+﻿using System.ComponentModel;
 using System.Runtime.CompilerServices;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
 
-namespace PolyWars.UI.Login {
+namespace PolyWars.Client.UI.Login {
     /// <summary>
     /// Interaction logic for ConnectingDialog.xaml
     /// </summary>
@@ -25,10 +13,10 @@ namespace PolyWars.UI.Login {
         }
         public static readonly DependencyProperty TextProperty = DependencyProperty.Register("Text", typeof(string), typeof(ConnectingDialog), new PropertyMetadata(""));
         public string Text {
-            get { 
-                return (string) GetValue(TextProperty) ?? ""; 
+            get {
+                return (string) GetValue(TextProperty) ?? "";
             }
-            set { 
+            set {
                 SetValue(TextProperty, value);
                 NotifyPropertyChanged();
             }

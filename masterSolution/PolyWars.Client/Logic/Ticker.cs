@@ -1,16 +1,19 @@
-﻿using PolyWars.Logic;
+﻿using PolyWars.Client.Logic.Utility;
 using System;
 using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 
-namespace PolyWars.Model {
+namespace PolyWars.Client.Logic {
+    /// <summary>
+    /// Controlls game logic with consideration to clients ability to render frames
+    /// </summary>
     class Ticker {
         public static int Fps { get; set; }
         private bool stopTickerThread;
         private const double baselineFps = 1000d / 60; // miliseconds per frame at 60 fps 
         private double frameDeltaTime;
-        Thread thread;
+        private Thread thread;
         public static bool frameDisplayed { get; set; }
 
         public Ticker() {
@@ -20,35 +23,32 @@ namespace PolyWars.Model {
             frameDisplayed = false;
 
         }
+
         public double DeltaTime(double milliseconds) {
             return milliseconds / baselineFps;
         }
+
         public void Start() {
             stopTickerThread = false;
             thread.Start();
         }
 
-        /// <summary>
-        /// Stops the thread Ticker
-        /// </summary>
         public void Stop() {
             stopTickerThread = true;
         }
+
         public void onFrameDisplayed(object sender, EventArgs e) {
             frameDisplayed = true;
         }
 
         private void Tick() {
-            // TODO Remove/Refactor try catch block
-
-
             GameController.tickTimer.Restart();
             while(!stopTickerThread) {
                 waitForNextFrame(GameController.tickTimer);
                 frameDeltaTime = DeltaTime(GameController.tickTimer.Elapsed.TotalMilliseconds);
-                // TODO DEBUG - Starts Frame Timer
-                Logic.Utility.FrameDebugTimer.startFrameTimer();
-
+                if(GameController.DebugFrameTimings) {
+                    FrameDebugTimer.startFrameTimer();
+                }
                 frameDisplayed = false;
                 try {
                     InputController.applyInput();
@@ -56,18 +56,23 @@ namespace PolyWars.Model {
                 } catch(TaskCanceledException) {
                     // TODO Do we need to handle this?
                 }
-                // TODO DEBUG - Stops Frame Timer
                 GameController.tickTimer.Restart();
-                Logic.Utility.FrameDebugTimer.stopFrameTimer();
+                if(GameController.DebugFrameTimings) {
+                    FrameDebugTimer.stopFrameTimer();
+                }
             }
         }
 
         private void waitForNextFrame(Stopwatch tickTimer) {
-            Logic.Utility.FrameDebugTimer.startFpsLimitTimer();
-            while(!frameDisplayed || tickTimer.Elapsed.TotalMilliseconds <= (1000d / 480)) {
+            if(GameController.DebugFrameTimings) {
+                FrameDebugTimer.startFpsLimitTimer();
+            }
+            while(!frameDisplayed || tickTimer.Elapsed.TotalMilliseconds <= 1000d / 480) {
                 Thread.Sleep(1);
             }
-            Logic.Utility.FrameDebugTimer.stopFpsLimitTimer();
+            if(GameController.DebugFrameTimings) {
+                FrameDebugTimer.stopFpsLimitTimer();
+            }
         }
     }
 }

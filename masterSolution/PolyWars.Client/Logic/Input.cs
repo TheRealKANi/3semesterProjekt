@@ -1,23 +1,25 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows;
-using System.Windows.Controls;
 using System.Windows.Input;
-using System.Linq;
-using System;
 
-namespace PolyWars.Logic {
+namespace PolyWars.Client.Logic {
+
+    /// <summary>
+    /// Basic bit flipping keys
+    /// </summary>
     public enum ButtonDown {
         RIGHT = 0b000001,
-        UP =    0b000010,
-        LEFT =  0b000100,
-        DOWN =  0b001000,
+        UP = 0b000010,
+        LEFT = 0b000100,
+        DOWN = 0b001000,
         SHOOT = 0b010000,
         DEBUG = 0b100000
     }
 
     public class Input {
-        
+
         private Key debugKey = Key.F3;
         Dictionary<Key, ButtonDown> keyBindings = new Dictionary<Key, ButtonDown>();
 
@@ -42,20 +44,17 @@ namespace PolyWars.Logic {
             try {
                 UIDispatcher.Invoke(() => {
                     PressedKeys &= 0;
-
                     try {
                         if(Application.Current != null && Application.Current.MainWindow.IsKeyboardFocused) {
-                            foreach(KeyValuePair<Key, ButtonDown> keyBinding in this.keyBindings) {
+                            foreach(KeyValuePair<Key, ButtonDown> keyBinding in keyBindings) {
                                 PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
                             }
                         }
                     } catch(NullReferenceException) {
                     }
-                    
                 });
                 return PressedKeys;
             } catch(TaskCanceledException) {
-
             }
             return PressedKeys;
         }

@@ -1,10 +1,9 @@
 using PolyWars.Adapters;
-using PolyWars.Api.Model;
+using PolyWars.API.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
-using PolyWars.Model;
+using PolyWars.Client.Model;
 using PolyWars.Network;
-using PolyWars.ServerClasses;
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -13,33 +12,33 @@ using System.Threading.Tasks;
 using System.Windows;
 using System.Windows.Media;
 
-namespace PolyWars.Logic {
+namespace PolyWars.Client.Logic {
     class GameController {
-
-        private static bool isPrepared;
-        private static int frames = 0;
-        private static Stopwatch fpsTimer;
-        private static IRay lastRay;
-        public static Ticker Ticker { get; private set; }
         public static IPlayer Player { get; set; }
         public static string Username { get; set; }
         public static string UserID { get; set; }
+        public static bool IsPlayerDead { get; set; }
+
+        public static Ticker Ticker { get; private set; }
+        public static Stopwatch tickTimer { get; private set; }
+        public static int Fps { get; set; }
+        public static bool DebugFrameTimings { get; internal set; }
+        public static double ArenaWidth { get; set; }
+        public static double ArenaHeight { get; set; }
+        public static EventHandler<EventArgs> CanvasChangedEventHandler { get; set; }
+
         public static ConcurrentDictionary<string, IMoveable> Opponents { get; set; }
         public static ConcurrentDictionary<string, IResource> Resources { get; set; }
         public static ConcurrentDictionary<string, IBullet> Bullets { get; set; }
-        public static int Fps { get; set; }
-        public static Stopwatch tickTimer { get; private set; }
+
         private static Stopwatch ServerTimer { get; set; }
-        public static double ArenaWidth { get; set; }
-        public static double ArenaHeight { get; set; }
-        public static bool IsPlayerDead { get; set; }
-        static public EventHandler<EventArgs> CanvasChangedEventHandler { get; set; }
+        private static bool isPrepared;
+        private static int frames = 0;
+        private static Stopwatch fpsTimer;
+        private static IRay lastPlayerRay;
 
-
-        /// <summary>
-        /// Default constructor of GameController Class
-        /// </summary>
         static GameController() {
+            DebugFrameTimings = false; // Enable/Disable Frame timings Debug output via F3 on keyboard
             isPrepared = false;
             fpsTimer = new Stopwatch();
             fpsTimer.Reset();
@@ -49,6 +48,9 @@ namespace PolyWars.Logic {
             ServerTimer.Start();
         }
 
+        /// <summary>
+        /// Main prepareation logic
+        /// </summary>
         public void prepareGame() {
             // instanciate
             ArenaController.ArenaBoundWidth = 1024;
@@ -61,15 +63,20 @@ namespace PolyWars.Logic {
             PlayerDTO playerDTO = null;
             IList<PlayerDTO> opponentDTOs = new List<PlayerDTO>();
             IList<ResourceDTO> resourceDTOs = new List<ResourceDTO>();
-            Task[] taskPool = new Task[3];
 
+            Task[] taskPool = new Task[3];
             // get game objects from the server
             taskPool[0] = Task.Run(async () => playerDTO = await NetworkController.GameService.getPlayerShip());
             taskPool[1] = Task.Run(async () => opponentDTOs = await NetworkController.GameService.getOpponentsAsync());
             taskPool[2] = Task.Run(async () => resourceDTOs = await NetworkController.GameService.getResourcesAsync());
-
             Task.WaitAll(taskPool);
 
+            setupDTOs(playerDTO, opponentDTOs, resourceDTOs);
+            addPolygonsToArena();
+            isPrepared = true;
+        }
+
+        private static void setupDTOs(PlayerDTO playerDTO, IList<PlayerDTO> opponentDTOs, IList<ResourceDTO> resourceDTOs) {
             // create the player
             IMoveable playerShip = PlayerAdapter.playerDTOToMoveable(playerDTO, Colors.Black);
             playerShip.Mover = new MoveStrategy();
@@ -88,20 +95,21 @@ namespace PolyWars.Logic {
                     Task.Delay(1);
                 }
             }
+        }
 
+        private static void addPolygonsToArena() {
             // add objects to the canvas
-            UIDispatcher.Invoke(() => {
-                foreach(IResource resource in Resources.Values) {
-                    ArenaController.ArenaCanvas.Children.Add(resource.Shape.Polygon);
-                }
-            });
             UIDispatcher.Invoke(() => {
                 foreach(IMoveable opponent in Opponents.Values) {
                     ArenaController.ArenaCanvas.Children.Add(opponent.Shape.Polygon);
                 }
             });
+            UIDispatcher.Invoke(() => {
+                foreach(IResource resource in Resources.Values) {
+                    ArenaController.ArenaCanvas.Children.Add(resource.Shape.Polygon);
+                }
+            });
             UIDispatcher.Invoke(() => ArenaController.ArenaCanvas.Children.Add(Player.PlayerShip.Shape.Polygon));
-            isPrepared = true;
         }
 
         public void playGame() {
@@ -117,49 +125,57 @@ namespace PolyWars.Logic {
             fpsTimer.Stop();
         }
 
-
-
+        /// <summary>
+        /// Main game logic for controlling everything
+        /// </summary>
+        /// <param name="deltaTime">The timefactor to consider</param>
         static public void calculateFrame(double deltaTime) {
             try {
                 Player.PlayerShip.Move(deltaTime);
                 Task.Run(() => notifyMoved());
-                List<Task> tasks = new List<Task>();
-                foreach(IMoveable opponent in Opponents.Values) {
-                    tasks.Add(Task.Factory.StartNew(() => opponent.Move(deltaTime)));
-                }
-                foreach(IBullet bullet in Bullets.Values) {
-                    tasks.Add(Task.Factory.StartNew(() => {
-                        Point p = UIDispatcher.Invoke(() => { return bullet.BulletShip.Shape.Ray.CenterPoint; });
-                        if(bulletOutOfBounds(p)) {
-                            BulletAdapter.removeBulletFromCanvas(bullet.ID);
-                            Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
-                        } else {
-                            bullet.BulletShip.Move(deltaTime);
-                        }
-                    }));
-                }
-
-                Task.WaitAll(tasks.ToArray());
+                runGameLoopTasks(deltaTime);
                 tickTimer.Stop();
                 CanvasChangedEventHandler?.Invoke(null, EventArgs.Empty);
             } catch(TaskCanceledException e) {
-                // TODO Do we need to handle this?
                 Debug.WriteLine($"GameController - calculateFrame Error: Task got Cancled {e.Message}");
             }
         }
 
         /// <summary>
-        ///     Checks if a bullet is trying to go past the bounds
+        /// Runs a series of tasks related to a frame.
+        /// </summary>
+        /// <param name="deltaTime">The timefactor to consider</param>
+        private static void runGameLoopTasks(double deltaTime) {
+            List<Task> tasks = new List<Task>();
+            // Move opponents
+            foreach(IMoveable opponent in Opponents.Values) {
+                tasks.Add(Task.Factory.StartNew(() => opponent.Move(deltaTime)));
+            }
+            //Remove out of bounds bullets, and move the rest
+            foreach(IBullet bullet in Bullets.Values) {
+                tasks.Add(Task.Factory.StartNew(() => {
+                    Point p = UIDispatcher.Invoke(() => { return bullet.BulletShip.Shape.Ray.CenterPoint; });
+                    if(bulletOutOfBounds(p)) {
+                        BulletAdapter.removeBulletFromCanvas(bullet.ID);
+                        Bullets.TryRemove(bullet.ID, out IBullet bulletOut);
+                    } else {
+                        bullet.BulletShip.Move(deltaTime);
+                    }
+                }));
+            }
+            Task.WaitAll(tasks.ToArray());
+        }
+
+        /// <summary>
+        /// Checks if a bullet is trying to go past the bounds of the arena
         /// </summary>
         private static bool bulletOutOfBounds(Point p) {
             bool result = true;
-            int boundValue = 6;
-            int lowerHeightBound = boundValue;
-            int lowerWidthBound = boundValue;
-            // 0+3 , 1024-3   3-1024-6
-            int upperWidthBound = ArenaController.ArenaBoundWidth - boundValue;
-            int upperHeightBound = ArenaController.ArenaBoundHeight - boundValue;
-
+            int boundInPixels = 6;
+            int lowerHeightBound = boundInPixels;
+            int lowerWidthBound = boundInPixels;
+            int upperWidthBound = ArenaController.ArenaBoundWidth - boundInPixels;
+            int upperHeightBound = ArenaController.ArenaBoundHeight - boundInPixels;
 
             if(p.X > lowerWidthBound && p.X < upperWidthBound && p.Y > lowerHeightBound && p.Y < upperHeightBound) {
                 result = false;
@@ -167,13 +183,24 @@ namespace PolyWars.Logic {
             return result;
         }
 
+        /// <summary>
+        /// Notifies the server that a player has moved
+        /// if the player has moved one pixel or degree since last
+        /// </summary>
         public static async void notifyMoved() {
             if(ServerTimer.Elapsed.TotalMilliseconds >= 10) { // ish 100 times a second
-                ServerTimer.Restart();
-                await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip);
-                lastRay = ((Ray) Player.PlayerShip.Shape.Ray).Clone();
+                if(!Player.PlayerShip.Shape.Ray.Equals(lastPlayerRay)) {
+                    ServerTimer.Restart();
+                    await NetworkController.GameService.PlayerMovedAsync(Player.PlayerShip);
+                    lastPlayerRay = ((Ray) Player.PlayerShip.Shape.Ray).Clone();
+                }
             }
         }
+
+        /// <summary>
+        /// Set the number of past calculated frames pr second
+        /// to FPS property
+        /// </summary>
         static public void calculateFps() {
             try {
                 frames++;
@@ -181,10 +208,8 @@ namespace PolyWars.Logic {
                     Fps = frames;
                     frames = 0;
                     fpsTimer.Restart();
-
                 }
             } catch(TaskCanceledException e) {
-                // TODO Do we need to handle this?
                 Debug.WriteLine($"GameController - CalculateFps Error: Task got Cancled {e.Message}");
             }
         }

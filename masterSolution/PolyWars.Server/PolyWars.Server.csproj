@@ -197,14 +197,12 @@
     <Compile Include="AccessLayer\UserDB.cs" />
     <Compile Include="Factories\BulletFactory.cs" />
     <Compile Include="Factories\PlayerFactory.cs" />
-    <Compile Include="Hubs\LobbyHub.cs" />
     <Compile Include="Hubs\MainHub.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Factories\ResourceFactory.cs" />
     <Compile Include="Services\IWebClientService.cs" />
     <Compile Include="Services\WebClientService.cs" />
-    <Compile Include="User.cs" />
     <Compile Include="Utility\Hashing\PasswordHashing.cs" />
   </ItemGroup>
   <ItemGroup>

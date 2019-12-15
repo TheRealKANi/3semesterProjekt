@@ -1,5 +1,4 @@
-﻿using PolyWars.Api.Model;
-using System.Windows;
+﻿using System.Windows;
 
 namespace PolyWars.API.Model.Interfaces {
     public interface IRay {

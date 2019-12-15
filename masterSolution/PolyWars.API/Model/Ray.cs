@@ -1,7 +1,7 @@
 ﻿using PolyWars.API.Model.Interfaces;
 using System.Windows;
 
-namespace PolyWars.Api.Model {
+namespace PolyWars.API.Model {
     /// <summary>
     /// Main Ray class that contains two most
     /// importent data for client server exchange.
@@ -33,7 +33,7 @@ namespace PolyWars.Api.Model {
         /// <returns></returns>
         public override bool Equals(object obj) {
             if(obj is IRay ray) {
-                return ((int)CenterPoint.X)==((int)ray.CenterPoint.X) && ((int)CenterPoint.Y)==((int)ray.CenterPoint.Y) && (int)Angle==((int)ray.Angle) && ID.Equals(ray.ID);
+                return (int) CenterPoint.X == (int) ray.CenterPoint.X && (int) CenterPoint.Y == (int) ray.CenterPoint.Y && (int) Angle == (int) ray.Angle && ID.Equals(ray.ID);
             }
             return false;
         }

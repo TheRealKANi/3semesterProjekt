@@ -1,15 +1,16 @@
-﻿using PolyWars.API.Network;
-using PolyWars.Logic;
-using PolyWars.Model;
+﻿using PolyWars.API;
+using PolyWars.API.Network;
+using PolyWars.Client.Logic;
+using PolyWars.Client.Model;
 using PolyWars.Network;
 using System;
 using System.Threading.Tasks;
 using System.Windows;using System.Windows.Controls;
 using System.Windows.Input;
 
-namespace PolyWars.UI.Login {
+namespace PolyWars.Client.UI.Login {
     class Login_ViewModel : Observable {        public Login_ViewModel() {
-            Urls = new string[] {                "PolyWars.LeetFix.dk",                "PolyWars.ServeGame.com"            };            ConnectingDialogVisibility = Visibility.Collapsed;        }
+            Urls = Constants.serverList;            ConnectingDialogVisibility = Visibility.Collapsed;        }
         private IUser user;
         private string name;
         public string Name {
@@ -37,7 +38,7 @@ namespace PolyWars.UI.Login {
                     GameController.Username = user.Name;
                     GameController.UserID = user.ID;
                 } catch(NullReferenceException) {
-                    UIDispatcher.Invoke( () => MessageBox.Show("Invalid Login information"));
+                    UIDispatcher.Invoke(() => MessageBox.Show("Invalid Login information"));
                 }
             }
             return user != null ? true : false;
