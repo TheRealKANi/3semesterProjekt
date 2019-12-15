@@ -15,7 +15,9 @@ namespace PolyWars.Server {
         internal static bool serverLoaded = false;
         private static bool isUnitTesting = false;
         private static bool showConsole = true;
-        #region source https://stackoverflow.com/questions/3571627/show-hide-the-console-window-of-a-c-sharp-console-application
+
+        #region show/hide console 
+        //source https://stackoverflow.com/questions/3571627/show-hide-the-console-window-of-a-c-sharp-console-application
         [DllImport("kernel32.dll")]
         static extern IntPtr GetConsoleWindow();
 
@@ -24,34 +26,18 @@ namespace PolyWars.Server {
         const int SW_HIDE = 0;
         const int SW_SHOW = 5;
         #endregion
+
         public static IAppBuilder app;
         private static ServiceHost host;
         internal static bool shutdown;
-        internal static void Main(params string[] args) {
-            string url = string.Empty;
-            shutdown = false;
-            if(args.Length == 0 || args.Length > 0 && !args.Contains("unitTest")) {
-                url = $"http://*:{Constants.serverPort}/";
-            } else {
-                if(args.Contains("noConsole")) {
-                    showConsole = false;
-                    
-                }
-                if(args.Contains("unitTest")) {
-                    isUnitTesting = true;
-                    showConsole = false;
-                }
-            }
-            if(!showConsole) {
-                IntPtr consoleHandle = GetConsoleWindow();
-                ShowWindow(consoleHandle, SW_HIDE);
-            }
-            if(isUnitTesting) {
-                url = $"http://127.0.0.1:{Constants.serverPort}/";
-            }
-            string serviceUrl = $"{Constants.protocol}localhost:{Constants.servicePort}{Constants.serviceEndPoint}";
 
-            Thread gameServiceThread = new Thread(() => OpenGameServer(url)) { IsBackground = true };
+        internal static void Main(params string[] args) {
+            shutdown = false;
+            string serviceUrl = $"{Constants.protocol}localhost:{Constants.servicePort}{Constants.serviceEndPoint}";
+            string webServiceUrl = string.Empty;
+            webServiceUrl = gameServiceArgsCheck(args, webServiceUrl);
+
+            Thread gameServiceThread = new Thread(() => OpenGameServer(webServiceUrl)) { IsBackground = true };
             Thread webServiceThread = new Thread(() => OpenWebService(serviceUrl)) { IsBackground = true };
 
             gameServiceThread.Start();
@@ -64,13 +50,35 @@ namespace PolyWars.Server {
             }
         }
 
+        private static string gameServiceArgsCheck(string[] args, string webServiceUrl) {
+            if(args.Length == 0 || args.Length > 0 && !args.Contains("unitTest")) {
+                webServiceUrl = $"http://*:{Constants.serverPort}/";
+            } else {
+                if(args.Contains("noConsole")) {
+                    showConsole = false;
+
+                }
+                if(args.Contains("unitTest")) {
+                    isUnitTesting = true;
+                    showConsole = false;
+                }
+            }
+            if(!showConsole) {
+                IntPtr consoleHandle = GetConsoleWindow();
+                ShowWindow(consoleHandle, SW_HIDE);
+            }
+            if(isUnitTesting) {
+                webServiceUrl = $"http://127.0.0.1:{Constants.serverPort}/";
+            }
+
+            return webServiceUrl;
+        }
+
         public static void shutdownServer() {
             shutdown = true;
         }
 
         private static void OpenWebService(string serviceUrl) {
-
-            // ServiceBinding 
             // netsh http add urlacl url=http://+:5701/ user=Alle 
             Console.WriteLine(serviceUrl);
             Uri baseAddress = new Uri(serviceUrl);
@@ -91,12 +99,7 @@ namespace PolyWars.Server {
                 if(!debug.IncludeExceptionDetailInFaults) {
                     debug.IncludeExceptionDetailInFaults = true;
                 }
-            }
-
-
-            // Since no endpoints are explicitly configured, the runtime will create 
-            // one endpoint per base address for each service contract implemented 
-            // by the service. 
+            } 
             host.Open();
 
             while(!shutdown) { Thread.Sleep(1000); }

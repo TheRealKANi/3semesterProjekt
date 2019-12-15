@@ -9,7 +9,7 @@ namespace PolyWars.Server.WebService.ConsoleClient {
 
             UserData user = new UserData() {
                 userName = "Silas",
-                password = "ThureStucks"
+                password = "ThureStiffMeister"
             };
             Console.WriteLine($"Trying to register '{user.userName}' with pass: '{user.password}'");
             bool registerResult = client.register(user);
@@ -20,7 +20,7 @@ namespace PolyWars.Server.WebService.ConsoleClient {
             Console.WriteLine($"Login result: {loginResult}\n");
 
 
-            Console.WriteLine("Trying to get LeaderBoard to Console:\n");
+            Console.WriteLine("Trying to grab LeaderBoard to Console:\n");
             LeaderboardEntryData[] leaderBoard = client.GetLeaderBoard();
             for(int i = 0; i < leaderBoard.Length; i++) {
                 Console.WriteLine($"{i + 1} Place: {leaderBoard[i].userName} - {leaderBoard[i].score} Points");
