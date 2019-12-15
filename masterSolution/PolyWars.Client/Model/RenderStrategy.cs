@@ -25,7 +25,7 @@ namespace PolyWars.Client.Model {
                     StrokeThickness = r.StrokeThickness
                 };
 
-                List<Point> pc = new List<Point>();
+                PointCollection pc = new PointCollection();
 
                 for(int i = 0; i < r.Vertices; i++) {
                     double radians = Math.PI / 2 - ((verticeAngle * i + ray.Angle) / 180) * Math.PI;
