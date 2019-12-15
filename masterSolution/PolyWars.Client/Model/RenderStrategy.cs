@@ -1,4 +1,4 @@
-﻿using PolyWars.API.Model.Interfaces;
+using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Strategies;
 using PolyWars.Client.Logic;
 using System;
@@ -38,6 +38,7 @@ namespace PolyWars.Client.Model {
                 foreach(Point point in pc) {
                     p.Points.Add(point);
                 }
+                p.Points = pc;
                 return p;
             });
         }
