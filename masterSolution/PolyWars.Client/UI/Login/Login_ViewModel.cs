@@ -1,6 +1,6 @@
 ﻿using PolyWars.API.Network;
-using PolyWars.Logic;
-using PolyWars.Model;
+using PolyWars.Client.Logic;
+using PolyWars.Client.Model;
 using PolyWars.Network;
 using System;
 using System.Threading.Tasks;

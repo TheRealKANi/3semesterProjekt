@@ -1,14 +1,14 @@
 ﻿using PolyWars.Adapters;
 using PolyWars.API.Model.Interfaces;
-using PolyWars.Model;
 using PolyWars.Network;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Linq;
+using PolyWars.Client.Model;
 
-namespace PolyWars.Logic.Utility {
+namespace PolyWars.Client.Logic.Utility {
     class CollisionDetection {
         private static TaskFactory taskFactory;
         static CollisionDetection() {

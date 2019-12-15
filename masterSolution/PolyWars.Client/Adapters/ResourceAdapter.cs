@@ -1,7 +1,7 @@
-﻿using PolyWars.Api.Model;
+﻿using PolyWars.API.Model;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
-using PolyWars.Server.Model;
+using PolyWars.Client.Model;
 using PolyWars.ServerClasses;
 using System.Windows;
 using System.Windows.Media;

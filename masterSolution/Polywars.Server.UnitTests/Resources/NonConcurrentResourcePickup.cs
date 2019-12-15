@@ -3,7 +3,7 @@ using PolyWars.API;
 using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
-using PolyWars.Logic;
+using PolyWars.Client.Logic;
 using PolyWars.Network;
 using PolyWars.Server;
 using System.Collections.Generic;

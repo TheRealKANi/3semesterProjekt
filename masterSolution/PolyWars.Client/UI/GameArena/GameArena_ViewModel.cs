@@ -1,5 +1,5 @@
-﻿using PolyWars.Logic;
-using PolyWars.Model;
+﻿using PolyWars.Client.Logic;
+using PolyWars.Client.Model;
 using System;
 using System.Threading.Tasks;
 using System.Windows;

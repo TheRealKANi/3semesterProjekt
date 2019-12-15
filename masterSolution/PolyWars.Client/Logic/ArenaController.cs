@@ -2,7 +2,7 @@
 using System.Windows.Controls;
 using System.Windows.Media;
 
-namespace PolyWars.Logic {
+namespace PolyWars.Client.Logic {
     static class ArenaController {
 
         public static Canvas ArenaCanvas { get; private set; }

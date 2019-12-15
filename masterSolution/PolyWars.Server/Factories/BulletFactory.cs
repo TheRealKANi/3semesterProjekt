@@ -1,4 +1,4 @@
-﻿using PolyWars.Api.Model;
+﻿using PolyWars.API.Model;
 using PolyWars.API.Network.DTO;
 using System;
 using System.Collections.Generic;

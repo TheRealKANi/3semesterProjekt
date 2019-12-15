@@ -100,27 +100,26 @@
     <Compile Include="Logic\GameController.cs" />
     <Compile Include="Logic\Utility\CollisionDetection.cs" />
     <Compile Include="Logic\Utility\FrameDebugTimer.cs" />
-    <Compile Include="Model\PolygonController.cs" />
     <Compile Include="Model\RoughCollition.cs" />
     <Compile Include="Model\TickEventArgs.cs" />
-    <Compile Include="Model\Input.cs" />
+    <Compile Include="Logic\Input.cs" />
     <Compile Include="Network\NetworkController.cs" />
     <Compile Include="RelayCommandAsync.cs" />
-    <Compile Include="ServerClasses\Bullet.cs" />
-    <Compile Include="ServerClasses\Player.cs" />
+    <Compile Include="Model\Bullet.cs" />
+    <Compile Include="Model\Player.cs" />
     <Compile Include="Logic\ThreadController.cs" />
     <Compile Include="Logic\InputController.cs" />
     <Compile Include="Model\Observable.cs" />
     <Compile Include="Model\RelayCommand.cs" />
-    <Compile Include="ServerClasses\Resource.cs" />
-    <Compile Include="ServerClasses\Shape.cs" />
+    <Compile Include="Model\Resource.cs" />
+    <Compile Include="Model\Shape.cs" />
     <Compile Include="Model\Ticker.cs" />
     <Compile Include="NavigationController.cs" />
     <Compile Include="Network\GameService.cs" />
-    <Compile Include="ServerClasses\Moveable.cs" />
-    <Compile Include="ServerClasses\MoveStrategy.cs" />
-    <Compile Include="ServerClasses\Renderable.cs" />
-    <Compile Include="ServerClasses\RenderStrategy.cs" />
+    <Compile Include="Model\Moveable.cs" />
+    <Compile Include="Model\MoveStrategy.cs" />
+    <Compile Include="Model\Renderable.cs" />
+    <Compile Include="Model\RenderStrategy.cs" />
     <Compile Include="UI\GameArena\GameArenaPage.xaml.cs">
       <DependentUpon>GameArenaPage.xaml</DependentUpon>
     </Compile>

@@ -1,8 +1,9 @@
-﻿using PolyWars.API;
-using PolyWars.API.Model.Interfaces;
+﻿using PolyWars.API.Model.Interfaces;
 
-namespace PolyWars.Server.Model {
-
+namespace PolyWars.Client.Model {
+    /// <summary>
+    /// Base class for a Resource
+    /// </summary>
     class Resource : IResource {
         public string ID { get; private set; }
         public IShape Shape { get; private set; }

@@ -1,7 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Diagnostics;
 
-namespace PolyWars.Logic.Utility {
+namespace PolyWars.Client.Logic.Utility {
     public class FrameDebugTimer {
 
 

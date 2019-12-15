@@ -1,4 +1,4 @@
-﻿using PolyWars.Model;
+﻿using PolyWars.Client.Model;
 using PolyWars.UI.GameArena;
 using PolyWars.UI.Login;
 using PolyWars.UI.MainMenu;
