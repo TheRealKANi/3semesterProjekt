@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace PolyWars.API.Network {
-    public interface ILobby {
+namespace PolyWars.Client.UnitTests.Network {
+    class GameServiceTests {
     }
 }

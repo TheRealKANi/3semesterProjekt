@@ -1,10 +1,6 @@
 ﻿using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Media;
 
 namespace PolyWars.Server.Factories {
@@ -13,7 +9,8 @@ namespace PolyWars.Server.Factories {
 
         static PlayerDTOFactory() {
             r = new Random();
-        }
+        }
+
         public static PlayerDTO GetPlayerDTO(IUser newUser) {
             return new PlayerDTO() {
                 ID = newUser.ID,
@@ -30,10 +27,10 @@ namespace PolyWars.Server.Factories {
                 Width = 50,
                 Height = 50,
                 Health = 100,
-                FillColor = GetColor(newUser.Name)
+                FillColor = GetColor()
             };
         }
-        private static Color GetColor(string username) {
+        private static Color GetColor() {
             Color c = Color.FromArgb(255, (byte) r.Next(64, 256), (byte) r.Next(64, 256), (byte) r.Next(64, 256));
             return c;
         }

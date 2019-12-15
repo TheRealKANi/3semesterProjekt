@@ -1,10 +1,9 @@
 ﻿using PolyWars.Network;
-using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
 
-namespace PolyWars {
+namespace PolyWars.Client {
     /// <summary>
     /// Interaction logic for App.xaml
     /// </summary>

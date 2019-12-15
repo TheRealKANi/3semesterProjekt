@@ -1,5 +1,5 @@
 ﻿using Microsoft.VisualStudio.TestTools.UnitTesting;
-using PolyWars.Model;
+using PolyWars.Client.Logic;
 
 namespace PolyWars.Client.UnitTests {
     [TestClass]

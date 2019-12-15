@@ -2,7 +2,7 @@
 using System.Threading.Tasks;
 using System.Windows.Input;
 
-namespace PolyWars {
+namespace PolyWars.Client.Logic {
     class RelayCommandAsync : ICommand {
         Func<object, Task> execute;
         Predicate<object> canExecute;

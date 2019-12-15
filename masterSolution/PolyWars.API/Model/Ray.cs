@@ -1,8 +1,12 @@
 ﻿using PolyWars.API.Model.Interfaces;
-using System;
 using System.Windows;
 
-namespace PolyWars.Api.Model {
+namespace PolyWars.API.Model {
+    /// <summary>
+    /// Main Ray class that contains two most
+    /// importent data for client server exchange.
+    /// Angle and current location
+    /// </summary>
     public class Ray : IRay {
         public string ID { get; set; }
         public Point CenterPoint { get; set; }
@@ -15,34 +19,27 @@ namespace PolyWars.Api.Model {
         }
 
         public override string ToString() {
-            return $"id:{ID}, CenterPointX:{CenterPoint.X}Y:{CenterPoint.Y}, Angle:{Angle}";
+            return $"id:{ID}, CenterPoint({CenterPoint.X},{CenterPoint.Y}), Angle:{Angle}";
         }
 
         public Ray Clone() {
             return new Ray(ID + "", new Point(CenterPoint.X, CenterPoint.Y), Angle);
         }
+        /// <summary>
+        /// Compaires Rays, with ID and nearest whole int rounding,
+        /// to decrese movement frequency sent to the server.
+        /// </summary>
+        /// <param name="obj">The other ray to compaire to</param>
+        /// <returns></returns>
         public override bool Equals(object obj) {
             if(obj is IRay ray) {
                 return CenterPoint.X.Equals(ray.CenterPoint.X) && CenterPoint.Y.Equals(ray.CenterPoint.Y) && Angle.Equals(ray.Angle);
             }
             return false;
         }
+
         public override int GetHashCode() {
             return base.GetHashCode();
-        }
-
-        public bool IsEqual(IRay other) {
-            bool result = false;
-            Point thisPoint = new Point((int) CenterPoint.X, (int) CenterPoint.Y);
-            Point otherPoint = new Point((int) other.CenterPoint.X, (int) other.CenterPoint.Y);
-            int thisAngle = (int) Angle;
-            int otherAngle = (int) other.Angle;
-            if(other.ID.Equals(ID) &&
-                otherPoint.Equals(thisPoint)
-                && otherAngle == thisAngle) {
-                result = true;
-            }
-            return result;
         }
     }
 }

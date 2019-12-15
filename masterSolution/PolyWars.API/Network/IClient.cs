@@ -1,6 +1,10 @@
 ﻿using PolyWars.API.Network.DTO;
 using System.Collections.Generic;
 namespace PolyWars.API.Network {
+    /// <summary>
+    /// Base class for server to know which methods
+    /// are available on a client of the hub
+    /// </summary>
     public interface IClient {
         void OnConnected();
         void ClientDisconnected(string name);

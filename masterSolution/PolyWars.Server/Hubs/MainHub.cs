@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNet.SignalR;
 using PolyWars.API;
+using PolyWars.API.Model;
 using PolyWars.API.Network;
 using PolyWars.API.Network.DTO;
 using PolyWars.API.Network.Services.DataContracts;
@@ -14,21 +15,22 @@ using System.Runtime.CompilerServices;using System.Threading.Tasks;
 
 namespace PolyWars.Server {
     public class MainHub : Hub<IClient> {
+        private static bool enableDebugOutput;
         private static ConcurrentDictionary<string, IUser> PlayerClients;
         private static ConcurrentDictionary<string, PlayerDTO> Opponents;
-        internal static ConcurrentDictionary<string, ResourceDTO> Resources;
+        private static ConcurrentDictionary<string, ResourceDTO> Resources;
         private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
-        private static object statisticsLock = new object();
         private static Random rnd;
         private static Stopwatch statisticTimer;
 
+        #region utility Methods
         public static List<PlayerDTO> getLeaderBoard() {
             return new List<PlayerDTO>(Opponents.Values).OrderByDescending((x) => x.Wallet).ToList();
         }
 
         private void methodCallCounter([CallerMemberName] string method = "") {
-            if(!string.IsNullOrWhiteSpace(method)) {
+            if(!string.IsNullOrWhiteSpace(method) && enableDebugOutput) {
                 if(statistics.ContainsKey(method)) {
                     statistics[method]++;
                 } else {
@@ -39,7 +41,7 @@ namespace PolyWars.Server {
                     }
                 }
             }
-            if(statisticTimer.Elapsed.TotalSeconds > 9) {
+            if(statisticTimer.Elapsed.TotalSeconds > 9 && enableDebugOutput) {
                 int x = Console.CursorLeft;
                 int y = Console.CursorTop;
                 statisticTimer.Restart();
@@ -53,45 +55,29 @@ namespace PolyWars.Server {
                 Console.SetCursorPosition(x, 13);
             }
         }
-
-
+        #endregion
 
         static MainHub() {
             rnd = new Random((int) Stopwatch.GetTimestamp());
-            Console.SetCursorPosition(0, 1);
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
             Resources = new ConcurrentDictionary<string, ResourceDTO>();
             Bullets = new ConcurrentDictionary<string, BulletDTO>();
             statistics = new ConcurrentDictionary<string, int>();
-            statistics.TryAdd("moved stack", 0);
-
-            statisticTimer = new Stopwatch();
-            statisticTimer.Start();
 
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
             foreach(ResourceDTO resource in resources) {
                 Resources.TryAdd(resource.ID, resource);
             }
-        }
-        // trying to achieve a bit more randomness here
-        private static string GetRandomWinner(List<string> userNames) {
-            string winner = string.Empty;
-            if(userNames.Count > 1) {
-                int seed = 0xffff;
-                foreach(string userName in userNames) {
-                    seed &= userName.ToArray().Sum(x => x);
-                }
-                Random r = new Random(seed);
-                int winnerIndex = r.Next(0, int.MaxValue) % userNames.Count;
-                winner = userNames[winnerIndex];
-            } else {
-                winner = userNames[0];
-            }
 
-            return winner;
+            Console.SetCursorPosition(0, 1);
+            statistics.TryAdd("moved stack", 0);
+            statisticTimer = new Stopwatch();
+            statisticTimer.Start();
+            enableDebugOutput = false;
         }
 
+        #region Client Hub Calls
         public bool playerGotShot(BulletDTO bullet) {
             methodCallCounter();
             bool result = false;
@@ -132,6 +118,7 @@ namespace PolyWars.Server {
             });
             return result;
         }
+
         // Called from client when they collide with a resource
         public async Task<bool> playerCollectedResource(string resourceId) {
             methodCallCounter();
@@ -147,6 +134,7 @@ namespace PolyWars.Server {
             });
             return removed;
         }
+
         public async Task<List<ResourceDTO>> getResources() {
             methodCallCounter();
             List<ResourceDTO> resources = await Task.Factory.StartNew(() => new List<ResourceDTO>(Resources.Values));
@@ -270,5 +258,7 @@ namespace PolyWars.Server {
             }
             return base.OnDisconnected(stopCalled);
         }
+
+        #endregion
     }
 }

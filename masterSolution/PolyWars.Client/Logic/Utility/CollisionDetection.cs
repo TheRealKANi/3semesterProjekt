@@ -1,22 +1,26 @@
 ﻿using PolyWars.Adapters;
 using PolyWars.API.Model.Interfaces;
-using PolyWars.Model;
+using PolyWars.Client.Model;
 using PolyWars.Network;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
-using System.Threading.Tasks;
 using System.Linq;
+using System.Threading.Tasks;
 
-namespace PolyWars.Logic.Utility {
+namespace PolyWars.Client.Logic.Utility {
     class CollisionDetection {
         private static TaskFactory taskFactory;
+
         static CollisionDetection() {
             taskFactory = new TaskFactory();
         }
-        public static void resourceCollisionDetection() {
-            // TODO DEBUG - Starts collision Timer
-            FrameDebugTimer.startCollisionTimer();
+        /// <summary>
+        /// Checks for rough collissions on a entity and then runs a intersects detection 
+        /// </summary>
+        public static void runCollisionDetection() {
+            if(GameController.DebugFrameTimings) {
+                FrameDebugTimer.startCollisionTimer();
+            }
             List<Task> taskList = new List<Task>();
             if(GameController.Resources != null) {
                 RoughCollition rc = new RoughCollition();
@@ -89,7 +93,6 @@ namespace PolyWars.Logic.Utility {
                     // TODO DEBUG - Stops collision Timer
                 }));
                 Task.WaitAll(taskList.ToArray());
-                FrameDebugTimer.stopCollisionTimer();
             }
         }
     }

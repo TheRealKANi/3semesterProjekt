@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace PolyWars.API.Network {
+    /// <summary>
+    /// Base for mapping client listners and methods to realtime protocol
+    /// </summary>
     public interface IGameService {
         event Action<string> clientLoggedOut;
         event Action<string> announceClientLoggedIn;

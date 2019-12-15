@@ -1,8 +1,9 @@
-﻿using PolyWars.API;
-using PolyWars.API.Model.Interfaces;
-using PolyWars.Logic;
+﻿using PolyWars.API.Model.Interfaces;
 
-namespace PolyWars.ServerClasses {
+namespace PolyWars.Client.Model {
+    /// <summary>
+    /// Base class for the local clients Player
+    /// </summary>
     public class Player : IPlayer {
         public Player(string name, string id, double currency, int health, IMoveable playerShip) {
             Name = name;
