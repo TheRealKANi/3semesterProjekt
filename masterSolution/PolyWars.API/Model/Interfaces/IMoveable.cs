@@ -6,11 +6,8 @@ namespace PolyWars.API.Model.Interfaces {
         double MaxVelocity { get; set; }
         double RPM { get; set; }
         double MaxRPM { get; set; }
-
         IShape Shape { get; set; }
         IMoveStrategy Mover { get; set; }
-
         void Move(double deltaTime);
-        //void MoveToNewRay();
     }
 }

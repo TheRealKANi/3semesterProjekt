@@ -6,7 +6,6 @@ namespace PolyWars.API.Model.Interfaces {
         string ID { get; set; }
         Point CenterPoint { get; set; }
         double Angle { get; set; }
-
         Ray Clone();
     }
 }

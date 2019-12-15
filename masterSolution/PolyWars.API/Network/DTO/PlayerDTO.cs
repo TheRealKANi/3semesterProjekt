@@ -1,8 +1,9 @@
-﻿using PolyWars.Api.Model;
-using System.Windows;
-using System.Windows.Media;
+﻿using System.Windows.Media;
 
 namespace PolyWars.API.Network.DTO {
+    /// <summary>
+    /// Base class for transport of a Player thru network to the server
+    /// </summary>
     public class PlayerDTO {
         public string Name { get; set; }
         public string ID { get; set; }

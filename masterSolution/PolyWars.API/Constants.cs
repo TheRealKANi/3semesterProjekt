@@ -5,6 +5,10 @@ using System.Text;
 using System.Threading.Tasks;
 
 namespace PolyWars.API {
+
+    /// <summary>
+    /// Constants that enables client and server to have uniform data
+    /// </summary>
     public static class Constants {
         public static readonly string protocol = "http://";
         public static readonly string serverPort = "5700";

@@ -1,11 +1,9 @@
 ﻿using PolyWars.Api.Model;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace PolyWars.API.Network.DTO {
+    /// <summary>
+    /// Base class for transport of a bullet thru network to the server
+    /// </summary>
     public class BulletDTO {
         public string ID { get; set; }
         public string PlayerID { get; set; }
