@@ -4,10 +4,11 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:nav="clr-namespace:PolyWars.Client"
+        xmlns:constants="clr-namespace:PolyWars.API;assembly=PolyWars.API"
         mc:Ignorable="d"
         Focusable="True"
         
-        Title="PolyWars v1.0-RC" Height="900" Width="1050" Top="0" Left="0" >
+        Title="{Binding Source={x:Static constants:Constants.systemVersion}}" Height="900" Width="1050" Top="0" Left="0" >
     <!--WindowState="Maximized-->
     <Window.Resources>
         <nav:NavigationController x:Key="Nav"/>
