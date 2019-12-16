@@ -173,7 +173,6 @@ namespace PolyWars.Server {
             methodCallCounter();
             return await Task.Factory.StartNew(() => {
                 if(!PlayerClients.ContainsKey(username)) {
-                    // TODO Verify user creds from DB here
                     UserData userData = new UserData() {
                         userName = username,
                         password = hashedPassword
@@ -198,10 +197,10 @@ namespace PolyWars.Server {
                             Clients.Others.opponentJoined(newPlayer);
                             return newUser;
                         }
-                    } /*else {
-                    // Handle what to send back to denied client
-                    Clients.Caller.AccessDenied("No way Jose!");
-                }*/
+                    } else {
+                        // Handle what to send back to denied client
+                        Clients.Caller.AccessDenied("Wrong username or password");
+                    }
                 }
                 return null;
             });

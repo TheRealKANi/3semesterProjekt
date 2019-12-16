@@ -4,6 +4,7 @@ using PolyWars.API.Model.Interfaces;
 using PolyWars.API.Network.DTO;
 using PolyWars.Client.Logic;
 using PolyWars.Client.Model;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using System.Windows;
@@ -28,9 +29,7 @@ namespace PolyWars.Network {
             GameService = new GameService();
 
             GameService.announceClientLoggedIn += announceClientLoggedIn;
-            //GameService.accessDenied += deniedAccess;
-            //GameService.updateOpponents += updateOpponents;
-            //GameService.updateResources += updateResources;
+            GameService.accessDenied += deniedAccess;
             GameService.removeResource += removeResource;
             GameService.clientLoggedOut += clientLoggedOut;
             GameService.opponentMoved += opponentMoved;
@@ -41,6 +40,10 @@ namespace PolyWars.Network {
             GameService.playerDied += playerDied;
             GameService.removeBullet += removeBullet;
             GameService.removeDeadOpponent += removeDeadOpponent;
+        }
+
+        private static void deniedAccess(string message) {
+            MessageBox.Show(message, "Access Denied");
         }
 
         private static void removeDeadOpponent(string username) {

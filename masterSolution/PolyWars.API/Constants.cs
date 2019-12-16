@@ -16,6 +16,7 @@
 
         public static readonly string servicePort = "5701";
         public static readonly string serviceEndPoint = "/WebClientService";
+        public static readonly string systemVersion = "PolyWars v1.0-RC";
 
     }
 }

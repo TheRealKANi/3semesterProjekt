@@ -84,8 +84,10 @@ namespace PolyWars.Client {
                 case Pages.Login:
                 Frame.NavigationService.Navigate(Login);
                 break;
+                //case Pages.Settings:
+                //Frame.NavigationService.Navigate(Settings);
                 default:
-                throw new NotImplementedException(); //TODO Settings
+                throw new NotImplementedException();
             }
         }
     }

@@ -34,7 +34,7 @@ namespace PolyWars.Server.Factories {
         public static BulletDTO generateBullet(int damage, PlayerDTO playerDTO) {
             return new BulletDTO {
                 ID = getId(),
-                // TODO Make shots render from tip of player, or at least the forward facing edge..
+                // Shots sould render from tip of player, or at least the forward facing edge..
                 Ray = new Ray(id.ToString(), new Point(playerDTO.centerX, playerDTO.centerY), playerDTO.Angle),
                 Damage = damage,
                 PlayerID = playerDTO.Name

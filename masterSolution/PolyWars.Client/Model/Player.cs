@@ -1,7 +1,8 @@
 ﻿using PolyWars.API.Model.Interfaces;
 
 namespace PolyWars.Client.Model {
-    /// <summary>
+    
+    ///
     /// Base class for the local clients Player
     /// </summary>
     public class Player : IPlayer {

@@ -109,7 +109,7 @@ namespace PolyWars.Server {
         private static void OpenGameServer(string url) {
             // netsh http add urlacl url=http://*:5700/ user=Alle 
             using(WebApp.Start<Startup>(url)) {
-                Console.WriteLine($"Server running at {url}");
+                Console.WriteLine($"Server {Constants.systemVersion} running at {url}");
                 serverLoaded = true;
                 while(!shutdown) { Thread.Sleep(5000); }
             }

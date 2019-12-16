@@ -5,7 +5,8 @@ using System.Threading;
 using System.Threading.Tasks;
 
 namespace PolyWars.Client.Logic {
-    /// <summary>
+
+    ///
     /// Controlls game logic with consideration to clients ability to render frames
     /// </summary>
     class Ticker {

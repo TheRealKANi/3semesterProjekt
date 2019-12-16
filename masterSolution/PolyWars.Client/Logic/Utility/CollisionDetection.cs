@@ -90,7 +90,6 @@ namespace PolyWars.Client.Logic.Utility {
                             collidedWithBullet.Add(bullet);
                         }
                     }
-                    // TODO DEBUG - Stops collision Timer
                 }));
                 Task.WaitAll(taskList.ToArray());
             }

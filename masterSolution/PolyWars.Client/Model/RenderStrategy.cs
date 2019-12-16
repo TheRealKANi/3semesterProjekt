@@ -9,7 +9,7 @@ using System.Windows.Shapes;
 
 namespace PolyWars.Client.Model {
     class RenderStrategy : IRenderStrategy {
-        /// <summary>
+        
         /// Generates a renderable polygon
         /// </summary>
         /// <param name="r">The entity to render</param>
