@@ -21,10 +21,10 @@ namespace PolyWars.Client.Logic {
     public class Input {
 
         private Key debugKey = Key.F3;
-        Dictionary<Key, ButtonDown> keyBindings = new Dictionary<Key, ButtonDown>();
 
         public ButtonDown PressedKeys { get; set; }
 
+        Dictionary<Key, ButtonDown> keyBindings = new Dictionary<Key, ButtonDown>();
         public Input() {
             PressedKeys = new ButtonDown();
 
@@ -44,18 +44,16 @@ namespace PolyWars.Client.Logic {
             try {
                 UIDispatcher.Invoke(() => {
                     PressedKeys &= 0;
-                    try {
-                        if(Application.Current != null && Application.Current.MainWindow.IsKeyboardFocused) {
-                            foreach(KeyValuePair<Key, ButtonDown> keyBinding in keyBindings) {
-                                PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
-                            }
+                    if(Application.Current != null && Application.Current.MainWindow.IsKeyboardFocused) {
+                        foreach(KeyValuePair<Key, ButtonDown> keyBinding in keyBindings) {
+                            PressedKeys |= Keyboard.IsKeyDown(keyBinding.Key) ? keyBinding.Value : 0;
                         }
-                    } catch(NullReferenceException) {
                     }
                 });
                 return PressedKeys;
-            } catch(TaskCanceledException) {
-            }
+            } catch(NullReferenceException) { } // can sometimes occur if application is closed, and the static Application class itself is null. Does not need handling
+             catch(TaskCanceledException) { } // occurs when the application get closed, and the UIDispatcher no longer exists. Does not need handling
+
             return PressedKeys;
         }
     }

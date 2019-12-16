@@ -53,8 +53,8 @@ namespace PolyWars.Client.Logic {
                 try {
                     InputController.applyInput();
                     GameController.calculateFrame(frameDeltaTime);
-                } catch(TaskCanceledException) {
-                    // TODO Do we need to handle this?
+                } catch(TaskCanceledException) { // occurs when the application is closed, and the UIDispatcher thread no longer exists. Does not need to be handled
+                    
                 }
                 GameController.tickTimer.Restart();
                 if(GameController.DebugFrameTimings) {
