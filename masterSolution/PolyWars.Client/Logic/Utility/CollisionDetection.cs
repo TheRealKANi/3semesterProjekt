@@ -34,7 +34,8 @@ namespace PolyWars.Client.Logic.Utility {
                 foreach(IResource resource in roughResourceCollitions) {
                     tl.Add(Task.Factory.StartNew(() => {
                         UIDispatcher.Invoke(() => {
-                            if(resource.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(player.Polygon.RenderedGeometry.Bounds)) {
+                            if(resource.Shape.Polygon.RenderedGeometry.Bounds.IntersectsWith(player.Polygon.RenderedGeometry.Bounds) && !resource.RequestedPickup) {
+                                resource.RequestedPickup = true;
                                 collidedWithResource.Add(resource);
                             }
                         });

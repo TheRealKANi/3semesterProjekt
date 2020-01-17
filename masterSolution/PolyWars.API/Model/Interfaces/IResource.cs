@@ -3,5 +3,6 @@
         string ID { get; }
         IShape Shape { get; }
         double Value { get; }
+        bool RequestedPickup { get; set; }
     }
 }

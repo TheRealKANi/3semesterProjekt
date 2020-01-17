@@ -8,6 +8,7 @@ namespace PolyWars.Client.Model {
         public string ID { get; private set; }
         public IShape Shape { get; private set; }
         public double Value { get; private set; }
+        public bool RequestedPickup { get; set; }
 
         public Resource(string id, IShape shape, double value) {
             ID = id;
