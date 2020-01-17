@@ -18,7 +18,7 @@ namespace PolyWars.Server {
         private static bool enableDebugOutput;
         private static ConcurrentDictionary<string, IUser> PlayerClients;
         private static ConcurrentDictionary<string, PlayerDTO> Opponents;
-        private static ConcurrentDictionary<string, ResourceDTO> Resources;
+        private static Dictionary<string, ResourceDTO> Resources;
         private static ConcurrentDictionary<string, BulletDTO> Bullets;
         private static ConcurrentDictionary<string, int> statistics;
         private static Random rnd;
@@ -61,13 +61,13 @@ namespace PolyWars.Server {
             rnd = new Random((int) Stopwatch.GetTimestamp());
             PlayerClients = new ConcurrentDictionary<string, IUser>();
             Opponents = new ConcurrentDictionary<string, PlayerDTO>();
-            Resources = new ConcurrentDictionary<string, ResourceDTO>();
+            Resources = new Dictionary<string, ResourceDTO>();
             Bullets = new ConcurrentDictionary<string, BulletDTO>();
             statistics = new ConcurrentDictionary<string, int>();
 
             IEnumerable<ResourceDTO> resources = ResourceFactory.generateResources(50, 1);
             foreach(ResourceDTO resource in resources) {
-                Resources.TryAdd(resource.ID, resource);
+                Resources.Add(resource.ID, resource);
             }
 
             Console.SetCursorPosition(0, 1);
@@ -124,9 +124,10 @@ namespace PolyWars.Server {
             methodCallCounter();
             bool removed = false;
             await Task.Factory.StartNew(() => {
-                if(Resources.TryRemove(resourceId, out ResourceDTO r)) {
+                ResourceDTO r = Resources[resourceId];
+                if(Resources.Remove(resourceId)) {
                     string username = Clients.CallerState.UserName;
-                    Clients.Others.removeResource(resourceId);
+                    //Clients.Others.removeResource(resourceId);
                     Opponents[username].Wallet += r.Value;
                     Clients.Caller.updateWallet(Opponents[username].Wallet);
                     removed = true;
